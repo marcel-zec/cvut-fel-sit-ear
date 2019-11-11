@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "DOORMITORY_USER")
+@Table(name = "DORMITORY_USER")
 public class User extends AbstractEntity {
 
     @Basic(optional = false)
@@ -60,6 +60,14 @@ public class User extends AbstractEntity {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

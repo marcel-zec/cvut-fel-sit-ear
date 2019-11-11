@@ -1,7 +1,5 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Past;
@@ -31,7 +29,6 @@ public class Student extends User {
     private LocalDate endOfStudy;
 
     @Enumerated(EnumType.STRING)
-    @Type(type = "org.thoughts.on.java.model.EnumTypePostgreSql")
     private Gender gender;
 
     public Student(Gender gender) {

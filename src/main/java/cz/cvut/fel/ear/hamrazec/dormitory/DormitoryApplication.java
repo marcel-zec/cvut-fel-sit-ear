@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.seeder.DatabaseSeeder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

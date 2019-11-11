@@ -5,6 +5,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -22,23 +23,24 @@ public class DatabaseSeeder {
         this.userDao = userDao;
     }
 
-    @EventListener
-    public void seed(ContextRefreshedEvent event) {
+    public void seed() {
         seedUsersTable();
     }
 
     private void seedUsersTable() {
-//        List<User> users = userDao.findAll();
-//        User user = new User();
-//        user.setName("Marcel");
-//        user.setUsername("Testovany");
-//        user.setEmail("test@test.com");
-//        user.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-//        if (!users.contains(user)) {
-//            userDao.persist(user);
-//            LOGGER.info("User has been seeded");
-//        } else {
-//            LOGGER.warning("User already exist");
-//        }
+        List<User> users = userDao.findAll();
+        User user = new User();
+        user.setFirstName("Marcel");
+        user.setLastName("Testovany");
+        user.setUsername("tester");
+        user.setEmail("test@test.com");
+        user.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        if (!users.contains(user)) {
+            userDao.persist(user);
+            LOGGER.info("User has been seeded");
+        } else {
+            userDao.update(user);
+            LOGGER.warning("User already exist");
+        }
     }
 }

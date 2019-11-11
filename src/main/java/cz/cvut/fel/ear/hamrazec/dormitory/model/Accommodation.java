@@ -18,7 +18,6 @@ public class Accommodation extends AbstractEntity {
     private LocalDate dateEnd;
 
     @Enumerated(EnumType.STRING)
-    @Type(type = "org.thoughts.on.java.model.EnumTypePostgreSql")
     private Status status;
 
 
