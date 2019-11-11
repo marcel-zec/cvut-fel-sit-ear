@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 @Component
 public class DatabaseSeeder {
 
-    private Logger LOGGER = Logger.getLogger(DatabaseSeeder.class);
+    private Logger LOGGER = Logger.getLogger(DatabaseSeeder.class.getName());
     private UserDao userDao;
 
     @Autowired
@@ -28,17 +28,17 @@ public class DatabaseSeeder {
     }
 
     private void seedUsersTable() {
-        List<User> users = userDao.findAll();
-        User user = new User();
-        user.setName("Marcel");
-        user.setUsername("Testovany");
-        user.setEmail("test@test.com");
-        user.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        if (!users.contains(user)) {
-            userDao.persist(user);
-            LOGGER.info("User has been seeded");
-        } else {
-            LOGGER.warning("User already exist");
-        }
+//        List<User> users = userDao.findAll();
+//        User user = new User();
+//        user.setName("Marcel");
+//        user.setUsername("Testovany");
+//        user.setEmail("test@test.com");
+//        user.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+//        if (!users.contains(user)) {
+//            userDao.persist(user);
+//            LOGGER.info("User has been seeded");
+//        } else {
+//            LOGGER.warning("User already exist");
+//        }
     }
 }
