@@ -14,7 +14,7 @@ public abstract class BaseDao<T> implements GenericDao<T> {
 
     protected final Class<T> type;
 
-    protected BaseDao(Class<T> type) {
+    protected BaseDao(Class<T > type) {
         this.type = type;
     }
 
