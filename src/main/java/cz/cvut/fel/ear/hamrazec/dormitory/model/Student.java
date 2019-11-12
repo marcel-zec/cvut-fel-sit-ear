@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-public class Student extends User {
+public class Student extends AbstractEntity{
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -30,6 +30,10 @@ public class Student extends User {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @OneToOne
+    private User user;
+
 
     public Student(Gender gender) {
         this.gender = gender;
@@ -69,5 +73,17 @@ public class Student extends User {
 
     public void setEndOfStudy(LocalDate endOfStudy) {
         this.endOfStudy = endOfStudy;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -33,6 +33,7 @@ public class User extends AbstractEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+
     public User() {
     }
 
@@ -80,6 +81,10 @@ public class User extends AbstractEntity {
 
     public void erasePassword() {
         this.password = null;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
 }
