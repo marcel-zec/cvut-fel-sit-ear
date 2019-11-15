@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,6 +52,7 @@ public class Block  extends AbstractEntity{
     }
 
     public void addManager(Manager manager) {
+        if (managers == null) managers = new ArrayList<>();
         this.managers.add(manager);
     }
 
