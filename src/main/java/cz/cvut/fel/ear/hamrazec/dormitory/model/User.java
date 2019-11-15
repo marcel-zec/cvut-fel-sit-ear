@@ -7,7 +7,8 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "DORMITORY_USER")
-public class User extends AbstractEntity {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false, length = 30)

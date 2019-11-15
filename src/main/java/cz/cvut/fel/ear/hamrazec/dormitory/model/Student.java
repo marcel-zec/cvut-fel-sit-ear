@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Past;
@@ -7,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-public class Student extends AbstractEntity{
+public class Student extends User{
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -31,8 +32,6 @@ public class Student extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToOne
-    private User user;
 
 
     public Student(Gender gender) {
@@ -79,11 +78,5 @@ public class Student extends AbstractEntity{
         this.gender = gender;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
