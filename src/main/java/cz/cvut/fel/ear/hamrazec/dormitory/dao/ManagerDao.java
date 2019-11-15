@@ -9,7 +9,7 @@ import javax.persistence.NoResultException;
 public class ManagerDao extends BaseDao<Manager>{
         public ManagerDao(){super(Manager.class);}
 
-        public Manager find(Integer workerNumber) {
+        public Manager findByWorkerNumber(Integer workerNumber) {
                 {
                         try {
                                 return em.createNamedQuery("Manager.findByWorkerNumber", Manager.class).setParameter("workerNumber", workerNumber)

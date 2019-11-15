@@ -40,13 +40,13 @@ public class BlockController {
     }
 
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Block getBlockById(@PathVariable Long id) throws NotFoundException {
-
-        Block block = service.find(id);
-        if (block == null) throw new NotFoundException();
-        return block;
-    }
+//    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public Block getBlockById(@PathVariable Long id) throws NotFoundException {
+//
+//        Block block = service.find(id);
+//        if (block == null) throw new NotFoundException();
+//        return block;
+//    }
 
     @GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Block getBlockByName(@PathVariable String name) throws NotFoundException {
@@ -66,7 +66,7 @@ public class BlockController {
     }
 
 
-    @PostMapping(value = "/{id}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{blockName}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addManager(@PathVariable String blockName, @RequestParam(value = "manager") Integer workerNumber) {
         try {

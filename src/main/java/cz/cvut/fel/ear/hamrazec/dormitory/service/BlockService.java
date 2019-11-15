@@ -60,7 +60,7 @@ public class BlockService {
         Block block = find(name);
         if (block == null) throw new NotFoundException();
 
-        Manager manager = managerDao.find(managerWorkerNumber);
+        Manager manager = managerDao.findByWorkerNumber(managerWorkerNumber);
         if (manager == null) throw new NotFoundException();
 
         block.addManager(manager);
