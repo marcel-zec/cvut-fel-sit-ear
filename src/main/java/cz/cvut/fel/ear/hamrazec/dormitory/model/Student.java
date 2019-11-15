@@ -32,7 +32,6 @@ public class Student extends User{
     private Gender gender;
 
 
-
     public Student(Gender gender) {
         this.gender = gender;
     }

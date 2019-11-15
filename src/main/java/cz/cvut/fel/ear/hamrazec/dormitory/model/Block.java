@@ -21,7 +21,7 @@ public class Block  extends AbstractEntity{
     @Size(max = 255, min = 5)
     private String address;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "block")
     @OrderBy("username")
     private List<Manager> managers;
 
@@ -71,4 +71,5 @@ public class Block  extends AbstractEntity{
     public void setAddress(String address) {
         this.address = address;
     }
+
 }
