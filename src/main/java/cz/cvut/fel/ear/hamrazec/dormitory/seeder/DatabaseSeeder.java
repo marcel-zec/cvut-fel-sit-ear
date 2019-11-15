@@ -3,6 +3,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,26 +33,23 @@ public class DatabaseSeeder implements
 
     void seedUsersTable() {
 
-        System.out.println(userDao);
-
-        List<User> users = userDao.findAll();
-        User user = new User();
-        user.setFirstName("Jozko");
-        user.setLastName("Mrkvicka");
-        user.setUsername("mrkva");
-        user.setEmail("test1@test.com");
-        user.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        System.out.println(studentDao);
 
         Student student = new Student(Gender.MAN);
         student.setBankAccountNumber("AB12345678912345");
         student.setBirth(LocalDate.parse("2007-12-03"));
         student.setEndOfStudy(LocalDate.parse("2022-12-03"));
         student.setUniversity("CVUT");
-//        student.setUser(user);
+        student.setEmail("test1@test.com");
+        student.setFirstName("jozko");
+        student.setUsername("username");
+        student.setLastName("mrkva");
+        student.setPassword(new BCryptPasswordEncoder().encode("heslo") );
 
         studentDao.persist(student);
-        user.setUserRole(student);
-        userDao.persist(user);
+        User user = userDao.find(Long.parseLong("1"));
+        System.out.println(user.getFirstName());
+        System.out.println(user.getClass());
 
         LOGGER.info("User has been seeded");
     }
