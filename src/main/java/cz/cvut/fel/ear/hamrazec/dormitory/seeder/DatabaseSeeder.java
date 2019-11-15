@@ -50,6 +50,7 @@ public class DatabaseSeeder implements
         System.out.println(user.getClass());
 
         LOGGER.info("User has been seeded");
+
     }
 
     @Override

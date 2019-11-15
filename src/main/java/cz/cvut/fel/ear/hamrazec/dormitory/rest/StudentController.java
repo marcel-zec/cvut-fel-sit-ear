@@ -18,6 +18,9 @@ import java.util.Map;
 @Validated
 public class StudentController {
 
+    //TODO - pristup len pre managera a superuser
+    //TODO - vsetko cez servisu nie priamo cez DAO
+
     private static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
 
     private StudentDao studentDao;
@@ -28,7 +31,6 @@ public class StudentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    //TODO - len pre managera
     public List<Student> getStudents(){
         return studentDao.findAll();
     }
@@ -64,8 +66,6 @@ public class StudentController {
         //TODO - servisa na update studenta
         LOG.info("Student with id {} updated.", id);
     }
-
-
 
 
 }
