@@ -5,6 +5,9 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Block.findByName", query = "SELECT b FROM Block b WHERE b.name = :blockname")
+})
 public class Block  extends AbstractEntity{
 
     @Basic(optional = false)
@@ -15,7 +18,7 @@ public class Block  extends AbstractEntity{
     @Basic(optional = false)
     @Column(nullable = false)
     @Size(max = 255, min = 5)
-    private String adress;
+    private String address;
 
     @ManyToMany
     @OrderBy("username")
