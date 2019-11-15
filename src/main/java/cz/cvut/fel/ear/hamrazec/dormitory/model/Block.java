@@ -20,7 +20,7 @@ public class Block  extends AbstractEntity{
     @Size(max = 255, min = 5)
     private String address;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "block")
     @OrderBy("username")
     private List<Manager> managers;
 
@@ -52,11 +52,12 @@ public class Block  extends AbstractEntity{
         this.name = name;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
+
 }
