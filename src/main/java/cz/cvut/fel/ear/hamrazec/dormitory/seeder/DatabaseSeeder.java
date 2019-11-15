@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -21,12 +23,19 @@ public class DatabaseSeeder implements
     private Logger LOGGER = Logger.getLogger(DatabaseSeeder.class.getName());
     private UserDao userDao;
     private StudentDao studentDao;
+    private BlockDao blockDao;
+    private ManagerDao managerDao;
+
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao,StudentDao studentDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao) {
+
         this.userDao = userDao;
         this.studentDao = studentDao;
+        this.blockDao = blockDao;
+        this.managerDao = managerDao;
     }
+
 
     void seedUsersTable() {
 
@@ -41,21 +50,56 @@ public class DatabaseSeeder implements
         student.setFirstName("jozko");
         student.setUsername("username");
         student.setLastName("mrkva");
-        student.setPassword(new BCryptPasswordEncoder().encode("heslo") );
+        student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         student.setRole(Role.STUDENT);
-
         studentDao.persist(student);
-        User user = userDao.find(Long.parseLong("1"));
-        System.out.println(user.getFirstName());
-        System.out.println(user.getClass());
+    }
 
-        LOGGER.info("User has been seeded");
+    void seedBlocks(){
+        blockDao.persist(new Block("b1","Vanickova 7, Praha 6"));
+        blockDao.persist(new Block("b2","Vanickova 8, Praha 6"));
+        blockDao.persist(new Block("b3","Vanickova 9, Praha 6"));
+        blockDao.persist(new Block("b4","Vanickova 10, Praha 6"));
+        blockDao.persist(new Block("b5","Olympijska 6, Praha 6"));
+        blockDao.persist(new Block("b6","Olympijska 5, Praha 6"));
+        blockDao.persist(new Block("b7","Olympijska 4, Praha 6"));
+        blockDao.persist(new Block("b8","Olympijska 3, Praha 6"));
+    }
 
+    void seedManagers(){
+        Manager manager = new Manager();
+        manager.setFirstName("Jan");
+        manager.setLastName("Novotny");
+        manager.setEmail("novotny@email.com");
+        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(1);
+        managerDao.persist(manager);
+
+        manager = new Manager();
+        manager.setFirstName("Peter");
+        manager.setLastName("Novak");
+        manager.setEmail("novak@email.com");
+        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(2);
+        managerDao.persist(manager);
+
+        manager = new Manager();
+        manager.setFirstName("Karolina");
+        manager.setLastName("Vesela");
+        manager.setEmail("vesela@email.com");
+        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(3);
+        managerDao.persist(manager);
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         seedUsersTable();
+        seedBlocks();
+        seedManagers();
     }
 }
