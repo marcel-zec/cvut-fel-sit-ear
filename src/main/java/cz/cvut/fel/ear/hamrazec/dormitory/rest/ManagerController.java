@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/managers")
@@ -57,4 +59,17 @@ public class ManagerController {
         managerService.create(manager);
         LOG.info("Category with id {} created", manager.getId());
     }
+
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateManager(@PathVariable Long id, @RequestBody Map<String, String> map) throws NotFoundException {
+
+        try {
+            managerService.update(id, map);
+            LOG.info("Manager with id {} updated.", id);
+        } catch (javassist.NotFoundException e) {
+            throw e;
+        }
+    }
+
 }
