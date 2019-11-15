@@ -66,7 +66,11 @@ public class BlockService {
         block.addManager(manager);
         manager.addBlock(block);
 
+        blockDao.update(block);
+        managerDao.update(manager);
+
     }
+
 
     @Transactional
     public void update(Long id, Map<String, String> request) throws NotFoundException {
@@ -76,6 +80,7 @@ public class BlockService {
         if (request.containsKey("name")) block.setName(request.get("name"));
         if (request.containsKey("address")) block.setName(request.get("address"));
     }
+
 
     @Transactional
     public void delete(Long id) throws NotFoundException, Exception {
