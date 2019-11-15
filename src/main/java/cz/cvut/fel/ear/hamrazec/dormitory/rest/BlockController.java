@@ -68,7 +68,7 @@ public class BlockController {
 
     @PostMapping(value = "/{id}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addManager(@PathVariable String blockName, @RequestParam(value = "manager") Long workerNumber) {
+    public void addManager(@PathVariable String blockName, @RequestParam(value = "manager") Integer workerNumber) {
         try {
             service.addManager(blockName, workerNumber);
             LOG.info("Manager with worker number {} added to block {}.", workerNumber, blockName);

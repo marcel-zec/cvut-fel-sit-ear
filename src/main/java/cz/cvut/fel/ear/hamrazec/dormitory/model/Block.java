@@ -28,6 +28,12 @@ public class Block  extends AbstractEntity{
     @JoinColumn(name = "room_id")
     private List<Room> rooms;
 
+    public Block(@Size(max = 3, min = 1, message = "Name of block is in incorrect format.") String name, @Size(max = 255, min = 5) String address) {
+
+        this.name = name;
+        this.address = address;
+    }
+
     public List<Room> getRooms() {
         return rooms;
     }
@@ -44,6 +50,10 @@ public class Block  extends AbstractEntity{
         this.managers = managers;
     }
 
+    public void addManager(Manager manager) {
+        this.managers.add(manager);
+    }
+
     public String getName() {
         return name;
     }
@@ -52,11 +62,11 @@ public class Block  extends AbstractEntity{
         this.name = name;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
