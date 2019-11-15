@@ -35,6 +35,12 @@ public class Block  extends AbstractEntity{
         this.address = address;
     }
 
+
+    public Block() {
+
+    }
+
+
     public List<Room> getRooms() {
         return rooms;
     }
