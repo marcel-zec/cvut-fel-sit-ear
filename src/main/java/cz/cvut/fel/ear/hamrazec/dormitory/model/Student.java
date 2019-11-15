@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-public class Student extends AbstractEntity{
+public class Student extends AbstractEntity implements UserRole {
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -31,9 +31,12 @@ public class Student extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToOne
-    private User user;
+//    @OneToOne
+//    private User user;
 
+
+    public Student() {
+    }
 
     public Student(Gender gender) {
         this.gender = gender;
@@ -79,11 +82,16 @@ public class Student extends AbstractEntity{
         this.gender = gender;
     }
 
-    public User getUser() {
-        return user;
+    @Override
+    public Enum<Role> getRoleName() {
+        return Role.STUDENT;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }

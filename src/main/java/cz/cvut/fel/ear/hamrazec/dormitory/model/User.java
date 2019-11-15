@@ -33,6 +33,15 @@ public class User extends AbstractEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+//    @Any (metaColumn = @Column(name = "role_type"))
+//    @AnyMetaDef(idType = "long", metaType = "string",
+//            metaValues = {
+//            @MetaValue(targetEntity = Student.class, value = "student"),
+//            @MetaValue(targetEntity = Manager.class, value = "manager")
+//    })
+//    @Cascade( { org.hibernate.annotations.CascadeType.ALL})
+//    @JoinColumn(name = "role_id")
+//    private UserRole userRole;
 
     public User() {
     }
@@ -87,4 +96,11 @@ public class User extends AbstractEntity {
         return email;
     }
 
+//    public UserRole getUserRole() {
+//        return userRole;
+//    }
+//
+//    public void setUserRole(UserRole userRole) {
+//        this.userRole = userRole;
+//    }
 }

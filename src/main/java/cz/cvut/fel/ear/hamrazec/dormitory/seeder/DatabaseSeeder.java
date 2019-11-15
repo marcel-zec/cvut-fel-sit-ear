@@ -47,10 +47,11 @@ public class DatabaseSeeder implements
         student.setBirth(LocalDate.parse("2007-12-03"));
         student.setEndOfStudy(LocalDate.parse("2022-12-03"));
         student.setUniversity("CVUT");
-        student.setUser(user);
+//        student.setUser(user);
 
-        userDao.persist(user);
         studentDao.persist(student);
+        user.setUserRole(student);
+        userDao.persist(user);
 
         LOGGER.info("User has been seeded");
     }

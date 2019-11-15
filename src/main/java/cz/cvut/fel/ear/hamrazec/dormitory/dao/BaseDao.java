@@ -19,7 +19,7 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     }
 
     @Override
-    public T find(Integer id) {
+    public T find(Long id) {
         Objects.requireNonNull(id);
         return em.find(type, id);
     }
@@ -80,7 +80,7 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     }
 
     @Override
-    public boolean exists(Integer id) {
+    public boolean exists(Long id) {
         return id != null && em.find(type, id) != null;
     }
 }
