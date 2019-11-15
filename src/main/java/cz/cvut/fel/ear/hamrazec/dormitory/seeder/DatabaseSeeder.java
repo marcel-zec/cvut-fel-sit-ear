@@ -74,6 +74,7 @@ public class DatabaseSeeder implements
         manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(1);
+        manager.setUsername("janko");
         managerDao.persist(manager);
 
         manager = new Manager();
@@ -83,6 +84,7 @@ public class DatabaseSeeder implements
         manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(2);
+        manager.setUsername("petko345");
         managerDao.persist(manager);
 
         manager = new Manager();
@@ -92,6 +94,7 @@ public class DatabaseSeeder implements
         manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(3);
+        manager.setUsername("kaja234");
         managerDao.persist(manager);
     }
 

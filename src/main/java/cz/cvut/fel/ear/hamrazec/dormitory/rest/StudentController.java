@@ -4,7 +4,6 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.StudentService;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

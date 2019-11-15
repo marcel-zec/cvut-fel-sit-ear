@@ -21,8 +21,7 @@ public class Block  extends AbstractEntity{
     @Size(max = 255, min = 5)
     private String address;
 
-    @ManyToMany(mappedBy = "block")
-    @OrderBy("username")
+    @ManyToMany(mappedBy = "blocks")
     private List<Manager> managers;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -34,6 +33,12 @@ public class Block  extends AbstractEntity{
         this.name = name;
         this.address = address;
     }
+
+
+    public Block() {
+
+    }
+
 
     public List<Room> getRooms() {
         return rooms;
