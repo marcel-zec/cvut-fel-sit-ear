@@ -34,15 +34,9 @@ public abstract class User extends AbstractEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-//    @Any (metaColumn = @Column(name = "role_type"))
-//    @AnyMetaDef(idType = "long", metaType = "string",
-//            metaValues = {
-//            @MetaValue(targetEntity = Student.class, value = "student"),
-//            @MetaValue(targetEntity = Manager.class, value = "manager")
-//    })
-//    @Cascade( { org.hibernate.annotations.CascadeType.ALL})
-//    @JoinColumn(name = "role_id")
-//    private UserRole userRole;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public User() {
     }
@@ -51,6 +45,14 @@ public abstract class User extends AbstractEntity {
                 @Size(max = 255, min = 6, message = "Password is in incorrect format.") String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getFirstName() {

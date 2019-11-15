@@ -2,10 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -45,6 +42,7 @@ public class DatabaseSeeder implements
         student.setUsername("username");
         student.setLastName("mrkva");
         student.setPassword(new BCryptPasswordEncoder().encode("heslo") );
+        student.setRole(Role.STUDENT);
 
         studentDao.persist(student);
         User user = userDao.find(Long.parseLong("1"));

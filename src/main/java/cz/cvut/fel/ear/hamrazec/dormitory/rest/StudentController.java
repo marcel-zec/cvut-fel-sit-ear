@@ -2,8 +2,6 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.UserRole;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
