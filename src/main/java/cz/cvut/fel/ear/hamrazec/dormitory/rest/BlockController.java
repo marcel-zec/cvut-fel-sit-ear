@@ -68,10 +68,10 @@ public class BlockController {
 
     @PostMapping(value = "/{blockName}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addManager(@PathVariable String blockName, @RequestParam(value = "manager") Integer workerNumber) {
+    public void addManager(@PathVariable String blockName, @RequestBody Map<String,Integer> request) {
         try {
-            service.addManager(blockName, workerNumber);
-            LOG.info("Manager with worker number {} added to block {}.", workerNumber, blockName);
+            service.addManager(blockName, request);
+            LOG.info("Manager with worker number {} added to block {}.", request.get("manager"), blockName);
         } catch (NotFoundException e){
 
         }

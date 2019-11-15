@@ -55,12 +55,12 @@ public class BlockService {
 
 
     @Transactional
-    public void addManager(String name, Integer managerWorkerNumber) throws NotFoundException {
+    public void addManager(String name, Map<String, Integer> request) throws NotFoundException {
 
         Block block = find(name);
-        if (block == null) throw new NotFoundException();
+        if (block == null || !request.containsKey("manager")) throw new NotFoundException();
 
-        Manager manager = managerDao.findByWorkerNumber(managerWorkerNumber);
+        Manager manager = managerDao.findByWorkerNumber(request.get("manager"));
         if (manager == null) throw new NotFoundException();
 
         block.addManager(manager);
