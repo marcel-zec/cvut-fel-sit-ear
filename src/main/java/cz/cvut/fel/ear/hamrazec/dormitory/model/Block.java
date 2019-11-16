@@ -49,6 +49,7 @@ public class Block  extends AbstractEntity{
     }
 
     public List<Manager> getManagers() {
+        if (managers == null) managers = new ArrayList<>();
         return managers;
     }
 
