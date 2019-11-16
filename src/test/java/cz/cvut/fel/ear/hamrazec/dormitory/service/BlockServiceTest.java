@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class BlockServiceTest {
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -76,5 +77,29 @@ public class BlockServiceTest {
         //test
         blockService.addManager("Tst", stringIntMap);
         assertEquals("Add manager not working", 1 , block.getManagers().size() );
+    }
+
+    @Test
+    public void addManagerToBlockTwoTimes_NothingHappen() throws NotFoundException {
+        //before test
+        stringIntMap = new HashMap<>();
+        stringIntMap.put("manager", 50);
+
+        //test
+        blockService.addManager("Tst", stringIntMap);
+        blockService.addManager("Tst", stringIntMap);
+        assertEquals("Added same manager two time", 1 , blockService.find("Tst").getManagers().size() );
+    }
+
+    @Test
+    public void addNotExistingManager_NotFoundException() throws NotFoundException {
+        thrown.expect(NotFoundException.class);
+        thrown.reportMissingExceptionWithMessage("Add not existing manager not working");
+        //before test
+        stringIntMap = new HashMap<>();
+        stringIntMap.put("manager", 100);
+
+        //test
+        blockService.addManager("Tst", stringIntMap);
     }
 }
