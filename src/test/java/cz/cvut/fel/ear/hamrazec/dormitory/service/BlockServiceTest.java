@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -53,17 +54,18 @@ public class BlockServiceTest {
 
     @Before
     public void before() {
+
         manager = new Manager();
         manager.setFirstName("Test");
         manager.setLastName("Test");
         manager.setUsername("Test");
         manager.setEmail("test@test.com");
-        manager.setPassword("testovacieheslo");
+        manager.setPassword("testpassword");
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(50);
         em.persist(manager);
 
-        block = new Block("Tst", "Testovacia adresa");
+        block = new Block("Tst", "Test adress");
         em.persist(block);
     }
 
@@ -76,8 +78,9 @@ public class BlockServiceTest {
 
         //test
         blockService.addManager("Tst", stringIntMap);
-        assertEquals("Add manager not working", 1 , block.getManagers().size() );
+        assertEquals("Add manager not working", 1, block.getManagers().size());
     }
+
 
     @Test
     public void addManagerToBlockTwoTimes_NothingHappen() throws NotFoundException {
@@ -88,11 +91,13 @@ public class BlockServiceTest {
         //test
         blockService.addManager("Tst", stringIntMap);
         blockService.addManager("Tst", stringIntMap);
-        assertEquals("Added same manager two time", 1 , blockService.find("Tst").getManagers().size() );
+        assertEquals("Added same manager two time", 1, blockService.find("Tst").getManagers().size());
     }
+
 
     @Test
     public void addNotExistingManager_NotFoundException() throws NotFoundException {
+
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Add not existing manager not working");
         //before test
@@ -102,4 +107,44 @@ public class BlockServiceTest {
         //test
         blockService.addManager("Tst", stringIntMap);
     }
+
+
+    @Test
+    public void updateBlock_WorksCorrect() throws NotFoundException {
+        //before test
+        String newName = "BX";
+        String newAddress = "NewTestAddress";
+        stringMap = new HashMap<>();
+        stringMap.put("name", newName);
+        stringMap.put("address", newAddress);
+
+        //test
+        blockService.update(block.getName(), stringMap);
+        assertEquals("Update not work for name", newName, block.getName());
+        assertEquals("Update not work for address", newAddress, block.getAddress());
+    }
+
+
+    @Test
+    public void updateNotExistingBlock_NotFoundException() throws NotFoundException {
+
+        thrown.expect(NotFoundException.class);
+        thrown.reportMissingExceptionWithMessage("Trying update not existing block");
+        //before test
+        stringMap = new HashMap<>();
+        stringMap.put("name", "AAA");
+        stringMap.put("address", "AAA");
+
+        //test
+        blockService.update("", stringMap);
+    }
+
+    @Test
+    public void deleteEmptyBlock_WorksCorrect() throws Exception {
+        //test
+        blockService.delete(block.getName());
+        assertNull("Simple delete block not working",blockService.find(block.getName()));
+    }
+
+    //TODO - zlozitejsie mazanie ak bude vymyslene kedy mozem mazat blok
 }
