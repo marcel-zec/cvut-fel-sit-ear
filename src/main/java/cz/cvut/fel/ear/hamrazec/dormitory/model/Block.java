@@ -61,10 +61,22 @@ public class Block  extends AbstractEntity{
         this.managers.add(manager);
     }
 
+    public void removeManager(Manager manager){
+        if (this.managers != null){
+            this.managers.remove(manager);
+        }
+    }
+
     public void addRoom(Room room){
 
         if (this.rooms == null) this.rooms = new ArrayList<>();
         this.rooms.add(room);
+    }
+
+    public void removeRoom(Room room){
+        if (this.rooms != null){
+            this.rooms.remove(room);
+        }
     }
 
     public String getName() {
