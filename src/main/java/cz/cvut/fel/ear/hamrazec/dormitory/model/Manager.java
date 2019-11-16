@@ -14,7 +14,7 @@ public class Manager extends User {
     @Column(nullable = false)
     private Integer workerNumber;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "managers_blocks",
             joinColumns = @JoinColumn(name = "manager_id"),
@@ -30,7 +30,7 @@ public class Manager extends User {
     public void setBlocks(List<Block> blocks) { this.blocks = blocks; }
 
     public void addBlock(Block block){
-        if (this.blocks == null) this.blocks = new ArrayList<Block>();
+        if (this.blocks == null) this.blocks = new ArrayList<>();
         this.blocks.add(block);
     }
 }
