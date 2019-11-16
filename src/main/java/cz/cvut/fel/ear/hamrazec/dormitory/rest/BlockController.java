@@ -2,8 +2,10 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.BlockService;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.RoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +29,15 @@ public class BlockController {
 
     private BlockService blockService;
     private RoomService roomService;
+    private ManagerService managerService;
+
 
     @Autowired
-    public BlockController(BlockService blockService, RoomService roomService) {
+    public BlockController(BlockService blockService, RoomService roomService, ManagerService managerService) {
 
         this.blockService = blockService;
         this.roomService = roomService;
+        this.managerService = managerService;
     }
 
 
@@ -88,6 +93,13 @@ public class BlockController {
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
         //TODO - exception
         return roomService.findAll(blockName);
+    }
+
+
+    @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
+        //TODO - exception
+        return managerService.findAllByBlock(blockName);
     }
 
 

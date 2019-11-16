@@ -53,6 +53,12 @@ public class ManagerService {
         return managerDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<Manager> findAllByBlock(String blockName) {
+        //TODO - findManagerByBlockName
+        return managerDao.findAll();
+    }
+
     @Transactional
     public void delete(Long id) {
 
