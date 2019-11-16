@@ -30,7 +30,7 @@ public class Manager extends User {
     public void setBlocks(List<Block> blocks) { this.blocks = blocks; }
 
     public void addBlock(Block block){
-        if (this.blocks == null) this.blocks = new ArrayList<Block>();
+        if (this.blocks == null) this.blocks = new ArrayList<>();
         this.blocks.add(block);
     }
 }
