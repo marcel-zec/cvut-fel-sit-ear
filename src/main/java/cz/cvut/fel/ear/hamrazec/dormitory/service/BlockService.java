@@ -74,19 +74,19 @@ public class BlockService {
 
 
     @Transactional
-    public void update(Long id, Map<String, String> request) throws NotFoundException {
+    public void update(String blockName, Map<String, String> request) throws NotFoundException {
 
-        Block block = blockDao.find(id);
+        Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         if (request.containsKey("name")) block.setName(request.get("name"));
-        if (request.containsKey("address")) block.setName(request.get("address"));
+        if (request.containsKey("address")) block.setAddress(request.get("address"));
     }
 
 
     @Transactional
-    public void delete(Long id) throws NotFoundException, Exception {
+    public void delete(String blockName) throws NotFoundException, Exception {
 
-        Block block = blockDao.find(id);
+        Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         if (false) {
             //TODO - nemezat ak ma izby
