@@ -10,13 +10,13 @@ public class Room extends AbstractEntity {
     @Basic(optional = false)
     @Column(nullable = false)
     @Min(value = 1, message = "Room number should not be less than 1")
-    @Max(value = 600, message = "Room number should not be greater than 600")
+    @Max(value = 999, message = "Room number should not be greater than 999")
     private Integer roomNumber;
 
     @Basic(optional = false)
     @Column(nullable = false)
     @Min(value = 0, message = "Floor should not be less than 0")
-    @Max(value = 5, message = "Floor should not be greater than 5")
+    @Max(value = 20, message = "Floor should not be greater than 20")
     private Integer floor;
 
     @Basic(optional = false)

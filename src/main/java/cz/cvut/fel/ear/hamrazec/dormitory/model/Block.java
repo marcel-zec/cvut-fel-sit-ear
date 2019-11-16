@@ -57,8 +57,14 @@ public class Block  extends AbstractEntity{
     }
 
     public void addManager(Manager manager) {
-        if (managers == null) managers = new ArrayList<>();
+        if (this.managers == null) this.managers = new ArrayList<>();
         this.managers.add(manager);
+    }
+
+    public void addRoom(Room room){
+
+        if (this.rooms == null) this.rooms = new ArrayList<>();
+        this.rooms.add(room);
     }
 
     public String getName() {
