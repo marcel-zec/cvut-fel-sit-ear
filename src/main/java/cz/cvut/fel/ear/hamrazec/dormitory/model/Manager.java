@@ -15,12 +15,7 @@ public class Manager extends User {
     private Integer workerNumber;
 
     @ManyToMany
-    @JoinTable(
-            name = "blocks_manage",
-            joinColumns = @JoinColumn(name = "manager_id"),
-            inverseJoinColumns = @JoinColumn(name = "blocks_id"))
     private List<Block> blocks;
-
 
     public Integer getWorkerNumber() { return workerNumber; }
 

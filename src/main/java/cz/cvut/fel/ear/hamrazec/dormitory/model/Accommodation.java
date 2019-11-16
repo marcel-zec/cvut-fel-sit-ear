@@ -20,7 +20,6 @@ public class Accommodation extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-
     public LocalDate getDateStart() {
         return dateStart;
     }
@@ -44,4 +43,5 @@ public class Accommodation extends AbstractEntity {
     public void setStatus(Status status) {
         this.status = status;
     }
+
 }

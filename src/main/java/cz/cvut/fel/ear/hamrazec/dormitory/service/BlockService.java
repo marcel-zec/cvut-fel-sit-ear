@@ -48,6 +48,7 @@ public class BlockService {
     }
 
 
+    @Transactional
     public void create(Block block) {
 
         blockDao.persist(block);
@@ -55,12 +56,12 @@ public class BlockService {
 
 
     @Transactional
-    public void addManager(String name, Map<String, Integer> request) throws NotFoundException {
+    public void addManager(String name, Map<String, String> request) throws NotFoundException {
 
         Block block = find(name);
         if (block == null || !request.containsKey("manager")) throw new NotFoundException();
 
-        Manager manager = managerDao.findByWorkerNumber(request.get("manager"));
+        Manager manager = managerDao.findByWorkerNumber(Integer.parseInt(request.get("manager")));
         if (manager == null) throw new NotFoundException();
 
         block.addManager(manager);
