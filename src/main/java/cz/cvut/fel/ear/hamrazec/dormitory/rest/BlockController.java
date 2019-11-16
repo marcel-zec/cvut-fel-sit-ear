@@ -74,6 +74,7 @@ public class BlockController {
             LOG.info("Manager with worker number {} added to block {}.", request.get("manager"), blockName);
         } catch (NotFoundException e){
 
+
         }
 
     }
