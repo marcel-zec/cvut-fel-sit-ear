@@ -8,7 +8,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -50,7 +50,8 @@ public class DatabaseSeeder implements
         student.setFirstName("jozko");
         student.setUsername("username");
         student.setLastName("mrkva");
-        student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        student.setPassword("fefebebssvsdebes");
+        //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         student.setRole(Role.STUDENT);
         studentDao.persist(student);
     }
@@ -71,7 +72,8 @@ public class DatabaseSeeder implements
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
-        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setPassword("kolvesvsvseve");
+        //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(1);
         manager.setUsername("janko");
@@ -81,7 +83,8 @@ public class DatabaseSeeder implements
         manager.setFirstName("Peter");
         manager.setLastName("Novak");
         manager.setEmail("novak@email.com");
-        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setPassword("fegwgeevasvv");
+        //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(2);
         manager.setUsername("petko345");
@@ -91,7 +94,8 @@ public class DatabaseSeeder implements
         manager.setFirstName("Karolina");
         manager.setLastName("Vesela");
         manager.setEmail("vesela@email.com");
-        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setPassword("faefdafefegvav");
+        //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(3);
         manager.setUsername("kaja234");

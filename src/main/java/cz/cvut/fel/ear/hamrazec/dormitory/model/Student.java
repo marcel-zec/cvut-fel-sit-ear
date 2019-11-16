@@ -5,6 +5,8 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Student extends User{
@@ -30,6 +32,10 @@ public class Student extends User{
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "accommodation_id")
+    private List<Accommodation> accommodations;
 
 
     public Student(Gender gender) {
@@ -76,5 +82,16 @@ public class Student extends User{
         this.gender = gender;
     }
 
+    public List<Accommodation> getAccommodations() {
+        return accommodations;
+    }
 
+    public void setAccommodations(List<Accommodation> accommodations) {
+        this.accommodations = accommodations;
+    }
+
+    public void addAccommodation(Accommodation accommodation) {
+        if (accommodation == null) accommodations = new ArrayList<>();
+        else accommodations.add(accommodation);
+    }
 }
