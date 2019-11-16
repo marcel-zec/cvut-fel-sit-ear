@@ -14,7 +14,7 @@ public class Manager extends User {
     @Column(nullable = false)
     private Integer workerNumber;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany
     @JoinTable(
             name = "managers_blocks",
             joinColumns = @JoinColumn(name = "manager_id"),
