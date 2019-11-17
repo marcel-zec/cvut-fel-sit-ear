@@ -1,8 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Map;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,8 +37,6 @@ public class RoomServiceTest {
     private Block block;
     private Room room;
 
-    private Map<String, String> stringMap;
-
     @Before
     public void before() {
         block = new Block("Tst", "Testovacia adresa");
@@ -49,15 +46,25 @@ public class RoomServiceTest {
     }
 
     @Test
-    public void addRoomToBlock(){
+    public void addRoomToBlock() throws NotFoundException {
         room.setFloor(4);
         room.setNumberOfPeople(2);
         room.setRoomNumber(456);
-        em.persist(room);
-        block.addRoom(room);
-        em.merge(block);
+
+        roomService.addRoom(block.getName(),room);
         assertEquals("Add room to block not working", 1 , em.find(Block.class,block.getId()).getRooms().size());
     }
 
+
+    @Test
+    public void addRoomToNoneBlock() throws NotFoundException {
+        thrown.expect(NotFoundException.class);
+        thrown.reportMissingExceptionWithMessage("Trying add room to not existing block");
+        room.setFloor(4);
+        room.setNumberOfPeople(2);
+        room.setRoomNumber(456);
+
+        roomService.addRoom("Tes",room);
+    }
 
 }
