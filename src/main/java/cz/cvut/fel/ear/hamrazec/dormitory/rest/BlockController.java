@@ -74,6 +74,12 @@ public class BlockController {
         LOG.info("Block with id {} created.", block.getId());
     }
 
+    @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
+        //TODO - exception
+        return managerService.findAllByBlock(blockName);
+    }
+
 
     @PostMapping(value = "/{blockName}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -93,13 +99,6 @@ public class BlockController {
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
         //TODO - exception
         return roomService.findAll(blockName);
-    }
-
-
-    @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
-        //TODO - exception
-        return managerService.findAllByBlock(blockName);
     }
 
 
