@@ -12,7 +12,7 @@ import java.util.List;
 public class Block  extends AbstractEntity{
 
     @Basic(optional = false)
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, length = 3, unique = true)
     @Size(max = 3, min = 1, message = "Name of block is in incorrect format.")
     private String name;
 

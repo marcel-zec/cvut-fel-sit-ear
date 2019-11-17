@@ -91,7 +91,9 @@ public class Student extends User{
     }
 
     public void addAccommodation(Accommodation accommodation) {
-        if (accommodation == null) accommodations = new ArrayList<>();
-        else accommodations.add(accommodation);
+        if (accommodations == null){
+            accommodations = new ArrayList<>();
+        }
+        accommodations.add(accommodation);
     }
 }
