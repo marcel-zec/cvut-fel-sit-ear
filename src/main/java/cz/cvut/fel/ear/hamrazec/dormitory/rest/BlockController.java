@@ -2,8 +2,10 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.BlockService;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.RoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +29,15 @@ public class BlockController {
 
     private BlockService blockService;
     private RoomService roomService;
+    private ManagerService managerService;
+
 
     @Autowired
-    public BlockController(BlockService blockService, RoomService roomService) {
+    public BlockController(BlockService blockService, RoomService roomService, ManagerService managerService) {
 
         this.blockService = blockService;
         this.roomService = roomService;
+        this.managerService = managerService;
     }
 
 
@@ -91,6 +96,13 @@ public class BlockController {
     }
 
 
+    @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
+        //TODO - exception
+        return managerService.findAllByBlock(blockName);
+    }
+
+
     @PostMapping(value = "/{blockName}/rooms", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) {
@@ -105,13 +117,13 @@ public class BlockController {
     }
 
 
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBlock(@PathVariable Long id) {
+    public void removeBlock(@PathVariable String blockName) {
 
         try {
-            blockService.delete(id);
-            LOG.info("Block with id {} removed.", id);
+            blockService.delete(blockName);
+            LOG.info("Block with name {} removed.", blockName);
         } catch (NotFoundException e) {
 
         } catch (Exception e) {
@@ -120,13 +132,13 @@ public class BlockController {
     }
 
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateBlock(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public void updateBlock(@PathVariable String blockName, @RequestBody Map<String, String> request) {
 
         try {
-            blockService.update(id, request);
-            LOG.info("Block with id {} updated.", id);
+            blockService.update(blockName, request);
+            LOG.info("Block with name {} updated.", blockName);
         } catch (NotFoundException e) {
             //TODO - exceptions
         }
