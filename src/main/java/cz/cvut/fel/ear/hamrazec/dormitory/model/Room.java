@@ -25,7 +25,6 @@ public class Room extends AbstractEntity {
     private Integer capacity;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accommodation_id")
     private List<Accommodation> accommodations;
 
     public List<Accommodation> getAccommodations() {

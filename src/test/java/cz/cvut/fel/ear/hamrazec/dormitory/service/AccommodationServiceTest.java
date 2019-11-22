@@ -41,7 +41,6 @@ public class AccommodationServiceTest {
     @Before
     public void before() {
         accommodation = new Accommodation();
-        accommodation.setStatus(Status.PENDING);
         accommodation.setDateEnd(LocalDate.parse("2022-12-03"));
         accommodation.setDateStart(LocalDate.now());
 
