@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ public class Block  extends AbstractEntity{
 
 
     public Block() {
-
     }
 
 
@@ -56,14 +57,15 @@ public class Block  extends AbstractEntity{
         this.managers = managers;
     }
 
-    public void addManager(Manager manager) {
-        if (this.managers == null) this.managers = new ArrayList<>();
-        if (!managers.contains(manager)) this.managers.add(manager);
+    public void addManager(Manager manager) throws NotFoundException {
+        if (managers == null) managers = new ArrayList<>();
+        if (!managers.contains(manager)) managers.add(manager);
+        else throw new NotFoundException();
     }
 
     public void removeManager(Manager manager){
-        if (this.managers != null && manager!=null){
-            this.managers.remove(manager);
+        if (managers != null && manager!=null){
+           managers.remove(manager);
         }
     }
 

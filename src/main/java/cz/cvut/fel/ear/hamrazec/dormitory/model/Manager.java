@@ -14,6 +14,7 @@ public class Manager extends User {
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @GeneratedValue
     private Integer workerNumber;
 
     @ManyToMany
@@ -22,6 +23,12 @@ public class Manager extends User {
             joinColumns = @JoinColumn(name = "manager_id"),
             inverseJoinColumns = @JoinColumn(name = "block_id"))
     private List<Block> blocks;
+
+
+    public Manager() {
+        setRole(Role.MANAGER);
+    }
+
 
     public Integer getWorkerNumber() { return workerNumber; }
 

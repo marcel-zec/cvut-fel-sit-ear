@@ -42,12 +42,6 @@ public class Student extends User{
     }
 
 
-    public Student(Gender gender) {
-
-        setRole(Role.STUDENT);
-        this.gender = gender;
-    }
-
     public Gender getGender() {
         return gender;
     }

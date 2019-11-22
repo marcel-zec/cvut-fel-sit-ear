@@ -4,4 +4,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class SuperUser extends Manager {
+    public SuperUser() {
+        setRole(Role.SUPERUSER);
+    }
 }
