@@ -34,6 +34,7 @@ public class AccommodationService {
 
     @Transactional
     public void create(Accommodation accommodation, Long idStudent) throws NotFoundException {
+        //TODO - pridat izbu, kontrolovat volnost izby v tom datume
         Student student = studentDao.find(idStudent);
         if (student == null) throw new NotFoundException();
 
@@ -42,13 +43,18 @@ public class AccommodationService {
         studentDao.update(student);
     }
 
+    //TODO - create na náhodnu izbu
+
+    //TODO - reserve na konkretnu izbu a nahodnu izbu
+
+
     @Transactional
-    public void delete(Long id) throws NotFoundException{
-       Accommodation accommodation = acoDao.find(id);
+    public void delete(Long id) throws NotFoundException {
+
+        Accommodation accommodation = acoDao.find(id);
         if (accommodation == null) throw new NotFoundException();
-        else {
-            acoDao.remove(accommodation);
-        }
+        //TODO - nemazat ale zmenit status?w
+        acoDao.remove(accommodation);
     }
 
 }
