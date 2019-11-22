@@ -24,22 +24,24 @@ public class Room extends AbstractEntity {
     @PositiveOrZero(message = "People in room can not be negative")
     private Integer capacity;
 
-    @OneToMany(mappedBy = "room")
+    @ManyToOne
+    @JoinColumn(name="block_id", nullable=false)
+    private Block block;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Accommodation> accommodations;
 
     @OneToOne
     private Accommodation actualAccommodation;
 
 
-    public Accommodation getActualAccommodation() {
-        return actualAccommodation;
-    }
+    public Accommodation getActualAccommodation() { return actualAccommodation; }
 
+    public void setActualAccommodation(Accommodation actualAccommodation) { this.actualAccommodation = actualAccommodation; }
 
-    public void setActualAccommodation(Accommodation actualAccommodation) {
-        this.actualAccommodation = actualAccommodation;
-    }
+    public Block getBlock() { return block; }
 
+    public void setBlock(Block block) { this.block = block; }
 
     public List<Accommodation> getAccommodations() {
         return accommodations;
@@ -72,4 +74,5 @@ public class Room extends AbstractEntity {
     public void setNumberOfPeople(Integer capacity) {
         this.capacity = capacity;
     }
+
 }
