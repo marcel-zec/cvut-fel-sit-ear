@@ -58,11 +58,11 @@ public class Block  extends AbstractEntity{
 
     public void addManager(Manager manager) {
         if (this.managers == null) this.managers = new ArrayList<>();
-        this.managers.add(manager);
+        if (!managers.contains(manager)) this.managers.add(manager);
     }
 
     public void removeManager(Manager manager){
-        if (this.managers != null){
+        if (this.managers != null && manager!=null){
             this.managers.remove(manager);
         }
     }
