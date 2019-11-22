@@ -20,6 +20,10 @@ public class Accommodation extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @ManyToOne
+    @JoinColumn(name="room_id", nullable=false)
+    private Room room;
+
     public LocalDate getDateStart() {
         return dateStart;
     }
@@ -44,4 +48,7 @@ public class Accommodation extends AbstractEntity {
         this.status = status;
     }
 
+    public Room getRoom() { return room; }
+
+    public void setRoom(Room room) { this.room = room; }
 }

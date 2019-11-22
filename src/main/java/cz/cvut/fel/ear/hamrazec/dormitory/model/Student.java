@@ -34,7 +34,6 @@ public class Student extends User{
     private Gender gender;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accommodation_id")
     private List<Accommodation> accommodations;
 
 

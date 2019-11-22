@@ -25,7 +25,6 @@ public class Block  extends AbstractEntity{
     private List<Manager> managers;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "room_id")
     private List<Room> rooms;
 
     public Block(@Size(max = 3, min = 1, message = "Name of block is in incorrect format.") String name, @Size(max = 255, min = 5) String address) {
