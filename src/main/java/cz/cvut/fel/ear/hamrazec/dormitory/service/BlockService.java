@@ -3,6 +3,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
@@ -56,13 +57,11 @@ public class BlockService {
 
 
     @Transactional
-    public void addManager(String name, Map<String, Integer> request) throws NotFoundException {
+    public void addManager(String blockName, Integer workerNumber) throws NotFoundException, AlreadyExistsException {
 
-        Block block = find(name);
-        if (block == null || !request.containsKey("manager")) throw new NotFoundException();
-
-        Manager manager = managerDao.findByWorkerNumber(request.get("manager"));
-        if (manager == null) throw new NotFoundException();
+        Block block = blockDao.find(blockName);
+        Manager manager = managerDao.findByWorkerNumber(workerNumber);
+        if (block == null || manager == null) throw new NotFoundException();
 
         block.addManager(manager);
         manager.addBlock(block);
@@ -74,12 +73,10 @@ public class BlockService {
 
 
     @Transactional
-    public void update(String blockName, Map<String, String> request) throws NotFoundException {
-
+    public void update(String blockName, String name, String address){
         Block block = blockDao.find(blockName);
-        if (block == null) throw new NotFoundException();
-        if (request.containsKey("name")) block.setName(request.get("name"));
-        if (request.containsKey("address")) block.setAddress(request.get("address"));
+        if (name != null) block.setName(name);
+        if (address != null) block.setAddress(address);
     }
 
 
