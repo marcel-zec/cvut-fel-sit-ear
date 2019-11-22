@@ -24,7 +24,7 @@ public class Block  extends AbstractEntity{
     @ManyToMany(mappedBy = "blocks")
     private List<Manager> managers;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "block", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
     public Block(@Size(max = 3, min = 1, message = "Name of block is in incorrect format.") String name, @Size(max = 255, min = 5) String address) {
