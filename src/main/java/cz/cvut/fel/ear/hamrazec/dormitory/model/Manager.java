@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,12 @@ public class Manager extends User {
 
     public void setBlocks(List<Block> blocks) { this.blocks = blocks; }
 
-    public void addBlock(Block block){
-        if (this.blocks == null) this.blocks = new ArrayList<>();
-        this.blocks.add(block);
+    public void addBlock(Block block) throws AlreadyExistsException{
+        if (blocks == null) blocks = new ArrayList<>();
+        if (!blocks.contains(block)) {
+            blocks.add(block);
+        } else{
+            throw new AlreadyExistsException();
+        }
     }
 }

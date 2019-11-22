@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
@@ -48,15 +49,6 @@ public class BlockController {
     }
 
 
-//    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Block getBlockById(@PathVariable Long id) throws NotFoundException {
-//
-//        Block block = blockService.find(id);
-//        if (block == null) throw new NotFoundException();
-//        return block;
-//    }
-
-
     @GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Block getBlockByName(@PathVariable String name) throws NotFoundException {
 
@@ -74,6 +66,7 @@ public class BlockController {
         LOG.info("Block with id {} created.", block.getId());
     }
 
+
     @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
         //TODO - exception
@@ -86,10 +79,12 @@ public class BlockController {
     public void addManagerToBlock(@PathVariable String blockName, @RequestBody Map<String, Integer> request) {
 
         try {
-            blockService.addManager(blockName, request);
+            blockService.addManager(blockName, request.get("manager"));
             LOG.info("Manager with worker number {} added to block {}.", request.get("manager"), blockName);
         } catch (NotFoundException e) {
-
+            //TODO - exception
+        } catch (AlreadyExistsException e) {
+            //TODO - exception
         }
 
     }
@@ -136,7 +131,7 @@ public class BlockController {
     public void updateBlock(@PathVariable String blockName, @RequestBody Map<String, String> request) {
 
         try {
-            blockService.update(blockName, request);
+            blockService.update(blockName, request.get("name"),request.get("address"));
             LOG.info("Block with name {} updated.", blockName);
         } catch (NotFoundException e) {
             //TODO - exceptions
