@@ -37,7 +37,14 @@ public class Student extends User{
     private List<Accommodation> accommodations;
 
 
+    public Student() {
+        setRole(Role.STUDENT);
+    }
+
+
     public Student(Gender gender) {
+
+        setRole(Role.STUDENT);
         this.gender = gender;
     }
 
