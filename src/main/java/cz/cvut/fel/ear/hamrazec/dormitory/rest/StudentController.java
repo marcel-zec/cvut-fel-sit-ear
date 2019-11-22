@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.StudentService;
@@ -54,21 +55,16 @@ public class StudentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createStudent(@RequestBody Student student) {
+    public void createStudent(@RequestBody Student student) throws AlreadyExistsException, NotAllowedException {
 
-        try {
-            studentService.create(student);
-            LOG.info("Student with id {} created.", student.getId());
-        } catch (EntityExistsException e) {
-            //TODO - exceptions
-        }
+        studentService.create(student);
+        LOG.info("Student with id {} created.", student.getId());
     }
 
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeStudent(@PathVariable Long id) {
-
         try {
             studentService.delete(id);
             LOG.info("Student with id {} removed.", id);
@@ -82,14 +78,10 @@ public class StudentController {
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateStudent(@PathVariable Long id, @RequestBody Student student) {
+    public void updateStudent(@PathVariable Long id, @RequestBody Student student) throws NotFoundException {
 
-        try {
-            studentService.update(id, student);
-            LOG.info("Student with id {} updated.", id);
-        } catch (NotFoundException e) {
-            //TODO - exceptions
-        }
+        studentService.update(id, student);
+        LOG.info("Student with id {} updated.", id);
     }
 
 

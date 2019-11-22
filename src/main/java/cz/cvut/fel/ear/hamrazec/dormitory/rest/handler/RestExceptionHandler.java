@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest.handler;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,16 @@ public class RestExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorInfo> resourceNotFound(HttpServletRequest request, NotFoundException e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<ErrorInfo> resourceAlreadyExistsFound(HttpServletRequest request, AlreadyExistsException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NotAllowedException.class)
+    public ResponseEntity<ErrorInfo> notAllowed(HttpServletRequest request, NotAllowedException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,13 +21,13 @@ public class BlockTest {
     }
 
     @Test
-    public void addManagerToBlock_WorksCorrect(){
+    public void addManagerToBlock_WorksCorrect() throws NotFoundException {
         block.addManager(new Manager());
         assertEquals("Add manager not working",1,block.getManagers().size());
     }
 
     @Test
-    public void addManagerAlreadyAdded_NothingHappen(){
+    public void addManagerAlreadyAdded_NothingHappen() throws NotFoundException {
         Manager manager = new Manager();
         block.addManager(manager);
         block.addManager(manager);

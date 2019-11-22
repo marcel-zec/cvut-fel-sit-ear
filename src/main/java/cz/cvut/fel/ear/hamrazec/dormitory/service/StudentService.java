@@ -1,12 +1,15 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,8 +40,8 @@ public class StudentService {
     }
 
     @Transactional
-    public void create(Student student) {
-
+    public void create(Student student) throws NotAllowedException {
+        if (student.getRole() != Role.STUDENT) throw new NotAllowedException();
         studentDao.persist(student);
     }
 
