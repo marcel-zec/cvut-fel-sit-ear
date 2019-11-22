@@ -24,8 +24,22 @@ public class Room extends AbstractEntity {
     @PositiveOrZero(message = "People in room can not be negative")
     private Integer capacity;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room")
     private List<Accommodation> accommodations;
+
+    @OneToOne
+    private Accommodation actualAccommodation;
+
+
+    public Accommodation getActualAccommodation() {
+        return actualAccommodation;
+    }
+
+
+    public void setActualAccommodation(Accommodation actualAccommodation) {
+        this.actualAccommodation = actualAccommodation;
+    }
+
 
     public List<Accommodation> getAccommodations() {
         return accommodations;
