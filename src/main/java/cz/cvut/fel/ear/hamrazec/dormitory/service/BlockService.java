@@ -9,6 +9,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,8 +74,10 @@ public class BlockService {
 
 
     @Transactional
-    public void update(String blockName, String name, String address){
+    public void update(String blockName, String name, String address) throws NotFoundException {
         Block block = blockDao.find(blockName);
+        if (block == null) throw new NotFoundException();
+
         if (name != null) block.setName(name);
         if (address != null) block.setAddress(address);
     }
