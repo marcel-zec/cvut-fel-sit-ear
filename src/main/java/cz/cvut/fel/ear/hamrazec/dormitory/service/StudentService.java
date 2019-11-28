@@ -38,7 +38,7 @@ public class StudentService {
 
     @Transactional
     public void create(Student student) throws NotAllowedException {
-        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allower to create SUPERADMIN.");
+        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to create SUPERADMIN.");
         studentDao.persist(student);
     }
 
@@ -67,11 +67,14 @@ public class StudentService {
         if (student.hasActiveAccommodation()) {
             throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
-            for (Accommodation accommodation: student.getAccommodations()) {
-                Status status = accommodation.getStatus();
-                if (status.equals(Status.ACTIVE)) accommodationService.cancelAccommodation(accommodation);
-                if (status.equals(Status.APPROVED) || status.equals(Status.PENDING)) accommodationService.cancelReservation(accommodation);
-            }
+            student.getAccommodations().stream()
+                    .filter(accommodation -> accommodation.getStatus().equals(Status.PENDING) || accommodation.getStatus().equals(Status.APPROVED))
+                    .findFirst().ifPresent(accommodationService::cancelAccommodation);
+
+//            for (Accommodation accommodation: student.getAccommodations()) {
+//                Status status = accommodation.getStatus();
+//                if (status.equals(Status.APPROVED) || status.equals(Status.PENDING)) accommodationService.cancelReservation(accommodation);
+//            }
             studentDao.remove(student);
         }
     }

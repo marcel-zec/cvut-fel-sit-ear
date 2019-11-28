@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 
 import javax.persistence.*;
@@ -61,10 +62,10 @@ public class Block  extends AbstractEntity{
         this.managers = managers;
     }
 
-    public void addManager(Manager manager) throws NotFoundException {
+    public void addManager(Manager manager) throws AlreadyExistsException {
         if (managers == null) managers = new ArrayList<>();
         if (!managers.contains(manager)) managers.add(manager);
-        else throw new NotFoundException();
+        else throw new AlreadyExistsException();
     }
 
     public void removeManager(Manager manager){
