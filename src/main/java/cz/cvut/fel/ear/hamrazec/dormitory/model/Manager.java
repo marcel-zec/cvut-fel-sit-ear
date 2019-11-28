@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Manager.findByWorkerNumber", query = "SELECT m FROM Manager m WHERE m.workerNumber = :workerNumber")
 })
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Manager extends User {
 
     @Basic(optional = false)

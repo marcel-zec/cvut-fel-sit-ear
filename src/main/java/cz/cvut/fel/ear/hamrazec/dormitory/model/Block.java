@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Block.findByName", query = "SELECT b FROM Block b WHERE b.name = :blockname")
 })
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Block  extends AbstractEntity{
 
     @Basic(optional = false)
