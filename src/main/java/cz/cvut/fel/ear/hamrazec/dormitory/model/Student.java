@@ -96,4 +96,12 @@ public class Student extends User{
         }
         accommodations.add(accommodation);
     }
+
+    public boolean hasActiveAccommodation(){
+        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACTIVE));
+    }
+
+    public boolean hasReservation(){
+        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.PENDING) || accommodation.getStatus().equals(Status.APPROVED));
+    }
 }
