@@ -55,7 +55,7 @@ public class StudentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createStudent(@RequestBody Student student) throws AlreadyExistsException, NotAllowedException {
+    public void createStudent(@RequestBody Student student) throws NotAllowedException {
 
         studentService.create(student);
         LOG.info("Student with id {} created.", student.getId());
@@ -64,15 +64,10 @@ public class StudentController {
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeStudent(@PathVariable Long id) {
-        try {
-            studentService.delete(id);
-            LOG.info("Student with id {} removed.", id);
-        } catch (NotFoundException e) {
-            //TODO - exceptions
-        } catch (Exception e) {
-            //TODO - exceptions
-        }
+    public void removeStudent(@PathVariable Long id) throws NotFoundException, NotAllowedException {
+
+        studentService.delete(id);
+        LOG.info("Student with id {} removed.", id);
     }
 
 

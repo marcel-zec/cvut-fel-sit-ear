@@ -3,28 +3,25 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StudentService {
 
     private final StudentDao studentDao;
+    private final AccommodationService accommodationService;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao) {
+    public StudentService(StudentDao studentDao, AccommodationService accommodationService) {
 
         this.studentDao = studentDao;
+        this.accommodationService = accommodationService;
     }
 
 
@@ -41,7 +38,7 @@ public class StudentService {
 
     @Transactional
     public void create(Student student) throws NotAllowedException {
-        if (student.getRole() != Role.STUDENT) throw new NotAllowedException();
+        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allower to create SUPERADMIN.");
         studentDao.persist(student);
     }
 
@@ -63,14 +60,18 @@ public class StudentService {
     }
 
     @Transactional
-    public void delete(Long id) throws NotFoundException, Exception {
+    public void delete(Long id) throws NotFoundException, NotAllowedException {
 
         Student student = studentDao.find(id);
         if (student == null) throw new NotFoundException();
-        if (false) {
-            //TODO - ak ma aktivne ubytovanie tak nemoze vymazat
-            throw new Exception();
+        if (student.hasActiveAccommodation()) {
+            throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
+            for (Accommodation accommodation: student.getAccommodations()) {
+                Status status = accommodation.getStatus();
+                if (status.equals(Status.ACTIVE)) accommodationService.cancelAccommodation(accommodation);
+                if (status.equals(Status.APPROVED) || status.equals(Status.PENDING)) accommodationService.cancelReservation(accommodation);
+            }
             studentDao.remove(student);
         }
     }
