@@ -4,11 +4,13 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.AccommodationDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Status;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -43,6 +45,8 @@ public class AccommodationService {
         studentDao.update(student);
     }
 
+
+
     //TODO - create na náhodnu izbu
 
     //TODO - reserve na konkretnu izbu a nahodnu izbu
@@ -54,7 +58,20 @@ public class AccommodationService {
         Accommodation accommodation = acoDao.find(id);
         if (accommodation == null) throw new NotFoundException();
         //TODO - nemazat ale zmenit status?w
-        acoDao.remove(accommodation);
+        //acoDao.remove(accommodation);
+        accommodation.setStatus(Status.CANCELED);
+    }
+
+
+    public void updateExpired(List<Accommodation> accommodations){
+
+        for (Accommodation accommodation: accommodations) {
+            if (accommodation.getDateEnd().isBefore(LocalDate.now())) {
+                accommodation.setStatus(Status.ENDED);
+                acoDao.update(accommodation);
+            }
+        }
+
     }
 
 }
