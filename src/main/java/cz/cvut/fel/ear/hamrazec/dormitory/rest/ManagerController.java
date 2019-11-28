@@ -1,7 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.BlockService;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/managers")
@@ -20,13 +21,15 @@ import java.util.Map;
 public class ManagerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagerController.class);
-    private ManagerService managerService;
+    private final ManagerService managerService;
+    private final BlockService blockService;
 
 
     @Autowired
-    public ManagerController(ManagerService managerService) {
+    public ManagerController(ManagerService managerService, BlockService blockService) {
 
         this.managerService = managerService;
+        this.blockService = blockService;
     }
 
 
@@ -49,6 +52,16 @@ public class ManagerController {
     public void deleteManager(@PathVariable Integer workerNumber) throws NotFoundException {
 
         managerService.delete(workerNumber);
+        LOG.info("Manager with workerNumber {} deleted.", workerNumber);
+    }
+
+
+    @PostMapping(value = "/{workerNumber}/blocks/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addBlockToManager(@PathVariable Integer workerNumber, @PathVariable String blockName) throws NotFoundException, AlreadyExistsException {
+        //TODO - ak pridam viac krat tak hodi 404 namiesto 409
+        blockService.addManager(blockName, workerNumber);
+        LOG.info("Manager with workNumber {} added to block {}", workerNumber, blockName);
     }
 
 
@@ -57,7 +70,7 @@ public class ManagerController {
     public void createManager(@RequestBody Manager manager) {
 
         managerService.create(manager);
-        LOG.info("Category with id {} and workerNumber {} created", manager.getId(),manager.getWorkerNumber());
+        LOG.info("Category with id {} and workerNumber {} created", manager.getId(), manager.getWorkerNumber());
     }
 
 
@@ -67,7 +80,6 @@ public class ManagerController {
 
         managerService.update(workerNumber, manager);
         LOG.info("Manager with workerNumber {} updated.", workerNumber);
-
     }
 
 }
