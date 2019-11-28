@@ -1,8 +1,8 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
-import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +37,18 @@ public class ManagerController {
     }
 
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Manager getManager(@PathVariable Long id) {
+    @GetMapping(value = "/{workerNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Manager getManager(@PathVariable Integer workerNumber) {
 
-        return managerService.find(id);
+        return managerService.find(workerNumber);
     }
 
 
-    @DeleteMapping(value = "/{managerId}")
+    @DeleteMapping(value = "/{workerNumber}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteManager(@PathVariable Long managerId) {
+    public void deleteManager(@PathVariable Integer workerNumber) throws NotFoundException {
 
-        managerService.delete(managerId);
+        managerService.delete(workerNumber);
     }
 
 
@@ -57,19 +57,17 @@ public class ManagerController {
     public void createManager(@RequestBody Manager manager) {
 
         managerService.create(manager);
-        LOG.info("Category with id {} created", manager.getId());
+        LOG.info("Category with id {} and workerNumber {} created", manager.getId(),manager.getWorkerNumber());
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateManager(@PathVariable Long id, @RequestBody Map<String, String> map) throws NotFoundException {
 
-        try {
-            managerService.update(id, map);
-            LOG.info("Manager with id {} updated.", id);
-        } catch (javassist.NotFoundException e) {
-            throw e;
-        }
+    @PatchMapping(value = "/{workerNumber}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateManager(@PathVariable Integer workerNumber, @RequestBody Manager manager) throws NotFoundException {
+
+        managerService.update(workerNumber, manager);
+        LOG.info("Manager with workerNumber {} updated.", workerNumber);
+
     }
 
 }
