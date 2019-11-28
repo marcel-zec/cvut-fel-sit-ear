@@ -24,6 +24,7 @@ public class Accommodation extends AbstractEntity {
     @JoinColumn(name="room_id", nullable=false)
     private Room room;
 
+
     public LocalDate getDateStart() {
         return dateStart;
     }
