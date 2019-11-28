@@ -34,6 +34,12 @@ public class RoomService {
         this.accommodationService = accommodationService;
     }
 
+    public List<Room> findAll(String blockName) throws NotFoundException {
+        Block block = blockDao.find(blockName);
+        if (block == null) throw new NotFoundException();
+        return block.getRooms();
+    }
+
 
     @Transactional
     public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
@@ -68,7 +74,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void cancelActualAccomodation(){
+    public void cancelActualAccommodation(){
 
     }
 
