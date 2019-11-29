@@ -2,13 +2,13 @@ package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
 public enum Status {
     //accommodation
-    ACTIVE("ACTIVE"),
-    CANCELED("CANCELED"),
-    ENDED("ENDED"),
+    ACC_ACTIVE("ACTIVE"),
+    ACC_CANCELED("CANCELED"),
+    ACC_ENDED("ENDED"),
     //reservation
-    PENDING("PENDING_APPROVAL"),
-    APPROVED("RESERVATION_APPROVED"),
-    RESERVATION_CANCELED("RESERVATION_CANCELED");
+    RES_PENDING("PENDING_APPROVAL"),
+    RES_APPROVED("RESERVATION_APPROVED"),
+    RES_CANCELED("RESERVATION_CANCELED");
 
     private final String status;
 

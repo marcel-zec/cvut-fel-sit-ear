@@ -36,16 +36,21 @@ public class StudentService {
         return studentDao.find(id);
     }
 
+
     @Transactional
     public void create(Student student) throws NotAllowedException {
-        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to create SUPERADMIN.");
+
+        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
         studentDao.persist(student);
     }
 
+
     @Transactional
-    public void update(Long id, Student student) throws NotFoundException {
+    public void update(Long id, Student student) throws NotFoundException, NotAllowedException {
+
         Student studentToUpdate = studentDao.find(id);
         if (studentToUpdate == null) throw new NotFoundException();
+        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
 
         studentToUpdate.setFirstName(student.getFirstName());
         studentToUpdate.setLastName(student.getLastName());
@@ -59,6 +64,7 @@ public class StudentService {
         studentDao.update(studentToUpdate);
     }
 
+
     @Transactional
     public void delete(Long id) throws NotFoundException, NotAllowedException {
 
@@ -67,9 +73,9 @@ public class StudentService {
         if (student.hasActiveAccommodation()) {
             throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
-            student.getAccommodations().stream()
-                    .filter(accommodation -> accommodation.getStatus().equals(Status.PENDING) || accommodation.getStatus().equals(Status.APPROVED))
-                    .findFirst().ifPresent(accommodationService::cancelAccommodation);
+            student.getReservations().stream()
+                    .filter(accommodation -> accommodation.getStatus().equals(Status.RES_APPROVED) || accommodation.getStatus().equals(Status.RES_PENDING))
+                    .findFirst().ifPresent(accommodationService::cancelReservation);
 
 //            for (Accommodation accommodation: student.getAccommodations()) {
 //                Status status = accommodation.getStatus();

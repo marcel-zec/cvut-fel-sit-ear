@@ -36,6 +36,9 @@ public class Student extends User{
     @OneToMany(cascade = CascadeType.ALL)
     private List<Accommodation> accommodations;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+
 
     public Student() {
         setRole(Role.STUDENT);
@@ -83,6 +86,9 @@ public class Student extends User{
     }
 
     public List<Accommodation> getAccommodations() {
+        if (accommodations == null){
+            accommodations = new ArrayList<>();
+        }
         return accommodations;
     }
 
@@ -98,10 +104,26 @@ public class Student extends User{
     }
 
     public boolean hasActiveAccommodation(){
-        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACTIVE));
+        if (accommodations == null) return false;
+        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACC_ACTIVE));
     }
 
-    public boolean hasReservation(){
-        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.PENDING) || accommodation.getStatus().equals(Status.APPROVED));
+    public List<Reservation> getReservations() {
+        if (reservations == null){
+            reservations = new ArrayList<>();
+        }
+        return reservations;
     }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public void addReservation(Reservation reservation) {
+        if (reservations == null){
+            reservations = new ArrayList<>();
+        }
+        reservations.add(reservation);
+    }
+
 }
