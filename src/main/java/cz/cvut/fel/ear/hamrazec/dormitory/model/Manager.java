@@ -50,4 +50,10 @@ public class Manager extends User {
             throw new AlreadyExistsException();
         }
     }
+
+    public void removeBlock(Block block){
+        if (blocks != null){
+            blocks.remove(block);
+        }
+    }
 }

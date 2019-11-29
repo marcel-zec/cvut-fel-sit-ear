@@ -4,6 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.AccommodationDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Reservation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Status;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,14 +80,14 @@ public class AccommodationService {
 
     @Transactional
     public void cancelAccommodation(Accommodation accommodation) {
-        setStatusAndUnusualEnd(accommodation,Status.CANCELED);
+        setStatusAndUnusualEnd(accommodation,Status.ACC_CANCELED);
         accommodation.getRoom().cancelActualAccomodation(accommodation);
         accommodation.getRoom().addPastAccomodation(accommodation);
     }
 
     @Transactional
-    public void cancelReservation(Accommodation accommodation) {
-        setStatusAndUnusualEnd(accommodation,Status.RESERVATION_CANCELED);
+    public void cancelReservation(Reservation reservation) {
+        setStatusAndUnusualEnd(reservation,Status.RES_CANCELED);
     }
 
     private void setStatusAndUnusualEnd(Accommodation accommodation,Status status){

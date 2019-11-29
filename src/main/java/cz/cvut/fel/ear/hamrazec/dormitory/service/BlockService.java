@@ -71,6 +71,21 @@ public class BlockService {
 
     }
 
+    @Transactional
+    public void removeManager(String blockName, Integer workerNumber) throws NotFoundException {
+
+        Block block = blockDao.find(blockName);
+        Manager manager = managerDao.findByWorkerNumber(workerNumber);
+        if (block == null || manager == null) throw new NotFoundException();
+
+        block.removeManager(manager);
+        manager.removeBlock(block);
+
+        blockDao.update(block);
+        managerDao.update(manager);
+
+    }
+
 
     @Transactional
     public void update(String blockName, String name, String address) throws NotFoundException {

@@ -73,7 +73,7 @@ public class StudentController {
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateStudent(@PathVariable Long id, @RequestBody Student student) throws NotFoundException {
+    public void updateStudent(@PathVariable Long id, @RequestBody Student student) throws NotFoundException, NotAllowedException {
 
         studentService.update(id, student);
         LOG.info("Student with id {} updated.", id);
