@@ -41,25 +41,6 @@ public class RoomService {
     }
 
 
-    @Transactional
-    public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
-
-        Block block = blockDao.find(blockName);
-        if (block == null) throw new NotFoundException();
-        for (Room room: block.getRooms()) {
-
-            accommodationService.updateExpired(room.getActualAccommodations());
-            //todo urobit update expirovanych ubytovani
-            //todo zistit ci je v dany datum volna izba
-
-            if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
-                roomList.add(room);
-            }
-        }
-        return roomList;
-    }
-
-
     public Block find(String blockName, Integer roomNumber) {
         //TODO - query
         return null;
