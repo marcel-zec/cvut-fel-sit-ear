@@ -54,7 +54,7 @@ public class AccommodationService {
 
         for (Accommodation accommodation: findAll()) {
             if (accommodation.getDateEnd().isBefore(LocalDate.now())) {
-                accommodation.setStatus(Status.ENDED);
+                accommodation.setStatus(Status.ACC_ENDED);
                 acoDao.update(accommodation);
             }
         }

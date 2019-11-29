@@ -46,13 +46,16 @@ public class RoomService {
         for (Room room: block.getRooms()) {
             removeEndedActualAccommodation(room);
 
-            //todo zistit ci je v dany datum volna izba
-
+            int freeAcco = freePlacesAtDateAccomodation(room,dateStart);
+            int reservationsAtDate = reservePlacesAtDateReserve(room,dateStart,dateEnd);
 
             if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
+                freeAcco = freeAcco + (room.getMaxCapacity() - room.getActualAccommodations().size());
+            }
+
+            if (reservationsAtDate < freeAcco) {
                 roomList.add(room);
             }
-            else if (isFreeAtDate(room, dateStart)) roomList.add(room);
         }
         return roomList;
     }
@@ -75,7 +78,7 @@ public class RoomService {
     public void removeEndedActualAccommodation(Room room){
 
         for (Accommodation accommodation: room.getActualAccommodations()) {
-            if (accommodation.getStatus() == Status.ENDED) {
+            if (accommodation.getStatus() == Status.ACC_ENDED) {
                 room.addPastAccomodation(accommodation);
                 room.cancelActualAccomodation(accommodation);
                 roomDao.update(room);
@@ -84,13 +87,25 @@ public class RoomService {
     }
 
     @Transactional
-    public boolean isFreeAtDate(Room room, LocalDate dateStart){
+    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart){
+        int endedAcco = 0;
 
         for (Accommodation accomodation: room.getActualAccommodations()) {
-            if (accomodation.getDateEnd().isBefore(dateStart)) return true;
-            else return false;
+            if (accomodation.getDateEnd().isBefore(dateStart)) endedAcco++;
         }
-        return false;
+        return endedAcco;
+    }
+
+    @Transactional
+    public int reservePlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
+        int reservePlaces = 0;
+
+        for (Reservation reservation: room.getReservations()) {
+            if (reservation.getDateEnd().isBefore(dateStart) || reservation.getDateStart().isAfter(dateEnd)) {
+            }
+            else reservePlaces++;
+        }
+        return reservePlaces;
     }
 
 
