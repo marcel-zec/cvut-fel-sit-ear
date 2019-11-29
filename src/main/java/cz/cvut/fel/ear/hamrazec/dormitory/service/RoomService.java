@@ -4,10 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import javassist.bytecode.analysis.ControlFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,14 +44,15 @@ public class RoomService {
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         for (Room room: block.getRooms()) {
+            removeEndedActualAccommodation(room);
 
-            accommodationService.updateExpired(room.getActualAccommodations());
-            //todo urobit update expirovanych ubytovani
             //todo zistit ci je v dany datum volna izba
+
 
             if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
                 roomList.add(room);
             }
+            else if (isFreeAtDate(room, dateStart)) roomList.add(room);
         }
         return roomList;
     }
@@ -74,8 +72,25 @@ public class RoomService {
     }
 
     @Transactional
-    public void cancelActualAccommodation(){
+    public void removeEndedActualAccommodation(Room room){
 
+        for (Accommodation accommodation: room.getActualAccommodations()) {
+            if (accommodation.getStatus() == Status.ENDED) {
+                room.addPastAccomodation(accommodation);
+                room.cancelActualAccomodation(accommodation);
+                roomDao.update(room);
+            }
+        }
+    }
+
+    @Transactional
+    public boolean isFreeAtDate(Room room, LocalDate dateStart){
+
+        for (Accommodation accomodation: room.getActualAccommodations()) {
+            if (accomodation.getDateEnd().isBefore(dateStart)) return true;
+            else return false;
+        }
+        return false;
     }
 
 
