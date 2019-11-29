@@ -59,9 +59,17 @@ public class ManagerController {
     @PostMapping(value = "/{workerNumber}/blocks/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addBlockToManager(@PathVariable Integer workerNumber, @PathVariable String blockName) throws NotFoundException, AlreadyExistsException {
-        //TODO - ak pridam viac krat tak hodi 404 namiesto 409
+
         blockService.addManager(blockName, workerNumber);
         LOG.info("Manager with workNumber {} added to block {}", workerNumber, blockName);
+    }
+
+    @PatchMapping(value = "/{workerNumber}/blocks/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeBlockFromManager(@PathVariable Integer workerNumber, @PathVariable String blockName) throws NotFoundException{
+
+        blockService.removeManager(blockName, workerNumber);
+        LOG.info("Manager with workNumber {} removed from block {}", workerNumber, blockName);
     }
 
 

@@ -69,7 +69,7 @@ public class Block  extends AbstractEntity{
     }
 
     public void removeManager(Manager manager){
-        if (managers != null && manager!=null){
+        if (managers != null){
            managers.remove(manager);
         }
     }

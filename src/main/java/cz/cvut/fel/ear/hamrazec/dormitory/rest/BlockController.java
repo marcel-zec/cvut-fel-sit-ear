@@ -83,9 +83,18 @@ public class BlockController {
     }
 
 
+    @PatchMapping(value = "/{blockName}/managers/{workerNumber}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeManagerFromBlock(@PathVariable String blockName, @PathVariable Integer workerNumber) throws NotFoundException {
+
+        blockService.removeManager(blockName, workerNumber);
+        LOG.info("Manager with workNumber {} removed from block {}", workerNumber, blockName);
+    }
+
+
     @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
-        
+
         return roomService.findAll(blockName);
     }
 
