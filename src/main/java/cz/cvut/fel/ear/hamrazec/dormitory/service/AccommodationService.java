@@ -8,6 +8,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.Reservation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Status;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,20 @@ public class AccommodationService {
     }
 
 
+    @Scheduled(cron = "0 0 3 * * *", zone = "CET")
+    @Transactional
+    public void updateExpired(){
+
+        for (Accommodation accommodation: findAll()) {
+            if (accommodation.getDateEnd().isBefore(LocalDate.now())) {
+                accommodation.setStatus(Status.ACC_ENDED);
+                acoDao.update(accommodation);
+            }
+        }
+    }
+
+
+
 
     //TODO - create na náhodnu izbu
 
@@ -60,6 +75,7 @@ public class AccommodationService {
         if (accommodation == null) throw new NotFoundException();
         cancelAccommodation(accommodation);
     }
+
 
 
     @Transactional

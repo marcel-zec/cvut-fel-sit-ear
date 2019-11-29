@@ -4,10 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import javassist.bytecode.analysis.ControlFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +38,29 @@ public class RoomService {
     }
 
 
+    @Transactional
+    public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
+
+        Block block = blockDao.find(blockName);
+        if (block == null) throw new NotFoundException();
+        for (Room room: block.getRooms()) {
+            removeEndedActualAccommodation(room);
+
+            int freeAcco = freePlacesAtDateAccomodation(room,dateStart);
+            int reservationsAtDate = reservePlacesAtDateReserve(room,dateStart,dateEnd);
+
+            if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
+                freeAcco = freeAcco + (room.getMaxCapacity() - room.getActualAccommodations().size());
+            }
+
+            if (reservationsAtDate < freeAcco) {
+                roomList.add(room);
+            }
+        }
+        return roomList;
+    }
+
+
     public Block find(String blockName, Integer roomNumber) {
         //TODO - query
         return null;
@@ -55,8 +75,37 @@ public class RoomService {
     }
 
     @Transactional
-    public void cancelActualAccommodation(){
+    public void removeEndedActualAccommodation(Room room){
 
+        for (Accommodation accommodation: room.getActualAccommodations()) {
+            if (accommodation.getStatus() == Status.ACC_ENDED) {
+                room.addPastAccomodation(accommodation);
+                room.cancelActualAccomodation(accommodation);
+                roomDao.update(room);
+            }
+        }
+    }
+
+    @Transactional
+    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart){
+        int endedAcco = 0;
+
+        for (Accommodation accomodation: room.getActualAccommodations()) {
+            if (accomodation.getDateEnd().isBefore(dateStart)) endedAcco++;
+        }
+        return endedAcco;
+    }
+
+    @Transactional
+    public int reservePlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
+        int reservePlaces = 0;
+
+        for (Reservation reservation: room.getReservations()) {
+            if (reservation.getDateEnd().isBefore(dateStart) || reservation.getDateStart().isAfter(dateEnd)) {
+            }
+            else reservePlaces++;
+        }
+        return reservePlaces;
     }
 
 

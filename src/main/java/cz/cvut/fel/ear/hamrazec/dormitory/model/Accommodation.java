@@ -60,7 +60,6 @@ public class Accommodation extends AbstractEntity {
         return dateUnusualEnd;
     }
 
-
     public void setDateUnusualEnd(LocalDate dateUnusualEnd) {
 
         this.dateUnusualEnd = dateUnusualEnd;

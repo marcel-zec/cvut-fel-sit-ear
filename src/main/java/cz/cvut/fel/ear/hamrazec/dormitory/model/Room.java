@@ -35,6 +35,9 @@ public class Room extends AbstractEntity {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Accommodation> actualAccommodations;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+
 //    @OneToOne
 //    private Accommodation actualAccommodation;
 
@@ -100,4 +103,10 @@ public class Room extends AbstractEntity {
         this.floor = floor;
     }
 
+
+    public List<Reservation> getReservations() { return reservations; }
+
+    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
+
+    public void addReservation(Reservation reservation) { this.reservations.add(reservation); }
 }
