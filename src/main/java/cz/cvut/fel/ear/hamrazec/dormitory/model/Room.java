@@ -50,9 +50,15 @@ public class Room extends AbstractEntity {
 
     public void setBlock(Block block) { this.block = block; }
 
-    public List<Accommodation> getActualAccommodations() { return actualAccommodations; }
+    public List<Accommodation> getActualAccommodations() {
+        if (actualAccommodations == null) actualAccommodations = new ArrayList<>();
+        return actualAccommodations;
+    }
 
-    public List<Accommodation> getPastAccommodations() { return pastAccommodations; }
+    public List<Accommodation> getPastAccommodations() {
+        if (pastAccommodations == null) pastAccommodations = new ArrayList<>();
+        return pastAccommodations;
+    }
 
 
 //    public void setActualAccommodations(List<Accommodation> actualAccommodations) {
@@ -104,9 +110,14 @@ public class Room extends AbstractEntity {
     }
 
 
-    public List<Reservation> getReservations() { return reservations; }
+    public List<Reservation> getReservations() {
+        if (reservations == null) reservations = new ArrayList<Reservation>();
+        return reservations;
+    }
 
     public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 
-    public void addReservation(Reservation reservation) { this.reservations.add(reservation); }
+    public void addReservation(Reservation reservation) {
+        if (reservations == null) reservations = new ArrayList<Reservation>();
+        this.reservations.add(reservation); }
 }

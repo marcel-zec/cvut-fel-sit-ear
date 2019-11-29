@@ -15,7 +15,7 @@ public class Accommodation extends AbstractEntity {
     @Column(nullable = false)
     private LocalDate dateEnd;
 
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(nullable = true)
     private LocalDate dateUnusualEnd;
 
