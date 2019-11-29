@@ -69,30 +69,23 @@ public class BlockController {
 
     @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
-        //TODO - exception
+
         return managerService.findAllByBlock(blockName);
     }
 
 
-    @PostMapping(value = "/{blockName}/managers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{blockName}/managers/{workerNumber}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addManagerToBlock(@PathVariable String blockName, @RequestBody Map<String, Integer> request) {
+    public void addManagerToBlock(@PathVariable String blockName, @PathVariable Integer workerNumber) throws NotFoundException, AlreadyExistsException {
 
-        try {
-            blockService.addManager(blockName, request.get("manager"));
-            LOG.info("Manager with worker number {} added to block {}.", request.get("manager"), blockName);
-        } catch (NotFoundException e) {
-            //TODO - exception
-        } catch (AlreadyExistsException e) {
-            //TODO - exception
-        }
-
+        blockService.addManager(blockName, workerNumber);
+        LOG.info("Manager with worker number {} added to block {}.", workerNumber, blockName);
     }
 
 
     @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
-        //TODO - exception
+        
         return roomService.findAll(blockName);
     }
 
@@ -131,7 +124,7 @@ public class BlockController {
     public void updateBlock(@PathVariable String blockName, @RequestBody Map<String, String> request) {
 
         try {
-            blockService.update(blockName, request.get("name"),request.get("address"));
+            blockService.update(blockName, request.get("name"), request.get("address"));
             LOG.info("Block with name {} updated.", blockName);
         } catch (NotFoundException e) {
             //TODO - exceptions

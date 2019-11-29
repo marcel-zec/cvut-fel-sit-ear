@@ -45,26 +45,26 @@ public class RoomServiceTest {
         room = new Room();
     }
 
-    @Test
-    public void addRoomToBlock() throws NotFoundException {
-        room.setFloor(4);
-        room.setNumberOfPeople(2);
-        room.setRoomNumber(456);
-
-        roomService.addRoom(block.getName(),room);
-        assertEquals("Add room to block not working", 1 , em.find(Block.class,block.getId()).getRooms().size());
-    }
-
-
-    @Test
-    public void addRoomToNoneBlock() throws NotFoundException {
-        thrown.expect(NotFoundException.class);
-        thrown.reportMissingExceptionWithMessage("Trying add room to not existing block");
-        room.setFloor(4);
-        room.setNumberOfPeople(2);
-        room.setRoomNumber(456);
-
-        roomService.addRoom("Tes",room);
-    }
+//    @Test
+//    public void addRoomToBlock() throws NotFoundException {
+//        room.setFloor(4);
+//        room.setNumberOfPeople(2);
+//        room.setRoomNumber(456);
+//
+//        roomService.addRoom(block.getName(),room);
+//        assertEquals("Add room to block not working", 1 , em.find(Block.class,block.getId()).getRooms().size());
+//    }
+//
+//
+//    @Test
+//    public void addRoomToNoneBlock() throws NotFoundException {
+//        thrown.expect(NotFoundException.class);
+//        thrown.reportMissingExceptionWithMessage("Trying add room to not existing block");
+//        room.setFloor(4);
+//        room.setNumberOfPeople(2);
+//        room.setRoomNumber(456);
+//
+//        roomService.addRoom("Tes",room);
+//    }
 
 }

@@ -57,14 +57,12 @@ public class AccommodationService {
 
         Accommodation accommodation = acoDao.find(id);
         if (accommodation == null) throw new NotFoundException();
-        //TODO - nemazat ale zmenit status?w
-        //acoDao.remove(accommodation);
-        accommodation.setStatus(Status.CANCELED);
+        cancelAccommodation(accommodation);
     }
 
 
     public void updateExpired(List<Accommodation> accommodations){
-
+        //TODO - zmenit na scheduled
         for (Accommodation accommodation: accommodations) {
             if (accommodation.getDateEnd().isBefore(LocalDate.now())) {
                 accommodation.setStatus(Status.ENDED);
@@ -74,4 +72,22 @@ public class AccommodationService {
 
     }
 
+
+    @Transactional
+    public void cancelAccommodation(Accommodation accommodation) {
+        setStatusAndUnusualEnd(accommodation,Status.CANCELED);
+        accommodation.getRoom().cancelActualAccomodation(accommodation);
+        accommodation.getRoom().addPastAccomodation(accommodation);
+    }
+
+    @Transactional
+    public void cancelReservation(Accommodation accommodation) {
+        setStatusAndUnusualEnd(accommodation,Status.RESERVATION_CANCELED);
+    }
+
+    private void setStatusAndUnusualEnd(Accommodation accommodation,Status status){
+        accommodation.setStatus(status);
+        accommodation.setDateUnusualEnd(LocalDate.now());
+        acoDao.update(accommodation);
+    }
 }

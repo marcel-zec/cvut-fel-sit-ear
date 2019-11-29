@@ -43,15 +43,8 @@ public class AccommodationController {
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeAccommodation(@PathVariable Long id) {
-
-        try {
+    public void removeAccommodation(@PathVariable Long id) throws NotFoundException {
             acomService.delete(id);
             LOG.info("Accommodation with id {} removed.", id);
-        } catch (NotFoundException e) {
-
-        } catch (Exception e) {
-            //TODO - exceptions
-        }
     }
 }

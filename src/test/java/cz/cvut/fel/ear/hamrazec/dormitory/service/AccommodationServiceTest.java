@@ -44,7 +44,8 @@ public class AccommodationServiceTest {
         accommodation.setDateEnd(LocalDate.parse("2022-12-03"));
         accommodation.setDateStart(LocalDate.now());
 
-        student = new Student(Gender.MAN);
+        student = new Student();
+        student.setGender(Gender.MAN);
         student.setBankAccountNumber("AB12345678912345");
         student.setBirth(LocalDate.parse("2007-12-03"));
         student.setEndOfStudy(LocalDate.parse("2022-12-03"));

@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
@@ -71,41 +72,30 @@ public class BlockServiceTest {
 
 
     @Test
-    public void addManagerToBlock_WorksCorrect() throws NotFoundException {
-        //before test
-        stringIntMap = new HashMap<>();
-        stringIntMap.put("manager", 50);
+    public void addManagerToBlock_WorksCorrect() throws NotFoundException, AlreadyExistsException {
 
         //test
-        blockService.addManager("Tst", stringIntMap);
+        blockService.addManager("Tst", 50);
         assertEquals("Add manager not working", 1, block.getManagers().size());
     }
 
 
     @Test
-    public void addManagerToBlockTwoTimes_NothingHappen() throws NotFoundException {
-        //before test
-        stringIntMap = new HashMap<>();
-        stringIntMap.put("manager", 50);
-
-        //test
-        blockService.addManager("Tst", stringIntMap);
-        blockService.addManager("Tst", stringIntMap);
+    public void addManagerToBlockTwoTimes_NothingHappen() throws NotFoundException, AlreadyExistsException {
+        blockService.addManager("Tst", 50);
+        blockService.addManager("Tst", 50);
         assertEquals("Added same manager two time", 1, blockService.find("Tst").getManagers().size());
     }
 
 
     @Test
-    public void addNotExistingManager_NotFoundException() throws NotFoundException {
+    public void addNotExistingManager_NotFoundException() throws NotFoundException, AlreadyExistsException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Add not existing manager not working");
-        //before test
-        stringIntMap = new HashMap<>();
-        stringIntMap.put("manager", 100);
 
         //test
-        blockService.addManager("Tst", stringIntMap);
+        blockService.addManager("Tst", 100);
     }
 
 
@@ -114,12 +104,9 @@ public class BlockServiceTest {
         //before test
         String newName = "BX";
         String newAddress = "NewTestAddress";
-        stringMap = new HashMap<>();
-        stringMap.put("name", newName);
-        stringMap.put("address", newAddress);
 
         //test
-        blockService.update(block.getName(), stringMap);
+        blockService.update(block.getName(), newName, newAddress);
         assertEquals("Update not work for name", newName, block.getName());
         assertEquals("Update not work for address", newAddress, block.getAddress());
     }
@@ -130,13 +117,9 @@ public class BlockServiceTest {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying update not existing block");
-        //before test
-        stringMap = new HashMap<>();
-        stringMap.put("name", "AAA");
-        stringMap.put("address", "AAA");
 
         //test
-        blockService.update("", stringMap);
+        blockService.update("", "aaa","address");
     }
 
     @Test

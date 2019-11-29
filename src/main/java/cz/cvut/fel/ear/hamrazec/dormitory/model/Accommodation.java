@@ -1,7 +1,5 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 
 import java.time.LocalDate;
@@ -16,6 +14,10 @@ public class Accommodation extends AbstractEntity {
     @Basic(optional = false)
     @Column(nullable = false)
     private LocalDate dateEnd;
+
+    @Basic(optional = false)
+    @Column(nullable = true)
+    private LocalDate dateUnusualEnd;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -52,4 +54,15 @@ public class Accommodation extends AbstractEntity {
     public Room getRoom() { return room; }
 
     public void setRoom(Room room) { this.room = room; }
+
+    public LocalDate getDateUnusualEnd() {
+
+        return dateUnusualEnd;
+    }
+
+
+    public void setDateUnusualEnd(LocalDate dateUnusualEnd) {
+
+        this.dateUnusualEnd = dateUnusualEnd;
+    }
 }

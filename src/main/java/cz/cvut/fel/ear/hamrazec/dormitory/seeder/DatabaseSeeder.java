@@ -41,7 +41,8 @@ public class DatabaseSeeder implements
 
         System.out.println(studentDao);
 
-        Student student = new Student(Gender.MAN);
+        Student student = new Student();
+        student.setGender(Gender.MAN);
         student.setBankAccountNumber("AB12345678912345");
         student.setBirth(LocalDate.parse("2007-12-03"));
         student.setEndOfStudy(LocalDate.parse("2022-12-03"));

@@ -1,6 +1,8 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.StudentService;
@@ -12,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,27 +27,27 @@ public class StudentController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
 
-    private StudentService service;
+    private StudentService studentService;
 
 
     @Autowired
     public StudentController(StudentService service) {
 
-        this.service = service;
+        this.studentService = service;
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Student> getStudents() {
 
-        return service.findAll();
+        return studentService.findAll();
     }
 
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Student getStudent(@PathVariable Long id) throws NotFoundException {
 
-        Student student = service.find(id);
+        Student student = studentService.find(id);
         if (student == null) throw new NotFoundException();
         return student;
     }
@@ -52,38 +55,28 @@ public class StudentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createStudent(@RequestBody Student student) {
+    public void createStudent(@RequestBody Student student) throws NotAllowedException {
 
-        service.create(student);
+        studentService.create(student);
         LOG.info("Student with id {} created.", student.getId());
     }
 
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeStudent(@PathVariable Long id) {
+    public void removeStudent(@PathVariable Long id) throws NotFoundException, NotAllowedException {
 
-        try {
-            service.delete(id);
-            LOG.info("Student with id {} removed.", id);
-        } catch (NotFoundException e) {
-
-        } catch (Exception e) {
-            //TODO - exceptions
-        }
+        studentService.delete(id);
+        LOG.info("Student with id {} removed.", id);
     }
 
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateStudent(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public void updateStudent(@PathVariable Long id, @RequestBody Student student) throws NotFoundException {
 
-        try {
-            service.update(id, request);
-            LOG.info("Student with id {} updated.", id);
-        } catch (NotFoundException e) {
-            //TODO - exceptions
-        }
+        studentService.update(id, student);
+        LOG.info("Student with id {} updated.", id);
     }
 
 

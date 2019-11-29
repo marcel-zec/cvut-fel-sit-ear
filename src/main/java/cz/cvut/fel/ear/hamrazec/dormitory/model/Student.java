@@ -37,9 +37,10 @@ public class Student extends User{
     private List<Accommodation> accommodations;
 
 
-    public Student(Gender gender) {
-        this.gender = gender;
+    public Student() {
+        setRole(Role.STUDENT);
     }
+
 
     public Gender getGender() {
         return gender;
@@ -94,5 +95,13 @@ public class Student extends User{
             accommodations = new ArrayList<>();
         }
         accommodations.add(accommodation);
+    }
+
+    public boolean hasActiveAccommodation(){
+        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACTIVE));
+    }
+
+    public boolean hasReservation(){
+        return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.PENDING) || accommodation.getStatus().equals(Status.APPROVED));
     }
 }
