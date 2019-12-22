@@ -33,10 +33,10 @@ public class Student extends User{
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Accommodation> accommodations;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
 

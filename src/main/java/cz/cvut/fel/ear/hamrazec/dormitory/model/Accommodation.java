@@ -26,6 +26,10 @@ public class Accommodation extends AbstractEntity {
     @JoinColumn(name="room_id", nullable=false)
     private Room room;
 
+    @ManyToOne
+    @JoinColumn(name="student_id", nullable=false)
+    private Student student;
+
 
     public LocalDate getDateStart() {
         return dateStart;
@@ -55,13 +59,11 @@ public class Accommodation extends AbstractEntity {
 
     public void setRoom(Room room) { this.room = room; }
 
-    public LocalDate getDateUnusualEnd() {
+    public LocalDate getDateUnusualEnd() { return dateUnusualEnd; }
 
-        return dateUnusualEnd;
-    }
+    public void setDateUnusualEnd(LocalDate dateUnusualEnd) { this.dateUnusualEnd = dateUnusualEnd; }
 
-    public void setDateUnusualEnd(LocalDate dateUnusualEnd) {
+    public Student getStudent() { return student; }
 
-        this.dateUnusualEnd = dateUnusualEnd;
-    }
+    public void setStudent(Student student) { this.student = student; }
 }

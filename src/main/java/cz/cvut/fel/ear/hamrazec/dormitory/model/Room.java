@@ -83,6 +83,12 @@ public class Room extends AbstractEntity {
         }
     }
 
+    public void cancelActualReservation(Reservation reservation){
+        if (reservations.contains(reservation)){
+            reservations.remove(reservation);
+        }
+    }
+
     public Integer getMaxCapacity() { return maxCapacity; }
 
     public void setMaxCapacity(Integer maxCapacity) { this.maxCapacity = maxCapacity; }

@@ -1,31 +1,34 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.AccommodationDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Reservation;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Status;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AccommodationService {
 
-    AccommodationDao acoDao;
-    StudentDao studentDao;
+    private AccommodationDao acoDao;
+    private StudentDao studentDao;
+    private RoomService roomService;
+    private RoomDao roomDao;
 
     @Autowired
-    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao) {
+    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
+        this.roomDao = roomDao;
+        this.roomService = roomService;
     }
 
     public List<Accommodation> findAll() {
@@ -37,12 +40,16 @@ public class AccommodationService {
     }
 
     @Transactional
-    public void create(Accommodation accommodation, Long idStudent) throws NotFoundException {
-        //TODO - pridat izbu, kontrolovat volnost izby v tom datume
-        Student student = studentDao.find(idStudent);
+    public void create(Accommodation accommodation) throws NotFoundException {
+        //TODO - pridat izbu, kontrolovat volnost izby v tom datume ,BLBOST lebo v rezervacii kontrolujeme volnost izby
+        Student student = accommodation.getStudent();
+        Room room = accommodation.getRoom();
+
         if (student == null) throw new NotFoundException();
 
         acoDao.persist(accommodation);
+        room.addActualAccomodation(accommodation);
+        roomService.removeEndedActualReservation(room,student);
         student.addAccommodation(accommodation);
         studentDao.update(student);
     }

@@ -31,10 +31,10 @@ public class AccommodationController {
 
     @PostMapping(value = "/student/{idStudent}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long idStudent) {
+    public void createAccommodation(@RequestBody Accommodation accommodation) {
 
         try {
-            acomService.create(accommodation, idStudent);
+            acomService.create(accommodation);
             LOG.info("Accommodation with id {} created", accommodation.getId());
         }catch (NotFoundException e) {
             //TODO - exceptions

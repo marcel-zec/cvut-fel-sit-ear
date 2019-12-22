@@ -41,13 +41,13 @@ public class RoomService {
     @Transactional
     public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
 
-        Block block = blockDao.find(blockName);
+        Block block = blockDao.find(blockName); //TODO najdi podla mena nie podla id
         if (block == null) throw new NotFoundException();
         for (Room room: block.getRooms()) {
             removeEndedActualAccommodation(room);
 
             int freeAcco = freePlacesAtDateAccomodation(room,dateStart);
-            int reservationsAtDate = reservePlacesAtDateReserve(room,dateStart,dateEnd);
+            int reservationsAtDate = reservationPlacesAtDateReserve(room,dateStart,dateEnd);
 
             if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
                 freeAcco = freeAcco + (room.getMaxCapacity() - room.getActualAccommodations().size());
@@ -64,6 +64,16 @@ public class RoomService {
     public Block find(String blockName, Integer roomNumber) {
         //TODO - query
         return null;
+    }
+
+    @Transactional
+    public boolean findFreeConcreteRoom(String blockName,  LocalDate dateStart, LocalDate dateEnd, Integer roomnumber) throws NotFoundException {
+
+        List<Room> rooms = findFreeRooms(blockName,dateStart,dateEnd);
+        for (Room room: rooms) {
+            if (roomnumber.equals(room.getRoomNumber())) return true;
+        }
+        return false;
     }
 
     @Transactional
@@ -87,6 +97,17 @@ public class RoomService {
     }
 
     @Transactional
+    public void removeEndedActualReservation(Room room, Student student){
+
+        for (Reservation reservation: room.getReservations()) {
+            if (reservation.getStatus() == Status.RES_APPROVED && reservation.getStudent().equals(student)) {
+                room.cancelActualReservation(reservation);
+                roomDao.update(room);
+            }
+        }
+    }
+
+    @Transactional
     public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart){
         int endedAcco = 0;
 
@@ -97,7 +118,7 @@ public class RoomService {
     }
 
     @Transactional
-    public int reservePlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
+    public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
         int reservePlaces = 0;
 
         for (Reservation reservation: room.getReservations()) {
