@@ -3,6 +3,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import javassist.bytecode.analysis.ControlFlow;
@@ -20,15 +21,15 @@ public class RoomService {
 
     private final BlockDao blockDao;
     private final RoomDao roomDao;
+    private StudentDao studentDao;
     private List<Room> roomList = new ArrayList<Room>();
-    private AccommodationService accommodationService;
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao, AccommodationService accommodationService) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
-        this.accommodationService = accommodationService;
+        this.studentDao = studentDao;
     }
 
     public List<Room> findAll(String blockName) throws NotFoundException {
@@ -43,6 +44,8 @@ public class RoomService {
 
         Block block = blockDao.find(blockName); //TODO najdi podla mena nie podla id
         if (block == null) throw new NotFoundException();
+        if (block.getRooms() == null) throw new NotFoundException();
+
         for (Room room: block.getRooms()) {
             removeEndedActualAccommodation(room);
 
@@ -78,6 +81,7 @@ public class RoomService {
 
     @Transactional
     public void addRoom(String blockName, Room room) throws NotFoundException {
+
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         block.addRoom(room);
@@ -87,6 +91,8 @@ public class RoomService {
     @Transactional
     public void removeEndedActualAccommodation(Room room){
 
+        if (room == null) return;
+        if (room.getActualAccommodations() == null) return;
         for (Accommodation accommodation: room.getActualAccommodations()) {
             if (accommodation.getStatus() == Status.ACC_ENDED) {
                 room.addPastAccomodation(accommodation);
@@ -97,19 +103,37 @@ public class RoomService {
     }
 
     @Transactional
-    public void removeEndedActualReservation(Room room, Student student){
+    public Room removeActualReservationStart(Reservation reservation){
 
-        for (Reservation reservation: room.getReservations()) {
-            if (reservation.getStatus() == Status.RES_APPROVED && reservation.getStudent().equals(student)) {
-                room.cancelActualReservation(reservation);
-                roomDao.update(room);
+            if (reservation.getStatus() == Status.RES_APPROVED  && reservation.getDateStart().equals(LocalDate.now())) {
+                reservation.getRoom().cancelActualReservation(reservation);
+                reservation.getStudent().cancelReservation(reservation);
+                roomDao.update(reservation.getRoom());
+                studentDao.update(reservation.getStudent());
             }
-        }
+
+        return roomDao.find(reservation.getRoom().getId());
     }
 
     @Transactional
-    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart){
+    public Reservation getReservation(Room room, Student student) throws NotFoundException {
+
+        if (room == null) throw new NotFoundException();
+        if (room.getReservations() == null) return null;
+
+        for (Reservation reservation: room.getReservations()) {
+            if (reservation.getStatus() == Status.RES_APPROVED && reservation.getStudent().equals(student)) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+
+    @Transactional
+    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart) throws NotFoundException {
         int endedAcco = 0;
+
+        if (room == null) throw new NotFoundException();
 
         for (Accommodation accomodation: room.getActualAccommodations()) {
             if (accomodation.getDateEnd().isBefore(dateStart)) endedAcco++;
@@ -118,9 +142,10 @@ public class RoomService {
     }
 
     @Transactional
-    public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
+    public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
         int reservePlaces = 0;
 
+        if (room == null) throw new NotFoundException();
         for (Reservation reservation: room.getReservations()) {
             if (reservation.getDateEnd().isBefore(dateStart) || reservation.getDateStart().isAfter(dateEnd)) {
             }

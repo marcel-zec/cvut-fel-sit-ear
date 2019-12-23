@@ -39,6 +39,7 @@ public class StudentServiceTest {
     Student firstStudent;
     static Block block;
     static Accommodation accommodation;
+    static Student student;
 
     @Before
     public void before() {
@@ -57,7 +58,8 @@ public class StudentServiceTest {
     @BeforeClass
     public static void beforeClass(){
         block = Generator.generateBlockWithRooms();
-        accommodation = Generator.generateActiveAccommodation(block.getRooms().get(0));
+        student = Generator.generateStudent();
+        accommodation = Generator.generateActiveAccommodation(block.getRooms().get(0),student);
     }
 
     @Test

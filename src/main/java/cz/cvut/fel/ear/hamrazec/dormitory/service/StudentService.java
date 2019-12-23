@@ -14,14 +14,15 @@ import java.util.List;
 public class StudentService {
 
     private final StudentDao studentDao;
-    private final AccommodationService accommodationService;
+    private final ReservationService reservationService;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao, AccommodationService accommodationService) {
+    public StudentService(StudentDao studentDao, ReservationService reservationService) {
 
         this.studentDao = studentDao;
-        this.accommodationService = accommodationService;
+        this.reservationService = reservationService;
+
     }
 
 
@@ -75,7 +76,7 @@ public class StudentService {
         } else {
             student.getReservations().stream()
                     .filter(accommodation -> accommodation.getStatus().equals(Status.RES_APPROVED) || accommodation.getStatus().equals(Status.RES_PENDING))
-                    .findFirst().ifPresent(accommodationService::cancelReservation);
+                    .findFirst().ifPresent(reservationService::cancelReservation);
 
 //            for (Accommodation accommodation: student.getAccommodations()) {
 //                Status status = accommodation.getStatus();

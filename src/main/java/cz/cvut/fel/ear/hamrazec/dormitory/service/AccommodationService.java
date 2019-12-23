@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.AccommodationDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.ReservationDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,14 +21,16 @@ public class AccommodationService {
     private StudentDao studentDao;
     private RoomService roomService;
     private RoomDao roomDao;
+    private ReservationDao reservationDao;
 
     @Autowired
-    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao) {
+    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao, ReservationDao reservationDao) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
         this.roomDao = roomDao;
         this.roomService = roomService;
+        this.reservationDao = reservationDao;
     }
 
     public List<Accommodation> findAll() {
@@ -39,19 +41,51 @@ public class AccommodationService {
         return acoDao.find(id);
     }
 
+
     @Transactional
     public void create(Accommodation accommodation) throws NotFoundException {
-        //TODO - pridat izbu, kontrolovat volnost izby v tom datume ,BLBOST lebo v rezervacii kontrolujeme volnost izby
+
         Student student = accommodation.getStudent();
         Room room = accommodation.getRoom();
+        Reservation reservation = roomService.getReservation(room,student);
 
         if (student == null) throw new NotFoundException();
 
-        acoDao.persist(accommodation);
-        room.addActualAccomodation(accommodation);
-        roomService.removeEndedActualReservation(room,student);
-        student.addAccommodation(accommodation);
-        studentDao.update(student);
+        if (reservation != null && reservation.getDateStart().equals(LocalDate.now())) {
+            createFromReservation(reservation);
+            return;
+        }
+
+        if (reservation == null || !reservation.getDateStart().equals(LocalDate.now())){
+            if (roomService.findFreeConcreteRoom(accommodation.getRoom().getBlock().getName(),accommodation.getDateStart(),
+                    accommodation.getDateEnd(),accommodation.getRoom().getRoomNumber()))
+            {
+                room.addActualAccomodation(accommodation);
+                student.addAccommodation(accommodation);
+                acoDao.persist(accommodation);
+                roomDao.update(room);
+                studentDao.update(student);
+            }
+        }
+    }
+
+    @Transactional
+    public void createFromReservation(Reservation reservation) throws NotFoundException {
+
+        Room room;
+        Student student = reservation.getStudent();
+        if (student == null) throw new NotFoundException();
+
+        if (reservation.getDateStart().equals(LocalDate.now())) {
+            room = roomService.removeActualReservationStart(reservation);
+            room.addActualAccomodation((Accommodation) reservation);
+            student.addAccommodation((Accommodation) reservation);
+
+            acoDao.persist((Accommodation) reservation);
+            roomDao.update(room);
+            studentDao.update(student);
+            reservationDao.remove(reservation);
+        }
     }
 
 
@@ -65,24 +99,17 @@ public class AccommodationService {
                 acoDao.update(accommodation);
             }
         }
+
     }
-
-
-
 
     //TODO - create na náhodnu izbu
 
-    //TODO - reserve na konkretnu izbu a nahodnu izbu
-
-
     @Transactional
     public void delete(Long id) throws NotFoundException {
-
         Accommodation accommodation = acoDao.find(id);
         if (accommodation == null) throw new NotFoundException();
         cancelAccommodation(accommodation);
     }
-
 
 
     @Transactional
@@ -92,10 +119,6 @@ public class AccommodationService {
         accommodation.getRoom().addPastAccomodation(accommodation);
     }
 
-    @Transactional
-    public void cancelReservation(Reservation reservation) {
-        setStatusAndUnusualEnd(reservation,Status.RES_CANCELED);
-    }
 
     private void setStatusAndUnusualEnd(Accommodation accommodation,Status status){
         accommodation.setStatus(status);

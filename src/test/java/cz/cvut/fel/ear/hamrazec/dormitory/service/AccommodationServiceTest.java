@@ -37,6 +37,8 @@ public class AccommodationServiceTest {
 
     private Accommodation accommodation;
     private Student student;
+    private Room room;
+
 
     @Before
     public void before() {
@@ -57,13 +59,30 @@ public class AccommodationServiceTest {
         student.setPassword("fefebdfbzzz");
         student.setRole(Role.STUDENT);
         em.persist(student);
+
+        Block block = new Block();
+        block.setName("6");
+        block.setAddress("OLYMPIJSKA");
+
+
+        room = new Room();
+        room.setRoomNumber(234);
+        room.setFloor(2);
+        room.setMaxCapacity(4);
+        room.setBlock(block);
+
+        block.addRoom(room);
+
+        em.persist(block);
+        em.persist(room);
     }
 
     @Test
-    //neni hotove
     public void createAccommodation() throws NotFoundException {
 
-        accommodationService.create(accommodation,student.getId());
+        accommodation.setStudent(student);
+        accommodation.setRoom(room);
+        accommodationService.create(accommodation);
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
                 .getAccommodations().size());
     }
@@ -71,8 +90,9 @@ public class AccommodationServiceTest {
     @Test
     //neni hotove
     public void createAccommodationWithNoExistingStudent() throws NotFoundException {
+        accommodation.setRoom(room);
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
-        accommodationService.create(accommodation, (long) 15);
+        accommodationService.create(accommodation);
     }
 }
