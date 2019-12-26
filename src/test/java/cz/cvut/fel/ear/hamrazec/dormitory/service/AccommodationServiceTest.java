@@ -88,11 +88,15 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    //neni hotove
     public void createAccommodationWithNoExistingStudent() throws NotFoundException {
         accommodation.setRoom(room);
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
         accommodationService.create(accommodation);
+    }
+
+    @Test
+    public void createAccommodationWithNoExistingRoom() throws NotFoundException{
+        //TODO test
     }
 }

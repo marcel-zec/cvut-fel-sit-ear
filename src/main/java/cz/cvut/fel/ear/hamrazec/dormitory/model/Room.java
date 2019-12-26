@@ -36,7 +36,7 @@ public class Room extends AbstractEntity {
     private List<Accommodation> actualAccommodations;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
+    private List<Reservation> reservations; //TODO jedna rezervacia
 
 //    @OneToOne
 //    private Accommodation actualAccommodation;

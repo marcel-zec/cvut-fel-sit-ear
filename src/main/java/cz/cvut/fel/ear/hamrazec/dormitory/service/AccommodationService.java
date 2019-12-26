@@ -88,7 +88,6 @@ public class AccommodationService {
         }
     }
 
-
     @Scheduled(cron = "0 0 3 * * *", zone = "CET")
     @Transactional
     public void updateExpired(){
