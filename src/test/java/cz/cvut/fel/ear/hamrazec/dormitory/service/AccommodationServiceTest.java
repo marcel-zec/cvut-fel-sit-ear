@@ -97,6 +97,9 @@ public class AccommodationServiceTest {
 
     @Test
     public void createAccommodationWithNoExistingRoom() throws NotFoundException{
-        //TODO test
+        accommodation.setStudent(student);
+        thrown.expect(NotFoundException.class);
+        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room");
+        accommodationService.create(accommodation);
     }
 }
