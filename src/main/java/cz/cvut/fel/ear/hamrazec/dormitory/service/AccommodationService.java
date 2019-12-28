@@ -1,9 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.AccommodationDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.ReservationDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,14 +21,26 @@ public class AccommodationService {
     private RoomDao roomDao;
     private ReservationDao reservationDao;
 
+
     @Autowired
-    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao, ReservationDao reservationDao) {
+    public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao,
+                                ReservationDao reservationDao) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
         this.roomDao = roomDao;
         this.roomService = roomService;
         this.reservationDao = reservationDao;
+
+    }
+
+    public List<Accommodation> findAll(String blockName) {
+
+        List<Accommodation> accommodationsByBlock = new ArrayList<>();
+        for (Accommodation a: findAll()) {
+            if (a.getRoom().getBlock().getName().equals(blockName)) accommodationsByBlock.add(a);
+        }
+        return accommodationsByBlock;
     }
 
     public List<Accommodation> findAll() {
@@ -43,13 +53,15 @@ public class AccommodationService {
 
 
     @Transactional
-    public void create(Accommodation accommodation) throws NotFoundException {
+    public void create(Accommodation accommodation, Long student_id, Long room_id) throws NotFoundException {
 
-        Student student = accommodation.getStudent();
-        Room room = accommodation.getRoom();
+        Student student = studentDao.find(student_id);
+        Room room = roomDao.find(room_id);
+        accommodation.setStudent(student);
+        accommodation.setRoom(room);
         Reservation reservation = roomService.getReservation(room,student);
 
-        if (student == null) throw new NotFoundException();
+        if (student == null || room == null) throw new NotFoundException();
 
         if (reservation != null && reservation.getDateStart().equals(LocalDate.now())) {
             createFromReservation(reservation);

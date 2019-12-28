@@ -26,10 +26,10 @@ public class AccommodationController {
         this.acomService = acomService;
     }
 
-    @GetMapping(value = "block/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Accommodation> getAccommodations(@PathVariable Long id) {
+    @GetMapping(value = "block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Accommodation> getAccommodations(@PathVariable String blockName) {
 
-        return acomService.findAll(id);
+        return acomService.findAll(blockName);
     }
 
     @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
