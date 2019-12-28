@@ -80,26 +80,24 @@ public class AccommodationServiceTest {
     @Test
     public void createAccommodation() throws NotFoundException {
 
-        accommodation.setStudent(student);
-        accommodation.setRoom(room);
-        accommodationService.create(accommodation);
+        accommodationService.create(accommodation, student.getId(), room.getId());
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
                 .getAccommodations().size());
     }
 
     @Test
     public void createAccommodationWithNoExistingStudent() throws NotFoundException {
-        accommodation.setRoom(room);
+
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
-        accommodationService.create(accommodation);
+        accommodationService.create(accommodation, (long)4,room.getId());
     }
 
     @Test
     public void createAccommodationWithNoExistingRoom() throws NotFoundException{
-        accommodation.setStudent(student);
+
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room");
-        accommodationService.create(accommodation);
+        accommodationService.create(accommodation,student.getId(), (long)222);
     }
 }

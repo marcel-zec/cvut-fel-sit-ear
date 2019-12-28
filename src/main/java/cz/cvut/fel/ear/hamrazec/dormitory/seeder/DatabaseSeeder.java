@@ -1,9 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -25,15 +22,18 @@ public class DatabaseSeeder implements
     private StudentDao studentDao;
     private BlockDao blockDao;
     private ManagerDao managerDao;
+    private RoomDao roomDao;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
         this.blockDao = blockDao;
         this.managerDao = managerDao;
+        this.roomDao= roomDao;
+
     }
 
 
@@ -103,11 +103,20 @@ public class DatabaseSeeder implements
         managerDao.persist(manager);
     }
 
+    void seedRoom(){
+        Room room = new Room();
+        room.setBlock(blockDao.find((long) 1));
+        room.setMaxCapacity(3);
+        room.setFloor(3);
+        room.setRoomNumber(334);
+        roomDao.persist(room);
+    }
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         seedUsersTable();
         seedBlocks();
         seedManagers();
+        seedRoom();
     }
 }
