@@ -38,6 +38,10 @@ public class RoomService {
         return block.getRooms();
     }
 
+    //public Room findRoom(Long id){
+    //    return roomDao.find(id);
+   // }
+
 
     @Transactional
     public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
@@ -64,9 +68,8 @@ public class RoomService {
     }
 
 
-    public Block find(String blockName, Integer roomNumber) {
-        //TODO - query
-        return null;
+    public Room find(String blockName, Integer roomNumber) {
+        return roomDao.find(blockName,roomNumber);
     }
 
     @Transactional
@@ -83,7 +86,19 @@ public class RoomService {
     public void addRoom(String blockName, Room room) throws NotFoundException {
 
         Block block = blockDao.find(blockName);
-        if (block == null) throw new NotFoundException();
+        List<Room> rooms = findAll(blockName);
+        boolean roomExist = false;
+
+        if (block == null || room == null) throw new NotFoundException();
+        if (rooms != null) {
+            for (Room r:rooms) {
+                if (r == room){
+                    roomExist = true;
+                    break;
+                }
+            }
+            if(!roomExist) roomDao.persist(room);
+        }
         block.addRoom(room);
         blockDao.update(block);
     }
