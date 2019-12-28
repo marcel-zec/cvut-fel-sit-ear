@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @RestController
@@ -30,6 +31,12 @@ public class RoomController {
     public List<Room> getRooms(@PathVariable String name) throws NotFoundException {
 
         return roomService.findAll(name);
+    }
+
+    @GetMapping(value = "block/{name}/room/{number}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public Room getRoom(@PathVariable String name, @PathVariable Integer number) {
+
+        return roomService.find(name, number);
     }
 
     @PostMapping(value = "/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)

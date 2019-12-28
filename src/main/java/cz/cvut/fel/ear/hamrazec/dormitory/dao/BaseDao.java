@@ -1,8 +1,11 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.dao;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
