@@ -22,7 +22,7 @@ public class RoomService {
     private final BlockDao blockDao;
     private final RoomDao roomDao;
     private StudentDao studentDao;
-    private List<Room> roomList = new ArrayList<Room>();
+
 
     @Autowired
     public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao) {
@@ -32,10 +32,18 @@ public class RoomService {
         this.studentDao = studentDao;
     }
 
+    @Transactional
     public List<Room> findAll(String blockName) throws NotFoundException {
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         return block.getRooms();
+    }
+
+    @Transactional
+    public List<Accommodation> getActualAccommodations(String blockName, Integer roomNumber){
+
+       Room room = find(blockName,roomNumber);
+       return room.getActualAccommodations();
     }
 
     //public Room findRoom(Long id){
@@ -46,7 +54,8 @@ public class RoomService {
     @Transactional
     public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
 
-        Block block = blockDao.find(blockName); //TODO najdi podla mena nie podla id
+        List<Room> roomList = new ArrayList<Room>();
+        Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         if (block.getRooms() == null) throw new NotFoundException();
 
@@ -160,7 +169,7 @@ public class RoomService {
     public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
         int reservePlaces = 0;
 
-        if (room == null) throw new NotFoundException();
+        if (room == null ) throw new NotFoundException();
         for (Reservation reservation: room.getReservations()) {
             if (reservation.getDateEnd().isBefore(dateStart) || reservation.getDateStart().isAfter(dateEnd)) {
             }

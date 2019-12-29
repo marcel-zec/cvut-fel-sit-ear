@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.RoomService;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -38,6 +40,19 @@ public class RoomController {
 
         return roomService.find(name, number);
     }
+
+    @GetMapping(value = "block/{name}/room/{roomNum}/accommodations/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Accommodation> getActualAccommodationsInRoom(@PathVariable Integer roomNum, @PathVariable String name) {
+
+        return roomService.getActualAccommodations(name,roomNum);
+    }
+
+    @GetMapping(value = "/free_rooms/block/{name}/start/{dateStart}/end/{dateEnd}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getFreeRooms(@PathVariable String name, @PathVariable String dateStart, @PathVariable String dateEnd) throws NotFoundException
+    {
+        return roomService.findFreeRooms(name,LocalDate.parse(dateStart), LocalDate.parse(dateEnd));
+    }
+
 
     @PostMapping(value = "/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

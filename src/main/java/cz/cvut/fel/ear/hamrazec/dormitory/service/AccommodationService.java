@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,16 @@ public class AccommodationService {
 
 
     @Transactional
-    public void create(Accommodation accommodation, Long student_id, Long room_id) throws NotFoundException {
+    public void create(Accommodation accommodation, Long student_id, Long room_id) throws NotFoundException, NotAllowedException {
 
+        if (!accommodation.getDateStart().equals(LocalDate.now())) {
+            throw new NotAllowedException("bad date");
+        }
         Student student = studentDao.find(student_id);
         Room room = roomDao.find(room_id);
         accommodation.setStudent(student);
         accommodation.setRoom(room);
+        accommodation.setStatus(Status.ACC_ACTIVE);
         Reservation reservation = roomService.getReservation(room,student);
 
         if (student == null || room == null) throw new NotFoundException();
@@ -90,14 +95,25 @@ public class AccommodationService {
 
         if (reservation.getDateStart().equals(LocalDate.now())) {
             room = roomService.removeActualReservationStart(reservation);
-            room.addActualAccomodation((Accommodation) reservation);
-            student.addAccommodation((Accommodation) reservation);
+            Accommodation accommodation = newAccomodationFromReservation(reservation);
+            room.addActualAccomodation(accommodation);
+            student.addAccommodation(accommodation);
 
-            acoDao.persist((Accommodation) reservation);
             roomDao.update(room);
             studentDao.update(student);
             reservationDao.remove(reservation);
         }
+    }
+
+    private Accommodation newAccomodationFromReservation(Reservation reservation){
+        Accommodation accommodation = new Accommodation();
+        accommodation.setStudent(reservation.getStudent());
+        accommodation.setRoom(reservation.getRoom());
+        accommodation.setDateEnd(reservation.getDateEnd());
+        accommodation.setDateStart(reservation.getDateStart());
+        accommodation.setStatus(Status.ACC_ACTIVE);
+        acoDao.persist(accommodation);
+        return accommodation;
     }
 
     @Scheduled(cron = "0 0 3 * * *", zone = "CET")

@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodation() throws NotFoundException {
+    public void createAccommodation() throws NotFoundException, NotAllowedException {
 
         accommodationService.create(accommodation, student.getId(), room.getId());
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
@@ -86,7 +87,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodationWithNoExistingStudent() throws NotFoundException {
+    public void createAccommodationWithNoExistingStudent() throws NotFoundException, NotAllowedException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
@@ -94,7 +95,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodationWithNoExistingRoom() throws NotFoundException{
+    public void createAccommodationWithNoExistingRoom() throws NotFoundException, NotAllowedException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room");

@@ -23,16 +23,18 @@ public class DatabaseSeeder implements
     private BlockDao blockDao;
     private ManagerDao managerDao;
     private RoomDao roomDao;
+    private AccommodationDao accommodationDao;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
         this.blockDao = blockDao;
         this.managerDao = managerDao;
         this.roomDao= roomDao;
+        this.accommodationDao = accommodationDao;
 
     }
 
@@ -110,6 +112,22 @@ public class DatabaseSeeder implements
         room.setFloor(3);
         room.setRoomNumber(334);
         roomDao.persist(room);
+
+        Room room2 = new Room();
+        room2.setBlock(blockDao.find((long) 1));
+        room2.setMaxCapacity(3);
+        room2.setFloor(4);
+        room2.setRoomNumber(452);
+        roomDao.persist(room2);
+    }
+
+    void seedAccom(){
+        Accommodation accommodation = new Accommodation();
+        accommodation.setDateStart(LocalDate.now());
+        accommodation.setDateEnd(LocalDate.parse("2020-12-21"));
+        accommodation.setRoom(roomDao.find("b1",334));
+        accommodation.setStudent(studentDao.find((long) 1));
+        accommodationDao.persist(accommodation);
     }
     @Override
     @Transactional
@@ -118,5 +136,6 @@ public class DatabaseSeeder implements
         seedBlocks();
         seedManagers();
         seedRoom();
+        seedAccom();
     }
 }

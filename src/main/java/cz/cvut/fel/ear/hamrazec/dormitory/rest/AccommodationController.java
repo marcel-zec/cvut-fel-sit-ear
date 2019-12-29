@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.AccommodationService;
@@ -32,6 +33,7 @@ public class AccommodationController {
         return acomService.findAll(blockName);
     }
 
+
     @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable Long room_id) {
@@ -39,7 +41,7 @@ public class AccommodationController {
         try {
             acomService.create(accommodation, student_id, room_id);
             LOG.info("Accommodation with id {} created", accommodation.getId());
-        }catch (NotFoundException e) {
+        }catch (NotFoundException | NotAllowedException e) {
             //TODO - exceptions
         }
     }
