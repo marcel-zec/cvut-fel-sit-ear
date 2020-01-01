@@ -39,6 +39,8 @@ public class AccommodationServiceTest {
     private Accommodation accommodation;
     private Student student;
     private Room room;
+    private Reservation reservation;
+    private Reservation reservation1;
 
 
     @Before
@@ -46,6 +48,14 @@ public class AccommodationServiceTest {
         accommodation = new Accommodation();
         accommodation.setDateEnd(LocalDate.parse("2022-12-03"));
         accommodation.setDateStart(LocalDate.now());
+
+        reservation = new Reservation();
+        reservation.setDateEnd(LocalDate.parse("2022-12-03"));
+        reservation.setDateStart(LocalDate.parse("2021-12-03"));
+
+        reservation1 = new Reservation();
+        reservation1.setDateStart(LocalDate.now());
+        reservation1.setDateEnd(LocalDate.parse("2022-12-03"));
 
         student = new Student();
         student.setGender(Gender.MAN);
@@ -73,9 +83,15 @@ public class AccommodationServiceTest {
         room.setBlock(block);
 
         block.addRoom(room);
+        reservation.setRoom(room);
+        reservation.setStudent(student);
+        reservation1.setRoom(room);
+        reservation1.setStudent(student);
 
         em.persist(block);
         em.persist(room);
+        em.persist(reservation);
+        em.persist(reservation1);
     }
 
     @Test
@@ -90,7 +106,7 @@ public class AccommodationServiceTest {
     public void createAccommodationWithNoExistingStudent() throws NotFoundException, NotAllowedException {
 
         thrown.expect(NotFoundException.class);
-        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
+        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student.");
         accommodationService.create(accommodation, (long)4,room.getId());
     }
 
@@ -98,7 +114,24 @@ public class AccommodationServiceTest {
     public void createAccommodationWithNoExistingRoom() throws NotFoundException, NotAllowedException {
 
         thrown.expect(NotFoundException.class);
-        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room");
+        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room.");
         accommodationService.create(accommodation,student.getId(), (long)222);
     }
+
+    @Test
+    public void createAccommodationFromReservation_badDate() throws NotFoundException, NotAllowedException {
+
+        thrown.expect(NotAllowedException.class);
+        thrown.reportMissingExceptionWithMessage("Trying create accommodation with bad date.");
+        accommodationService.createFromReservation(reservation);
+    }
+
+    @Test
+    public void createAccommodationFromReservation() throws NotFoundException, NotAllowedException {
+
+        accommodationService.createFromReservation(reservation1);
+        assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
+                .getAccommodations().size());
+    }
+
 }

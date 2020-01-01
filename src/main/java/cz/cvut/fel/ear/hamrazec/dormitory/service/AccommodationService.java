@@ -87,7 +87,7 @@ public class AccommodationService {
     }
 
     @Transactional
-    public void createFromReservation(Reservation reservation) throws NotFoundException {
+    public void createFromReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
 
         Room room;
         Student student = reservation.getStudent();
@@ -102,7 +102,7 @@ public class AccommodationService {
             roomDao.update(room);
             studentDao.update(student);
             reservationDao.remove(reservation);
-        }
+        }else throw new NotAllowedException("Bad date");
     }
 
     private Accommodation newAccomodationFromReservation(Reservation reservation){

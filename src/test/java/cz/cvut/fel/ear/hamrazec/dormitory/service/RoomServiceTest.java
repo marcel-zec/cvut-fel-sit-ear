@@ -115,6 +115,9 @@ public class RoomServiceTest {
     }
 
 
+
+
+
 //    @Test
 //    public void addRoomToBlock() throws NotFoundException {
 //
