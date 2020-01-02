@@ -46,6 +46,18 @@ public class AccommodationController {
         }
     }
 
+    @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createAccommodationRandom(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable String blockName) {
+
+        try {
+            acomService.createNewAccommodationRandom(accommodation,student_id,blockName);
+            LOG.info("Accommodation on room {} created", accommodation.getRoom().getRoomNumber());
+        }catch (NotFoundException | NotAllowedException e) {
+            //TODO - exceptions
+        }
+    }
+
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAccommodation(@PathVariable Long id) throws NotFoundException {

@@ -50,7 +50,7 @@ public class ReservationController {
 
         try {
             reservationService.createNewReservationRandom(reservation, student_id, blockName);
-            LOG.info("Reservation with on room {} created", reservation.getRoom());
+            LOG.info("Reservation with on room {} created", reservation.getRoom().getRoomNumber());
         }catch (NotFoundException e) {
             //TODO - exceptions
         }

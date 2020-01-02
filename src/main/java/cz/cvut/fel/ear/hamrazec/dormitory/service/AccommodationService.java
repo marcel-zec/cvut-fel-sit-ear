@@ -129,7 +129,27 @@ public class AccommodationService {
 
     }
 
-    //TODO - create na náhodnu izbu
+    @Transactional
+    public void createNewAccommodationRandom(Accommodation accommodation, Long student_id, String blockName) throws NotFoundException, NotAllowedException {
+
+        Student student = studentDao.find(student_id);
+        accommodation.setStudent(student);
+        if (student == null) throw new NotFoundException();
+
+        if (accommodation.getDateStart().equals(LocalDate.now())) {
+            List<Room> freeRooms = roomService.findFreeRooms(blockName, accommodation.getDateStart(), accommodation.getDateEnd());
+            if (freeRooms != null) {
+                accommodation.setStatus(Status.ACC_ACTIVE);
+                Room room = freeRooms.get(0);
+                accommodation.setRoom(room);
+                room.addActualAccomodation(accommodation);
+                student.addAccommodation(accommodation);
+                acoDao.persist(accommodation);
+                studentDao.update(student);
+                roomDao.update(room);
+            }
+        } else throw new NotAllowedException("Bad date");
+    }
 
     @Transactional
     public void delete(Long id) throws NotFoundException {

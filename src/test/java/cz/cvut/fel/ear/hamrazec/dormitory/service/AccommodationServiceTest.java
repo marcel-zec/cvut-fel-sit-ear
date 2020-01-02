@@ -41,6 +41,7 @@ public class AccommodationServiceTest {
     private Room room;
     private Reservation reservation;
     private Reservation reservation1;
+    private  Block block;
 
 
     @Before
@@ -71,7 +72,7 @@ public class AccommodationServiceTest {
         student.setRole(Role.STUDENT);
         em.persist(student);
 
-        Block block = new Block();
+        block = new Block();
         block.setName("6");
         block.setAddress("OLYMPIJSKA");
 
@@ -130,6 +131,14 @@ public class AccommodationServiceTest {
     public void createAccommodationFromReservation() throws NotFoundException, NotAllowedException {
 
         accommodationService.createFromReservation(reservation1);
+        assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
+                .getAccommodations().size());
+    }
+
+    @Test
+    public void createAccommodationRandom() throws NotFoundException, NotAllowedException {
+
+        accommodationService.createNewAccommodationRandom(accommodation,student.getId(),block.getName());
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
                 .getAccommodations().size());
     }
