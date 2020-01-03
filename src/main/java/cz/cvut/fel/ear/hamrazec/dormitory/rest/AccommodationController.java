@@ -39,6 +39,11 @@ public class AccommodationController {
         return acomService.findAll(student_id);
     }
 
+    @GetMapping(value = "actual/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Accommodation getActualAccommodationOfStudent(@PathVariable Long student_id) {
+        return acomService.findActualAccommodationOfStudent(student_id);
+    }
+
     @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable Long room_id) {

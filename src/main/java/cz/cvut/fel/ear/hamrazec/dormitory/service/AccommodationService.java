@@ -60,6 +60,13 @@ public class AccommodationService {
         return acoDao.find(id);
     }
 
+    public Accommodation findActualAccommodationOfStudent(Long student_id) {
+        for (Accommodation accommodation:findAll(student_id) ) {
+            if (accommodation.getStatus() == Status.ACC_ACTIVE) return accommodation;
+        }
+        return null;
+    }
+
 
     @Transactional
     public void create(Accommodation accommodation, Long student_id, Long room_id) throws NotFoundException, NotAllowedException {

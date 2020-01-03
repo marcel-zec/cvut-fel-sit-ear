@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +37,7 @@ public class AccommodationServiceTest {
     @Autowired
     private AccommodationService accommodationService;
 
-    private Accommodation accommodation;
+    private Accommodation accommodation, accommodation1;
     private Student student;
     private Room room;
     private Reservation reservation;
@@ -49,6 +50,10 @@ public class AccommodationServiceTest {
         accommodation = new Accommodation();
         accommodation.setDateEnd(LocalDate.parse("2022-12-03"));
         accommodation.setDateStart(LocalDate.now());
+
+        accommodation1 = new Accommodation();
+        accommodation1.setDateEnd(LocalDate.parse("2020-12-03"));
+        accommodation1.setDateStart(LocalDate.now());
 
         reservation = new Reservation();
         reservation.setDateEnd(LocalDate.parse("2022-12-03"));
@@ -141,6 +146,15 @@ public class AccommodationServiceTest {
         accommodationService.createNewAccommodationRandom(accommodation,student.getId(),block.getName());
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
                 .getAccommodations().size());
+    }
+
+    @Test
+    public void findAll_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+
+        accommodationService.create(accommodation, student.getId(), room.getId());
+        accommodationService.create(accommodation1, student.getId(), room.getId());
+        List<Accommodation> accommodations = accommodationService.findAll(student.getId());
+        assertEquals("Student has bad accommodations.", 1 , accommodations.size());
     }
 
 }
