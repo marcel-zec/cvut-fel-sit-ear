@@ -93,6 +93,7 @@ public class AccommodationServiceTest {
         block = new Block();
         block.setName("6");
         block.setAddress("OLYMPIJSKA");
+        block.setFloors(10);
 
 
         room = new Room();

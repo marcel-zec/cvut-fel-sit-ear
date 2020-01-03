@@ -115,7 +115,7 @@ public class RoomService {
             block.addRoom(room);
             blockDao.update(block);
         } else {
-            LOG.error("Room number " + room.getRoomNumber() + " at floor " + room.getFloor() + " at block " + block.getName() + " already exists.");
+            LOG.error("Room number " + room.getRoomNumber() + " at block " + block.getName() + " already exists.");
             throw new AlreadyExistsException();
         }
     }
