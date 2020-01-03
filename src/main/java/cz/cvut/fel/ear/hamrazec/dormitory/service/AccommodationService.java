@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccommodationService {
@@ -21,17 +22,21 @@ public class AccommodationService {
     private RoomService roomService;
     private RoomDao roomDao;
     private ReservationDao reservationDao;
+    private BlockDao blockDao;
+    private ReservationService reservationService;
 
 
     @Autowired
     public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao,
-                                ReservationDao reservationDao) {
+                                ReservationDao reservationDao, BlockDao blockDao, ReservationService reservationService) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
         this.roomDao = roomDao;
         this.roomService = roomService;
         this.reservationDao = reservationDao;
+        this.blockDao = blockDao;
+        this.reservationService = reservationService;
 
     }
 
@@ -69,7 +74,7 @@ public class AccommodationService {
 
 
     @Transactional
-    public void create(Accommodation accommodation, Long student_id, Long room_id) throws NotFoundException, NotAllowedException {
+    public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException {
 
         if (!accommodation.getDateStart().equals(LocalDate.now())) {
             throw new NotAllowedException("bad date");
@@ -80,7 +85,12 @@ public class AccommodationService {
         }
 
         Student student = studentDao.find(student_id);
-        Room room = roomDao.find(room_id);
+        Block block = blockDao.find(blockName);
+        List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(roomNumber)).collect(Collectors.toList());
+
+        if (roomList.size() == 0) throw new NotFoundException();
+        Room room = roomList.get(0);
+
         accommodation.setStudent(student);
         accommodation.setRoom(room);
         accommodation.setStatus(Status.ACC_ACTIVE);
@@ -99,6 +109,10 @@ public class AccommodationService {
             {
                 room.addActualAccomodation(accommodation);
                 student.addAccommodation(accommodation);
+
+                if (student.getReservation() !=null) {
+                    reservationService.deleteReservation(student.getReservation());
+                }
                 acoDao.persist(accommodation);
                 roomDao.update(room);
                 studentDao.update(student);
@@ -113,7 +127,7 @@ public class AccommodationService {
         Student student = reservation.getStudent();
         if (student == null) throw new NotFoundException();
 
-        if (reservation.getDateStart().equals(LocalDate.now())) {
+        if (reservation.getDateStart().equals(LocalDate.now()) && reservation.getStatus().equals(Status.RES_APPROVED)) {
             room = roomService.removeActualReservationStart(reservation);
             Accommodation accommodation = newAccomodationFromReservation(reservation);
             room.addActualAccomodation(accommodation);
@@ -122,7 +136,7 @@ public class AccommodationService {
             roomDao.update(room);
             studentDao.update(student);
             reservationDao.remove(reservation);
-        }else throw new NotAllowedException("Bad date");
+        }else throw new NotAllowedException("Bad date or not not approved reservation");
     }
 
     private Accommodation newAccomodationFromReservation(Reservation reservation){
@@ -155,6 +169,11 @@ public class AccommodationService {
         Student student = studentDao.find(student_id);
         accommodation.setStudent(student);
         if (student == null) throw new NotFoundException();
+
+        if (student.getReservation() != null && student.getReservation().getDateStart().equals(LocalDate.now())) {
+            if (student.getReservation().getRoom().getBlock().getName().equals(blockName)) createFromReservation(student.getReservation());
+            else reservationDao.remove(student.getReservation());
+        }
 
         if (accommodation.getDateStart().equals(LocalDate.now())) {
             List<Room> freeRooms = roomService.findFreeRooms(blockName, accommodation.getDateStart(), accommodation.getDateEnd());
