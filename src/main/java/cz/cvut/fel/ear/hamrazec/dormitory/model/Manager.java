@@ -24,6 +24,7 @@ public class Manager extends User {
     private Integer workerNumber;
 
     @ManyToMany
+    @OrderBy("name ASC")
     @JoinTable(
             name = "managers_blocks",
             joinColumns = @JoinColumn(name = "manager_id"),

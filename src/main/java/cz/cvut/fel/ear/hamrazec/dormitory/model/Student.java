@@ -33,6 +33,7 @@ public class Student extends User{
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @OrderBy("dateStart DESC")
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Accommodation> accommodations;
 

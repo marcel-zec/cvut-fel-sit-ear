@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OrderBy;
 import java.util.List;
 
 @Service
@@ -62,7 +63,6 @@ public class ManagerService {
 
     @Transactional(readOnly = true)
     public List<Manager> findAll() {
-
         return managerDao.findAll();
     }
 

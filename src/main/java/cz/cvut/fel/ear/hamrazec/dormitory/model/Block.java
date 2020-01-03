@@ -28,9 +28,11 @@ public class Block  extends AbstractEntity{
     @Size(max = 255, min = 5)
     private String address;
 
+    @OrderBy("workerNumber ASC")
     @ManyToMany(mappedBy = "blocks")
     private List<Manager> managers;
 
+    @OrderBy("roomNumber ASC")
     @OneToMany(mappedBy = "block", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
