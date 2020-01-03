@@ -1,11 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
-import javassist.bytecode.analysis.ControlFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +19,12 @@ public class RoomService {
     private final BlockDao blockDao;
     private final RoomDao roomDao;
     private List<Room> roomList = new ArrayList<Room>();
-    private AccommodationService accommodationService;
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao, AccommodationService accommodationService) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
-        this.accommodationService = accommodationService;
     }
 
     public List<Room> findAll(String blockName) throws NotFoundException {

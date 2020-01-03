@@ -59,20 +59,20 @@ public class AccommodationServiceTest {
         em.persist(student);
     }
 
-    @Test
-    //neni hotove
-    public void createAccommodation() throws NotFoundException {
-
-        accommodationService.create(accommodation,student.getId());
-        assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
-                .getAccommodations().size());
-    }
-
-    @Test
-    //neni hotove
-    public void createAccommodationWithNoExistingStudent() throws NotFoundException {
-        thrown.expect(NotFoundException.class);
-        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
-        accommodationService.create(accommodation, (long) 15);
-    }
+//    @Test
+//    //neni hotove
+//    public void createAccommodation() throws NotFoundException {
+//
+//        accommodationService.create(accommodation,student.getId());
+//        assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
+//                .getAccommodations().size());
+//    }
+//
+//    @Test
+//    //neni hotove
+//    public void createAccommodationWithNoExistingStudent() throws NotFoundException {
+//        thrown.expect(NotFoundException.class);
+//        thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student");
+//        accommodationService.create(accommodation, (long) 15);
+//    }
 }
