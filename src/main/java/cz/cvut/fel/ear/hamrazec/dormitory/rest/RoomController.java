@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
@@ -65,10 +66,14 @@ public class RoomController {
     }
 
     @DeleteMapping(value = "/{number}/block/{blockName}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createRoom(@PathVariable Integer number, @PathVariable String blockName) throws NotFoundException, AlreadyExistsException, BadFloorException {
-
-        roomService.deleteRoom(number,blockName);
-        LOG.info("Room number {} created at block {}.", number, blockName);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRoom(@PathVariable Integer number, @PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, AlreadyExistsException, BadFloorException, NotAcceptDeletingConsequences {
+        if (accept){
+            roomService.deleteRoom(number,blockName);
+            LOG.info("Room number {} at block {} was deleted.", number, blockName);
+        } else {
+            LOG.info("Room number {} at block {} was deleted. User not accept possible consequences of deleting.", number, blockName);
+            throw new NotAcceptDeletingConsequences();
+        }
     }
 }

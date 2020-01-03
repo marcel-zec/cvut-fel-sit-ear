@@ -103,7 +103,6 @@ public class BlockController {
             LOG.info("Amount of floors at block {} not changed. User not accept possible consequences of deleting.", blockName);
             throw new NotAcceptDeletingConsequences();
         }
-
     }
 
 

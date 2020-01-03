@@ -44,7 +44,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(NotAcceptDeletingConsequences.class)
-    public ResponseEntity<ErrorInfo> deletingAccept(HttpServletRequest request, NotFoundException e) {
+    public ResponseEntity<ErrorInfo> deletingAccept(HttpServletRequest request, NotAcceptDeletingConsequences e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.FORBIDDEN);
     }
 
