@@ -107,9 +107,7 @@ public class RoomService {
 
         room.setBlock(block);
 
-        boolean roomExist = rooms.stream()
-                .filter(findingRoom -> findingRoom.getFloor().equals(room.getFloor()))
-                .anyMatch(findingRoom -> findingRoom.getRoomNumber().equals(room.getRoomNumber()));
+        boolean roomExist = rooms.stream().anyMatch(findingRoom -> findingRoom.getRoomNumber().equals(room.getRoomNumber()));
 
 
         if (!roomExist) {
