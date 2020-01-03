@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Manager.findByWorkerNumber", query = "SELECT m FROM Manager m WHERE m.workerNumber = :workerNumber")
+        @NamedQuery(name = "Manager.findByWorkerNumber", query = "SELECT m FROM Manager m WHERE m.workerNumber = :workerNumber AND m.deleted_at is null")
 })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")

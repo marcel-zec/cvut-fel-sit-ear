@@ -191,6 +191,14 @@ public class RoomService {
     }
 
     @Transactional
+    public void deleteRoom(Integer roomNumber, String blockName) throws NotFoundException {
+        Block block = blockDao.find(blockName);
+        Room room = roomDao.find(blockName,roomNumber);
+        if (block == null || room == null) throw new NotFoundException();
+        deleteRoom(room);
+    }
+
+    @Transactional
     public void deleteRoom(Room room){
         room.getActualAccommodations().stream().forEach(accommodation -> {
             try {
@@ -199,6 +207,7 @@ public class RoomService {
                 LOG.error("Bad list of accommodations in room with id: " + room.getId());
             }
         });
+        room.softDelete();
     }
 
 
