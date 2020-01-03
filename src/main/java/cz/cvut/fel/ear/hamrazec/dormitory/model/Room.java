@@ -37,12 +37,15 @@ public class Room extends AbstractEntity {
     @JoinColumn(name="block_id", nullable=false)
     private Block block;
 
+    @OrderBy("dateStart DESC")
     @OneToMany
     private List<Accommodation> pastAccommodations;
 
+    @OrderBy("dateStart DESC")
     @OneToMany //(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Accommodation> actualAccommodations;
 
+    @OrderBy("dateStart DESC")
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Reservation> reservations; //TODO jedna rezervacia
 
