@@ -64,7 +64,7 @@ public class RoomController {
         LOG.info("Room number {} created at block {}.", room.getRoomNumber(),room.getBlock().getName());
     }
 
-    @DeleteMapping(value = "{number}/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{number}/block/{blockName}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void createRoom(@PathVariable Integer number, @PathVariable String blockName) throws NotFoundException, AlreadyExistsException, BadFloorException {
 
