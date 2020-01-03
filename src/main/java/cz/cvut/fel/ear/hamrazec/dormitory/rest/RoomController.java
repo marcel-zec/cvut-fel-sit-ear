@@ -63,4 +63,12 @@ public class RoomController {
         roomService.addRoom(name,room);
         LOG.info("Room number {} created at block {}.", room.getRoomNumber(),room.getBlock().getName());
     }
+
+    @DeleteMapping(value = "{number}/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createRoom(@PathVariable Integer number, @PathVariable String blockName) throws NotFoundException, AlreadyExistsException, BadFloorException {
+
+        roomService.deleteRoom(number,blockName);
+        LOG.info("Room number {} created at block {}.", number, blockName);
+    }
 }

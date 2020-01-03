@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.dao;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.model.AbstractEntity;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.SuperUser;
@@ -20,7 +21,7 @@ public abstract class BaseDao<T> implements GenericDao<T> {
 
     protected final Class<T> type;
 
-    protected BaseDao(Class<T > type) {
+    protected BaseDao(Class<T> type) {
         this.type = type;
     }
 

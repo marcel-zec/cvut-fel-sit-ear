@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Room.findByBlockName", query = "SELECT r FROM Room r WHERE r.block.name = :blockname AND r.roomNumber = :roomNumber")
+        @NamedQuery(name = "Room.findByBlockName", query = "SELECT r FROM Room r WHERE r.block.name = :blockname AND r.roomNumber = :roomNumber AND r.deleted_at is null")
 })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
