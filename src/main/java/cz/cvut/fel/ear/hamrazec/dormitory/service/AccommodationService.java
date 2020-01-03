@@ -162,8 +162,8 @@ public class AccommodationService {
     @Transactional
     public void cancelAccommodation(Accommodation accommodation) {
         setStatusAndUnusualEnd(accommodation,Status.ACC_CANCELED);
-        accommodation.getRoom().cancelActualAccomodation(accommodation);
-        accommodation.getRoom().addPastAccomodation(accommodation);
+        roomService.removeEndedActualAccommodation(accommodation.getRoom());
+        //TODO - presun
     }
 
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "DORMITORY_USER")
@@ -40,6 +41,10 @@ public abstract class User extends AbstractEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Basic(optional = true)
+    @Column(nullable = true)
+    private LocalDate deleted_at;
 
     public User() {
     }
@@ -100,6 +105,10 @@ public abstract class User extends AbstractEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public void delete(){
+        deleted_at = LocalDate.now();
     }
 
 //    public UserRole getUserRole() {
