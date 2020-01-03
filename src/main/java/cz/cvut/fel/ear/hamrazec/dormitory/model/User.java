@@ -111,6 +111,10 @@ public abstract class User extends AbstractEntity {
         deleted_at = LocalDate.now();
     }
 
+    public boolean isNotDeleted(){
+        return deleted_at == null;
+    }
+
 //    public UserRole getUserRole() {
 //        return userRole;
 //    }
