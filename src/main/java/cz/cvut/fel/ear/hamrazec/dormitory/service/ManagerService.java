@@ -1,9 +1,11 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,16 +38,16 @@ public class ManagerService {
 
 
     @Transactional
-    public void update(Integer workerNumber, Manager manager) throws NotFoundException {
+    public void update(Integer workerNumber, Manager manager) throws NotFoundException, NotAllowedException {
 
         Manager toUpdate = managerDao.findByWorkerNumber(workerNumber);
         if (manager == null) throw new NotFoundException();
+        if (manager.getRole() != null && manager.getRole() != Role.MANAGER) throw new NotAllowedException("You are not allowed to change role.");
 
         toUpdate.setFirstName(manager.getFirstName());
         toUpdate.setLastName(manager.getLastName());
         toUpdate.setUsername(manager.getUsername());
         toUpdate.setEmail(manager.getEmail());
-        toUpdate.setWorkerNumber(manager.getWorkerNumber());
 
         managerDao.update(toUpdate);
     }

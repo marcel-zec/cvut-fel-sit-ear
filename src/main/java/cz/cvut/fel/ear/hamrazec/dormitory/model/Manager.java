@@ -20,7 +20,7 @@ import java.util.List;
 public class Manager extends User {
 
     @Basic(optional = false)
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private Integer workerNumber;
 
     @ManyToMany
