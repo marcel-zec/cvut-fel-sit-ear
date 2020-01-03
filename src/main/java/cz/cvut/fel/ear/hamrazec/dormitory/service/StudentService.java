@@ -16,13 +16,14 @@ public class StudentService {
 
     private final StudentDao studentDao;
     private final ReservationService reservationService;
+    private final PasswordService passwordService;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao, ReservationService reservationService) {
+    public StudentService(StudentDao studentDao, ReservationService reservationService, PasswordService passwordService) {
         this.studentDao = studentDao;
         this.reservationService = reservationService;
-
+        this.passwordService = passwordService;
     }
 
 
@@ -38,9 +39,7 @@ public class StudentService {
 
     @Transactional
     public void create(Student student) throws NotAllowedException {
-        if (student.getRole() == null) student.setRole(Role.STUDENT);
-        if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
-        student.setPassword(student.getBirth().toString());
+        student.setPassword(passwordService.generatePassword());
         studentDao.persist(student);
         //TODO - kontrola existencie emailu
     }
@@ -76,7 +75,7 @@ public class StudentService {
             if (student.getReservation() != null){
                 student.getReservation().setStatus(Status.RES_CANCELED);
             }
-            student.delete();
+            student.softDelete();
             studentDao.update(student);
         }
     }

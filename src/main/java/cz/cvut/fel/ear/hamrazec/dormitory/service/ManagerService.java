@@ -1,9 +1,11 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,34 +17,37 @@ public class ManagerService {
 
     private final ManagerDao managerDao;
     private final BlockService blockService;
+    private final PasswordService passwordService;
 
 
     @Autowired
-    public ManagerService(ManagerDao managerDao, BlockService blockService) {
+    public ManagerService(ManagerDao managerDao, BlockService blockService, PasswordService passwordService) {
 
         this.managerDao = managerDao;
         this.blockService = blockService;
+        this.passwordService = passwordService;
     }
 
 
     @Transactional
     public void create(Manager manager) {
-
+        manager.setPassword(passwordService.generatePassword());
+        manager.setWorkerNumber(getNextWorkerNumber());
         managerDao.persist(manager);
     }
 
 
     @Transactional
-    public void update(Integer workerNumber, Manager manager) throws NotFoundException {
+    public void update(Integer workerNumber, Manager manager) throws NotFoundException, NotAllowedException {
 
         Manager toUpdate = managerDao.findByWorkerNumber(workerNumber);
         if (manager == null) throw new NotFoundException();
+        if (manager.getRole() != null && manager.getRole() != Role.MANAGER) throw new NotAllowedException("You are not allowed to change role.");
 
         toUpdate.setFirstName(manager.getFirstName());
         toUpdate.setLastName(manager.getLastName());
         toUpdate.setUsername(manager.getUsername());
         toUpdate.setEmail(manager.getEmail());
-        toUpdate.setWorkerNumber(manager.getWorkerNumber());
 
         managerDao.update(toUpdate);
     }
@@ -79,6 +84,16 @@ public class ManagerService {
         for (Block block : manager.getBlocks()) {
             block.removeManager(manager);
         }
-        managerDao.remove(manager);
+        manager.softDelete();
+        managerDao.update(manager);
+    }
+
+    @Transactional
+    public int getNextWorkerNumber(){
+        List<Manager> managers = managerDao.findAll(true);
+        if (managers == null || managers.isEmpty()) return 1;
+        else {
+           return managers.stream().reduce((manager, manager2) -> manager.getWorkerNumber() > manager2.getWorkerNumber() ? manager : manager2).get().getWorkerNumber() + 1;
+        }
     }
 }

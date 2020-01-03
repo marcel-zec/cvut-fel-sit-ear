@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -24,10 +25,11 @@ public class DatabaseSeeder implements
     private ManagerDao managerDao;
     private RoomDao roomDao;
     private AccommodationDao accommodationDao;
+    private ManagerService managerService;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao, ManagerService managerService) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
@@ -35,6 +37,7 @@ public class DatabaseSeeder implements
         this.managerDao = managerDao;
         this.roomDao= roomDao;
         this.accommodationDao = accommodationDao;
+        this.managerService = managerService;
 
     }
 
@@ -75,34 +78,25 @@ public class DatabaseSeeder implements
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
-        manager.setPassword("kolvesvsvseve");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
-        manager.setWorkerNumber(1);
         manager.setUsername("janko");
-        managerDao.persist(manager);
+        managerService.create(manager);
 
         manager = new Manager();
         manager.setFirstName("Peter");
         manager.setLastName("Novak");
         manager.setEmail("novak@email.com");
-        manager.setPassword("fegwgeevasvv");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
-        manager.setWorkerNumber(2);
         manager.setUsername("petko345");
-        managerDao.persist(manager);
+        managerService.create(manager);
 
         manager = new Manager();
         manager.setFirstName("Karolina");
         manager.setLastName("Vesela");
         manager.setEmail("vesela@email.com");
-        manager.setPassword("faefdafefegvav");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
-        manager.setWorkerNumber(3);
         manager.setUsername("kaja234");
-        managerDao.persist(manager);
+        managerService.create(manager);
     }
 
     void seedRoom(){

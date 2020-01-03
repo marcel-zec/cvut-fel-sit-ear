@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.BlockService;
@@ -78,13 +79,13 @@ public class ManagerController {
     public void createManager(@RequestBody Manager manager) {
 
         managerService.create(manager);
-        LOG.info("Category with id {} and workerNumber {} created", manager.getId(), manager.getWorkerNumber());
+        LOG.info("Manager with id {} and workerNumber {} created", manager.getId(), manager.getWorkerNumber());
     }
 
 
     @PatchMapping(value = "/{workerNumber}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateManager(@PathVariable Integer workerNumber, @RequestBody Manager manager) throws NotFoundException {
+    public void updateManager(@PathVariable Integer workerNumber, @RequestBody Manager manager) throws NotFoundException, NotAllowedException {
 
         managerService.update(workerNumber, manager);
         LOG.info("Manager with workerNumber {} updated.", workerNumber);
