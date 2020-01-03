@@ -80,10 +80,11 @@ public class BlockServiceTest {
 
 
     @Test
-    public void addManagerToBlockTwoTimes_NothingHappen() throws NotFoundException, AlreadyExistsException {
+    public void addManagerToBlockTwoTimes_AlreadyExistException() throws NotFoundException, AlreadyExistsException {
+        thrown.expect(AlreadyExistsException.class);
+
         blockService.addManager("Tst", 50);
         blockService.addManager("Tst", 50);
-        assertEquals("Added same manager two time", 1, blockService.find("Tst").getManagers().size());
     }
 
 
@@ -127,6 +128,4 @@ public class BlockServiceTest {
         blockService.delete(block.getName());
         assertNull("Simple delete block not working",blockService.find(block.getName()));
     }
-
-    //TODO - zlozitejsie mazanie ak bude vymyslene kedy mozem mazat blok
 }
