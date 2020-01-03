@@ -101,15 +101,9 @@ public class BlockController {
 
     @PostMapping(value = "/{blockName}/rooms", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) {
-
-        try {
+    public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) throws NotFoundException, AlreadyExistsException {
             roomService.addRoom(blockName, room);
             LOG.info("Room with id {} added to block {}.", room.getId(), blockName);
-        } catch (NotFoundException e) {
-
-        }
-
     }
 
 

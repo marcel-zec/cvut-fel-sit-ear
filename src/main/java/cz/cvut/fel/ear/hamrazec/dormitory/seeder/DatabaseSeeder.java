@@ -87,14 +87,14 @@ public class DatabaseSeeder implements
     }
 
     void seedBlocks(){
-        blockDao.persist(new Block("b1","Vanickova 7, Praha 6"));
-        blockDao.persist(new Block("b2","Vanickova 8, Praha 6"));
-        blockDao.persist(new Block("b3","Vanickova 9, Praha 6"));
-        blockDao.persist(new Block("b4","Vanickova 10, Praha 6"));
-        blockDao.persist(new Block("b5","Olympijska 6, Praha 6"));
-        blockDao.persist(new Block("b6","Olympijska 5, Praha 6"));
-        blockDao.persist(new Block("b7","Olympijska 4, Praha 6"));
-        blockDao.persist(new Block("b8","Olympijska 3, Praha 6"));
+        blockDao.persist(new Block("b1","Vanickova 7, Praha 6",6));
+        blockDao.persist(new Block("b2","Vanickova 8, Praha 6",6));
+        blockDao.persist(new Block("b3","Vanickova 9, Praha 6",6));
+        blockDao.persist(new Block("b4","Vanickova 10, Praha 6",6));
+        blockDao.persist(new Block("b5","Olympijska 6, Praha 6",6));
+        blockDao.persist(new Block("b6","Olympijska 5, Praha 6",6));
+        blockDao.persist(new Block("b7","Olympijska 4, Praha 6",6));
+        blockDao.persist(new Block("b8","Olympijska 3, Praha 6",6));
     }
 
     void seedManagers(){

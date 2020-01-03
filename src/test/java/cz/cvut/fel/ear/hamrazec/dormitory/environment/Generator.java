@@ -58,6 +58,7 @@ public class Generator {
 
         final Block block = new Block();
         block.setName("BT1");
+        block.setFloors(6);
         block.setAddress("Test address to block");
         ArrayList<Room> rooms = new ArrayList();
 

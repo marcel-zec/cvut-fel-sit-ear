@@ -4,9 +4,13 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.rest.RoomController;
 import javassist.bytecode.analysis.ControlFlow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +19,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RoomService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RoomService.class);
     private final BlockDao blockDao;
     private final RoomDao roomDao;
     private StudentDao studentDao;
@@ -45,10 +51,6 @@ public class RoomService {
        Room room = find(blockName,roomNumber);
        return room.getActualAccommodations();
     }
-
-    //public Room findRoom(Long id){
-    //    return roomDao.find(id);
-   // }
 
 
     @Transactional
@@ -82,34 +84,37 @@ public class RoomService {
     }
 
     @Transactional
-    public boolean findFreeConcreteRoom(String blockName,  LocalDate dateStart, LocalDate dateEnd, Integer roomnumber) throws NotFoundException {
+    public boolean findFreeConcreteRoom(String blockName,  LocalDate dateStart, LocalDate dateEnd, Integer roomNumber) throws NotFoundException {
 
-        List<Room> rooms = findFreeRooms(blockName,dateStart,dateEnd);
+        List<Room> rooms = findFreeRooms(blockName, dateStart, dateEnd);
         for (Room room: rooms) {
-            if (roomnumber.equals(room.getRoomNumber())) return true;
+            if (roomNumber.equals(room.getRoomNumber())) return true;
         }
         return false;
     }
 
     @Transactional
-    public void addRoom(String blockName, Room room) throws NotFoundException {
+    public void addRoom(String blockName, Room room) throws NotFoundException, AlreadyExistsException {
 
         Block block = blockDao.find(blockName);
         List<Room> rooms = findAll(blockName);
-        boolean roomExist = false;
-
         if (block == null || room == null) throw new NotFoundException();
-        if (rooms != null) {
-            for (Room r:rooms) {
-                if (r == room){
-                    roomExist = true;
-                    break;
-                }
-            }
-            if(!roomExist) roomDao.persist(room);
+
+        room.setBlock(block);
+
+        boolean roomExist = rooms.stream()
+                .filter(findingRoom -> findingRoom.getFloor().equals(room.getFloor()))
+                .anyMatch(findingRoom -> findingRoom.getRoomNumber().equals(room.getRoomNumber()));
+
+
+        if(!roomExist) {
+            roomDao.persist(room);
+            block.addRoom(room);
+            blockDao.update(block);
+        } else {
+            LOG.error("Room number "+ room.getRoomNumber() + " at floor " + room.getFloor() + " at block " + block.getName() + " already exists." );
+            throw new AlreadyExistsException();
         }
-        block.addRoom(room);
-        blockDao.update(block);
     }
 
     @Transactional

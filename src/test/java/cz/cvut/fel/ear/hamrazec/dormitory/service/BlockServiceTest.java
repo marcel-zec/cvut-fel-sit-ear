@@ -65,7 +65,7 @@ public class BlockServiceTest {
         manager.setWorkerNumber(50);
         em.persist(manager);
 
-        block = new Block("Tst", "Test adress");
+        block = new Block("Tst", "Test adress",6);
         em.persist(block);
     }
 
