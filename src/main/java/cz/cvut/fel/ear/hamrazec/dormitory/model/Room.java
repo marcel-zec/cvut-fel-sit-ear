@@ -1,11 +1,19 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Room.findByBlockName", query = "SELECT r FROM Room r WHERE r.block.name = :blockname AND r.roomNumber = :roomNumber")
+})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Room extends AbstractEntity {
 
     @Basic(optional = false)
@@ -36,7 +44,7 @@ public class Room extends AbstractEntity {
     private List<Accommodation> actualAccommodations;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
+    private List<Reservation> reservations; //TODO jedna rezervacia
 
 //    @OneToOne
 //    private Accommodation actualAccommodation;

@@ -82,25 +82,26 @@ public class Generator {
     }
 
 
-    public static Accommodation generateActiveAccommodation(Room room, LocalDate start, LocalDate end) {
+    public static Accommodation generateActiveAccommodation(Room room, Student student, LocalDate start, LocalDate end) {
 
         Accommodation acco = new Accommodation();
         acco.setStatus(Status.ACC_ACTIVE);
         acco.setDateStart(start);
         acco.setDateEnd(end);
         acco.setRoom(room);
+        acco.setStudent(student);
         room.addActualAccomodation(acco);
         return acco;
     }
 
 
-    public static Accommodation generateActiveAccommodation(Room room) {
+    public static Accommodation generateActiveAccommodation(Room room, Student student) {
 
-        return generateActiveAccommodation(room, startDate, endDate);
+        return generateActiveAccommodation(room, student, startDate, endDate);
     }
 
 
-    public static Reservation generateReservation(Room room, boolean approved, LocalDate start, LocalDate end) {
+    public static Reservation generateReservation(Room room,Student student, boolean approved, LocalDate start, LocalDate end) {
 
         Reservation res = new Reservation();
         if (approved) res.setStatus(Status.RES_APPROVED);
@@ -108,14 +109,15 @@ public class Generator {
         res.setDateStart(start);
         res.setDateEnd(end);
         res.setRoom(room);
+        res.setStudent(student);
         room.addReservation(res);
         return res;
     }
 
 
-    public static Reservation generateReservation(Room room, boolean approved) {
+    public static Reservation generateReservation(Room room, Student student, boolean approved) {
 
-        return generateReservation(room, approved, startDate, endDate);
+        return generateReservation(room, student, approved, startDate, endDate);
     }
 
 

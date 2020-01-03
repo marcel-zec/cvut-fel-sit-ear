@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +19,44 @@ public class RoomService {
 
     private final BlockDao blockDao;
     private final RoomDao roomDao;
-    private List<Room> roomList = new ArrayList<Room>();
+    private StudentDao studentDao;
+
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
+        this.studentDao = studentDao;
     }
 
+    @Transactional
     public List<Room> findAll(String blockName) throws NotFoundException {
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         return block.getRooms();
     }
 
+    @Transactional
+    public List<Accommodation> getActualAccommodations(String blockName, Integer roomNumber){
+
+       Room room = find(blockName,roomNumber);
+       return room.getActualAccommodations();
+    }
+
+    //public Room findRoom(Long id){
+    //    return roomDao.find(id);
+   // }
+
 
     @Transactional
     public List<Room> findFreeRooms(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
 
-        Block block = blockDao.find(blockName); //TODO najdi podla mena nie podla id
+        List<Room> roomList = new ArrayList<Room>();
+        Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
+        if (block.getRooms() == null) throw new NotFoundException();
+
         for (Room room: block.getRooms()) {
             removeEndedActualAccommodation(room);
 
@@ -57,9 +75,8 @@ public class RoomService {
     }
 
 
-    public Block find(String blockName, Integer roomNumber) {
-        //TODO - query
-        return null;
+    public Room find(String blockName, Integer roomNumber) {
+        return roomDao.find(blockName,roomNumber);
     }
 
     @Transactional
@@ -74,8 +91,21 @@ public class RoomService {
 
     @Transactional
     public void addRoom(String blockName, Room room) throws NotFoundException {
+
         Block block = blockDao.find(blockName);
-        if (block == null) throw new NotFoundException();
+        List<Room> rooms = findAll(blockName);
+        boolean roomExist = false;
+
+        if (block == null || room == null) throw new NotFoundException();
+        if (rooms != null) {
+            for (Room r:rooms) {
+                if (r == room){
+                    roomExist = true;
+                    break;
+                }
+            }
+            if(!roomExist) roomDao.persist(room);
+        }
         block.addRoom(room);
         blockDao.update(block);
     }
@@ -83,6 +113,8 @@ public class RoomService {
     @Transactional
     public void removeEndedActualAccommodation(Room room){
 
+        if (room == null) return;
+        if (room.getActualAccommodations() == null) return;
         for (Accommodation accommodation: room.getActualAccommodations()) {
             if (accommodation.getStatus() == Status.ACC_ENDED) {
                 room.addPastAccomodation(accommodation);
@@ -93,19 +125,37 @@ public class RoomService {
     }
 
     @Transactional
-    public void removeEndedActualReservation(Room room, Student student){
+    public Room removeActualReservationStart(Reservation reservation){
 
-        for (Reservation reservation: room.getReservations()) {
-            if (reservation.getStatus() == Status.RES_APPROVED && reservation.getStudent().equals(student)) {
-                room.cancelActualReservation(reservation);
-                roomDao.update(room);
+            if (reservation.getStatus() == Status.RES_APPROVED  && reservation.getDateStart().equals(LocalDate.now())) {
+                reservation.getRoom().cancelActualReservation(reservation);
+                reservation.getStudent().cancelReservation(reservation);
+                roomDao.update(reservation.getRoom());
+                studentDao.update(reservation.getStudent());
             }
-        }
+
+        return roomDao.find(reservation.getRoom().getId());
     }
 
     @Transactional
-    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart){
+    public Reservation getReservation(Room room, Student student) throws NotFoundException {
+
+        if (room == null) throw new NotFoundException();
+        if (room.getReservations() == null) return null;
+
+        for (Reservation reservation: room.getReservations()) {
+            if (reservation.getStatus() == Status.RES_APPROVED && reservation.getStudent().equals(student)) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+
+    @Transactional
+    public int freePlacesAtDateAccomodation(Room room, LocalDate dateStart) throws NotFoundException {
         int endedAcco = 0;
+
+        if (room == null) throw new NotFoundException();
 
         for (Accommodation accomodation: room.getActualAccommodations()) {
             if (accomodation.getDateEnd().isBefore(dateStart)) endedAcco++;
@@ -114,9 +164,10 @@ public class RoomService {
     }
 
     @Transactional
-    public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd){
+    public int reservationPlacesAtDateReserve(Room room, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
         int reservePlaces = 0;
 
+        if (room == null ) throw new NotFoundException();
         for (Reservation reservation: room.getReservations()) {
             if (reservation.getDateEnd().isBefore(dateStart) || reservation.getDateStart().isAfter(dateEnd)) {
             }

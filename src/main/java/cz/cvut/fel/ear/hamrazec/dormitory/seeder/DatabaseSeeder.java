@@ -1,9 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -25,15 +22,20 @@ public class DatabaseSeeder implements
     private StudentDao studentDao;
     private BlockDao blockDao;
     private ManagerDao managerDao;
+    private RoomDao roomDao;
+    private AccommodationDao accommodationDao;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
         this.blockDao = blockDao;
         this.managerDao = managerDao;
+        this.roomDao= roomDao;
+        this.accommodationDao = accommodationDao;
+
     }
 
 
@@ -103,11 +105,37 @@ public class DatabaseSeeder implements
         managerDao.persist(manager);
     }
 
+    void seedRoom(){
+        Room room = new Room();
+        room.setBlock(blockDao.find((long) 1));
+        room.setMaxCapacity(3);
+        room.setFloor(3);
+        room.setRoomNumber(334);
+        roomDao.persist(room);
+
+        Room room2 = new Room();
+        room2.setBlock(blockDao.find((long) 1));
+        room2.setMaxCapacity(3);
+        room2.setFloor(4);
+        room2.setRoomNumber(452);
+        roomDao.persist(room2);
+    }
+
+    void seedAccom(){
+        Accommodation accommodation = new Accommodation();
+        accommodation.setDateStart(LocalDate.now());
+        accommodation.setDateEnd(LocalDate.parse("2020-12-21"));
+        accommodation.setRoom(roomDao.find("b1",334));
+        accommodation.setStudent(studentDao.find((long) 1));
+        accommodationDao.persist(accommodation);
+    }
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         seedUsersTable();
         seedBlocks();
         seedManagers();
+        seedRoom();
+        seedAccom();
     }
 }
