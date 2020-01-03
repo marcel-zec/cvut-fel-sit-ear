@@ -59,10 +59,6 @@ public abstract class User extends AbstractEntity {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public String getFirstName() {
         return firstName;
     }
