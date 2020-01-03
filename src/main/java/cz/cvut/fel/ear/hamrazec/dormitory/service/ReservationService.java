@@ -1,8 +1,10 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ReservationDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +15,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
 
     private ReservationDao reservationDao;
-    private AccommodationService accommodationService;
     private StudentDao studentDao;
     private RoomDao roomDao;
     private RoomService roomService;
+    private BlockDao blockDao;
 
     @Autowired
-    public ReservationService(ReservationDao reservationDao, AccommodationService accommodationService, StudentDao studentDao, RoomDao roomDao, RoomService roomService) {
+    public ReservationService(ReservationDao reservationDao, StudentDao studentDao, RoomDao roomDao, RoomService roomService, BlockDao blockDao) {
 
         this.reservationDao = reservationDao;
-        this.accommodationService = accommodationService;
         this.studentDao = studentDao;
         this.roomDao = roomDao;
         this.roomService = roomService;
+        this.blockDao = blockDao;
     }
 
     public List<Reservation> findAll() { return reservationDao.findAll();  }
@@ -62,20 +65,27 @@ public class ReservationService {
     }
 
     @Transactional
-    public void createNewReservation(Reservation reservation, Long student_id, Long room_id) throws NotFoundException {
+    public void createNewReservation(Reservation reservation, Long student_id, String block_name, int room_number) throws NotFoundException, NotAllowedException {
 
         Student student = studentDao.find(student_id);
-        Room room = roomDao.find(room_id);
+        Block block = blockDao.find(block_name);
+        if (block_name == null) throw new NotFoundException();
+
+        List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(room_number)).collect(Collectors.toList());
+
+        if (roomList.size() == 0) throw new NotFoundException();
+        Room room = roomList.get(0);
+
+        if (student == null || room == null) throw new NotFoundException();
+        if (student.getReservation() != null) throw new NotAllowedException("student already has reservation");
         reservation.setStudent(student);
         reservation.setRoom(room);
-        if (student == null || room == null) throw new NotFoundException();
 
         if (roomService.findFreeConcreteRoom(room.getBlock().getName(),reservation.getDateStart(),
                 reservation.getDateEnd(),reservation.getRoom().getRoomNumber()))
         {
             reservation.setStatus(Status.RES_APPROVED);
             room.addReservation(reservation);
-            //student.addReservation(reservation);
             student.setReservation(reservation);
             reservationDao.persist(reservation);
             studentDao.update(student);
@@ -85,7 +95,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public void createNewReservationRandom(Reservation reservation, Long student_id, String blockName) throws NotFoundException {
+    public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException {
 
         Student student = studentDao.find(student_id);
         reservation.setStudent(student);
@@ -98,7 +108,6 @@ public class ReservationService {
             reservation.setRoom(room);
             room.addReservation(reservation);
             student.setReservation(reservation);
-            //student.addReservation(reservation);
             reservationDao.persist(reservation);
             studentDao.update(student);
             roomDao.update(room);
@@ -126,6 +135,8 @@ public class ReservationService {
     public void deleteReservation(Reservation reservation){
         if (reservation.getStudent() != null)  reservation.getStudent().cancelReservation(reservation);
         if (reservation.getRoom() != null) reservation.getRoom().cancelActualReservation(reservation);
+        studentDao.update(reservation.getStudent());
+        roomDao.update(reservation.getRoom());
         reservationDao.remove(reservation);
     }
 }

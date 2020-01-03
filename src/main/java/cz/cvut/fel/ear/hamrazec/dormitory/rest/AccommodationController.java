@@ -44,12 +44,13 @@ public class AccommodationController {
         return acomService.findActualAccommodationOfStudent(student_id);
     }
 
-    @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable Long room_id) {
+    public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable String block_name,
+                                    @PathVariable int room_number) {
 
         try {
-            acomService.create(accommodation, student_id, room_id);
+            acomService.create(accommodation, student_id, room_number, block_name);
             LOG.info("Accommodation with id {} created", accommodation.getId());
         }catch (NotFoundException | NotAllowedException e) {
             //TODO - exceptions

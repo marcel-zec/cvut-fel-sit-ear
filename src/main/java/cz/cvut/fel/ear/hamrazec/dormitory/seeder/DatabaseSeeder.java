@@ -170,14 +170,14 @@ public class DatabaseSeeder implements
         accommodation2.setStudent(studentDao.find((long) 2));
         accommodationDao.persist(accommodation2);
 
-        Accommodation accommodation3 = new Accommodation();
-        accommodation3.setDateStart(LocalDate.now());
-        accommodation3.setDateEnd(LocalDate.parse("2020-12-21"));
-        accommodation3.setStatus(Status.ACC_ACTIVE);
-        accommodation3.setRoom(roomDao.find("b1",334));
-        accommodation3.getRoom().addActualAccomodation(accommodation3);
-        accommodation3.setStudent(studentDao.find((long) 3));
-        accommodationDao.persist(accommodation3);
+//        Accommodation accommodation3 = new Accommodation();
+//        accommodation3.setDateStart(LocalDate.now());
+//        accommodation3.setDateEnd(LocalDate.parse("2020-12-21"));
+//        accommodation3.setStatus(Status.ACC_ACTIVE);
+//        accommodation3.setRoom(roomDao.find("b1",334));
+//        accommodation3.getRoom().addActualAccomodation(accommodation3);
+//        accommodation3.setStudent(studentDao.find((long) 3));
+//        accommodationDao.persist(accommodation3);
 
             Accommodation accommodation1 = new Accommodation();
             accommodation1.setDateStart(LocalDate.parse("2019-10-10"));
