@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest.handler;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -37,6 +38,11 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(NotAllowedException.class)
     public ResponseEntity<ErrorInfo> notAllowed(HttpServletRequest request, NotAllowedException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadFloorException.class)
+    public ResponseEntity<ErrorInfo> BadFloorChoose(HttpServletRequest request, BadFloorException e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 

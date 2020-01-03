@@ -5,6 +5,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.RoomController;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -94,13 +96,17 @@ public class RoomService {
     }
 
     @Transactional
-    public void addRoom(String blockName, Room room) throws NotFoundException, AlreadyExistsException {
+    public void addRoom(String blockName, Room room) throws NotFoundException, AlreadyExistsException, BadFloorException {
 
         Block block = blockDao.find(blockName);
         List<Room> rooms = findAll(blockName);
         if (block == null || room == null) throw new NotFoundException();
 
-        room.setBlock(block);
+        if (room.getFloor() > block.getFloors() || room.getFloor() < 0) {
+            throw new BadFloorException("Block is " + block.getFloors() + " floors high. Set floor between zero and " + block.getFloors());
+        }
+
+                room.setBlock(block);
 
         boolean roomExist = rooms.stream()
                 .filter(findingRoom -> findingRoom.getFloor().equals(room.getFloor()))

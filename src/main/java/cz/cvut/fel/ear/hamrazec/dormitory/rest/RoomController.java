@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
@@ -57,7 +58,7 @@ public class RoomController {
 
     @PostMapping(value = "/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException, AlreadyExistsException {
+    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException, AlreadyExistsException, BadFloorException {
 
         roomService.addRoom(name,room);
         LOG.info("Room number {} created at block {}.", room.getRoomNumber(),room.getBlock().getName());
