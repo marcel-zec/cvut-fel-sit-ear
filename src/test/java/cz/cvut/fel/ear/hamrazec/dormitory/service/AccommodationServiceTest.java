@@ -74,7 +74,6 @@ public class AccommodationServiceTest {
         student.setUsername("testusername");
         student.setLastName("mrkva");
         student.setPassword("fefebdfbzzz");
-        student.setRole(Role.STUDENT);
         em.persist(student);
 
         student1 = new Student();
@@ -88,7 +87,6 @@ public class AccommodationServiceTest {
         student1.setUsername("testusername1");
         student1.setLastName("mrkvicka");
         student1.setPassword("fefebvvszzz");
-        student1.setRole(Role.STUDENT);
         em.persist(student1);
 
         block = new Block();

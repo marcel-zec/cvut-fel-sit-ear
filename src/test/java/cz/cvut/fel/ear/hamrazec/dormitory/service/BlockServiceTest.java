@@ -62,7 +62,6 @@ public class BlockServiceTest {
         manager.setUsername("Test");
         manager.setEmail("test@test.com");
         manager.setPassword("testpassword");
-        manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(50);
         em.persist(manager);
 
