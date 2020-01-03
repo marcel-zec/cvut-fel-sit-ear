@@ -47,7 +47,7 @@ public class RoomService {
     }
 
     @Transactional
-    public List<Accommodation> getActualAccommodations(String blockName, Integer roomNumber) {
+    public List<Accommodation> getActualAccommodations(String blockName, Integer roomNumber) throws NotFoundException {
 
         Room room = find(blockName, roomNumber);
         return room.getActualAccommodations();
@@ -80,8 +80,11 @@ public class RoomService {
     }
 
 
-    public Room find(String blockName, Integer roomNumber) {
-        return roomDao.find(blockName, roomNumber);
+    public Room find(String blockName, Integer roomNumber) throws NotFoundException {
+        Block block = blockDao.find(blockName);
+        Room room = roomDao.find(blockName, roomNumber);
+        if (block == null || room == null) throw new NotFoundException();
+        return room;
     }
 
     @Transactional

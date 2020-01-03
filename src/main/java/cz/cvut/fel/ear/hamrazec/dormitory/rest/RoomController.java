@@ -39,13 +39,13 @@ public class RoomController {
     }
 
     @GetMapping(value = "/{number}/block/{name}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Room getRoom(@PathVariable Integer number, @PathVariable String name) {
+    public Room getRoom(@PathVariable Integer number, @PathVariable String name) throws NotFoundException {
 
         return roomService.find(name, number);
     }
 
     @GetMapping(value = "/{number}/block/{name}/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Accommodation> getActualAccommodationsInRoom(@PathVariable Integer number, @PathVariable String name) {
+    public List<Accommodation> getActualAccommodationsInRoom(@PathVariable Integer number, @PathVariable String name) throws NotFoundException {
 
         return roomService.getActualAccommodations(name,number);
     }
