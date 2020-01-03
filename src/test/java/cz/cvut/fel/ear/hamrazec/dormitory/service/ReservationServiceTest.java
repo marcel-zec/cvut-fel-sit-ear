@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.environment.Generator;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -43,7 +44,7 @@ public class ReservationServiceTest {
     private Block block;
 
     @Before
-    public void before() {
+    public void before() throws AlreadyExistsException {
         reservation = new Reservation();
         reservation.setDateEnd(LocalDate.parse("2022-12-03"));
         reservation.setDateStart(LocalDate.parse("2021-12-03"));

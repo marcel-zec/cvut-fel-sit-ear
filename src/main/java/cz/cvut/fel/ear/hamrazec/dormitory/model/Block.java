@@ -92,10 +92,11 @@ public class Block  extends AbstractEntity{
         }
     }
 
-    public void addRoom(Room room){
+    public void addRoom(Room room) throws AlreadyExistsException {
 
         if (this.rooms == null) this.rooms = new ArrayList<>();
-        this.rooms.add(room);
+        if (!rooms.contains(room)) rooms.add(room);
+        else throw new AlreadyExistsException();
     }
 
     public void removeRoom(Room room){
