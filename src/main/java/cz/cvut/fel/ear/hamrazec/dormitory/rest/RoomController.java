@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
@@ -35,19 +37,19 @@ public class RoomController {
         return roomService.findAll(name);
     }
 
-    @GetMapping(value = "block/{name}/room/{number}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Room getRoom(@PathVariable String name, @PathVariable Integer number) {
+    @GetMapping(value = "/{number}/block/{name}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public Room getRoom(@PathVariable Integer number, @PathVariable String name) {
 
         return roomService.find(name, number);
     }
 
-    @GetMapping(value = "block/{name}/room/{roomNum}/accommodations/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Accommodation> getActualAccommodationsInRoom(@PathVariable Integer roomNum, @PathVariable String name) {
+    @GetMapping(value = "/{number}/block/{name}/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Accommodation> getActualAccommodationsInRoom(@PathVariable Integer number, @PathVariable String name) {
 
-        return roomService.getActualAccommodations(name,roomNum);
+        return roomService.getActualAccommodations(name,number);
     }
 
-    @GetMapping(value = "/free_rooms/block/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/free/block/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getFreeRooms(@PathVariable String name, @RequestParam(name = "start") String dateStart, @RequestParam(name = "end") String dateEnd) throws NotFoundException
     {
         return roomService.findFreeRooms(name,LocalDate.parse(dateStart), LocalDate.parse(dateEnd));
@@ -56,9 +58,9 @@ public class RoomController {
 
     @PostMapping(value = "/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException {
+    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException, AlreadyExistsException, BadFloorException {
 
         roomService.addRoom(name,room);
-        LOG.info("Student with id {} created.", room.getId());
+        LOG.info("Room number {} created at block {}.", room.getRoomNumber(),room.getBlock().getName());
     }
 }

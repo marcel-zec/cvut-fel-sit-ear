@@ -36,65 +36,35 @@ public class StudentServiceTest {
     @Autowired
     private StudentService studentService;
 
-    Student firstStudent;
     static Block block;
     static Accommodation accommodation;
     static Student student;
 
     @Before
     public void before() {
-        firstStudent = new Student();
-        firstStudent.setFirstName("Test");
-        firstStudent.setLastName("Test");
-        firstStudent.setUsername("Test");
-        firstStudent.setUniversity("CVUT");
-        firstStudent.setBirth(LocalDate.of(1990,12,12));
-        firstStudent.setPassword("heslotestovacie");
-        firstStudent.setBankAccountNumber("AAAAAAAAAA2222222222");
-        firstStudent.setEmail("test@test.test");
-        firstStudent.setEndOfStudy(LocalDate.of(2040,12,12));
+        student = Generator.generateStudent();
     }
 
     @BeforeClass
     public static void beforeClass(){
         block = Generator.generateBlockWithRooms();
-        student = Generator.generateStudent();
         accommodation = Generator.generateActiveAccommodation(block.getRooms().get(0),student);
     }
 
     @Test
     public void addNewStudent_WorksCorrect() throws NotAllowedException {
         int numberBefore = studentService.findAll().size();
-        studentService.create(firstStudent);
+        studentService.create(student);
 
         assertEquals("Create student not working",numberBefore+1,studentService.findAll().size());
     }
 
     @Test
-    public void addNewStudent_changedRole_ThrowNotAllowedException() throws NotAllowedException {
-        thrown.expect(NotAllowedException.class);
-        thrown.reportMissingExceptionWithMessage("Student with different role was created");
-
-        firstStudent.setRole(Role.MANAGER);
-        studentService.create(firstStudent);
-    }
-
-    @Test
-    public void updateStudent_changedRole_ThrowNotAllowedException() throws NotFoundException, NotAllowedException {
-        thrown.expect(NotAllowedException.class);
-        thrown.reportMissingExceptionWithMessage("Student with different role was updated");
-        studentService.create(firstStudent);
-
-        firstStudent.setRole(Role.MANAGER);
-        studentService.update(firstStudent.getId(),firstStudent);
-    }
-
-    @Test
     public void deleteStudent_studentWithoutAccommodation_WorksCorrectly() throws NotFoundException, NotAllowedException {
-        studentService.create(firstStudent);
+        studentService.create(student);
         int numberBefore = studentService.findAll().size();
 
-        studentService.delete(firstStudent.getId());
+        studentService.delete(student.getId());
         assertEquals("Delete without accommodation not working",numberBefore-1,studentService.findAll().size());
     }
 
@@ -102,10 +72,28 @@ public class StudentServiceTest {
     public void deleteStudent_studentWithAccommodation_WorksCorrectly() throws NotFoundException, NotAllowedException {
         thrown.expect(NotAllowedException.class);
         thrown.reportMissingExceptionWithMessage("Student with active accommodation was deleted");
-        studentService.create(firstStudent);
-        firstStudent.addAccommodation(accommodation);
+        studentService.create(student);
+        student.addAccommodation(accommodation);
 
-        studentService.delete(firstStudent.getId());
+        studentService.delete(student.getId());
+    }
+
+    @Test
+    public void update_changeCorrect_worksCorrectly() throws NotAllowedException, NotFoundException {
+        studentService.create(student);
+
+        String name = "UpdatedName";
+        student.setFirstName(name);
+        studentService.update(student.getId(),student);
+
+        assertEquals(name,student.getFirstName());
+    }
+
+    @Test
+    public void update_notExistingStudent_NotFoundException() throws NotAllowedException, NotFoundException {
+        thrown.expect(NotFoundException.class);
+
+        studentService.update((long) 999,student);
     }
 
 }

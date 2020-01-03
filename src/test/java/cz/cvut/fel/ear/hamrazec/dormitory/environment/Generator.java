@@ -25,6 +25,18 @@ public class Generator {
         return RAND.nextBoolean();
     }
 
+    public static Manager generateManager() {
+
+        final Manager user = new Manager();
+        user.setFirstName("FirstName" + randomInt());
+        user.setLastName("LastName" + randomInt());
+        user.setUsername("username" + randomInt());
+        user.setPassword(Integer.toString(randomInt()));
+
+        user.setEmail("username" + randomInt() + "@test.cz");
+        return user;
+    }
+
 
     public static Student generateStudent() {
 
@@ -46,6 +58,7 @@ public class Generator {
 
         final Block block = new Block();
         block.setName("BT1");
+        block.setFloors(6);
         block.setAddress("Test address to block");
         ArrayList<Room> rooms = new ArrayList();
 

@@ -55,7 +55,6 @@ public class DatabaseSeeder implements
         student.setLastName("mrkva");
         student.setPassword("fefebebssvsdebes");
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        student.setRole(Role.STUDENT);
         studentDao.persist(student);
 
         Student student1 = new Student();
@@ -70,7 +69,6 @@ public class DatabaseSeeder implements
         student1.setLastName("mrkva");
         student1.setPassword("fefebebssvss");
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        student1.setRole(Role.STUDENT);
         studentDao.persist(student1);
 
         Student student2 = new Student();
@@ -85,19 +83,18 @@ public class DatabaseSeeder implements
         student2.setLastName("mrkvaaa");
         student2.setPassword("fefebebssvcss");
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        student2.setRole(Role.STUDENT);
         studentDao.persist(student2);
     }
 
     void seedBlocks(){
-        blockDao.persist(new Block("b1","Vanickova 7, Praha 6"));
-        blockDao.persist(new Block("b2","Vanickova 8, Praha 6"));
-        blockDao.persist(new Block("b3","Vanickova 9, Praha 6"));
-        blockDao.persist(new Block("b4","Vanickova 10, Praha 6"));
-        blockDao.persist(new Block("b5","Olympijska 6, Praha 6"));
-        blockDao.persist(new Block("b6","Olympijska 5, Praha 6"));
-        blockDao.persist(new Block("b7","Olympijska 4, Praha 6"));
-        blockDao.persist(new Block("b8","Olympijska 3, Praha 6"));
+        blockDao.persist(new Block("b1","Vanickova 7, Praha 6",6));
+        blockDao.persist(new Block("b2","Vanickova 8, Praha 6",6));
+        blockDao.persist(new Block("b3","Vanickova 9, Praha 6",6));
+        blockDao.persist(new Block("b4","Vanickova 10, Praha 6",6));
+        blockDao.persist(new Block("b5","Olympijska 6, Praha 6",6));
+        blockDao.persist(new Block("b6","Olympijska 5, Praha 6",6));
+        blockDao.persist(new Block("b7","Olympijska 4, Praha 6",6));
+        blockDao.persist(new Block("b8","Olympijska 3, Praha 6",6));
     }
 
     void seedManagers(){
@@ -107,7 +104,6 @@ public class DatabaseSeeder implements
         manager.setEmail("novotny@email.com");
         manager.setPassword("kolvesvsvseve");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(1);
         manager.setUsername("janko");
         managerDao.persist(manager);
@@ -118,7 +114,6 @@ public class DatabaseSeeder implements
         manager.setEmail("novak@email.com");
         manager.setPassword("fegwgeevasvv");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(2);
         manager.setUsername("petko345");
         managerDao.persist(manager);
@@ -129,7 +124,6 @@ public class DatabaseSeeder implements
         manager.setEmail("vesela@email.com");
         manager.setPassword("faefdafefegvav");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setRole(Role.MANAGER);
         manager.setWorkerNumber(3);
         manager.setUsername("kaja234");
         managerDao.persist(manager);

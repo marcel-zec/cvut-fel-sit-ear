@@ -1,6 +1,8 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
@@ -91,6 +93,19 @@ public class BlockController {
         LOG.info("Manager with workNumber {} removed from block {}", workerNumber, blockName);
     }
 
+    @PatchMapping(value = "/{blockName}/floors/{amount}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeAmountOfFloors(@PathVariable String blockName, @PathVariable Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences {
+        if (accept){
+            blockService.changeAmountOfFloors(blockName, amount);
+            LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
+        } else {
+            LOG.info("Amount of floors at block {} not changed. User not accept possible consequences of deleting.", blockName);
+            throw new NotAcceptDeletingConsequences();
+        }
+
+    }
+
 
     @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
@@ -101,15 +116,9 @@ public class BlockController {
 
     @PostMapping(value = "/{blockName}/rooms", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) {
-
-        try {
+    public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) throws NotFoundException, AlreadyExistsException, BadFloorException {
             roomService.addRoom(blockName, room);
             LOG.info("Room with id {} added to block {}.", room.getId(), blockName);
-        } catch (NotFoundException e) {
-
-        }
-
     }
 
 

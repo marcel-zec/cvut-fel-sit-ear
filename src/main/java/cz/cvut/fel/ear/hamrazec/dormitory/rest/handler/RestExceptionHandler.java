@@ -1,8 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest.handler;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,6 +36,16 @@ public class RestExceptionHandler {
     @ExceptionHandler(NotAllowedException.class)
     public ResponseEntity<ErrorInfo> notAllowed(HttpServletRequest request, NotAllowedException e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadFloorException.class)
+    public ResponseEntity<ErrorInfo> BadFloorChoose(HttpServletRequest request, BadFloorException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAcceptDeletingConsequences.class)
+    public ResponseEntity<ErrorInfo> deletingAccept(HttpServletRequest request, NotFoundException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.FORBIDDEN);
     }
 
 }

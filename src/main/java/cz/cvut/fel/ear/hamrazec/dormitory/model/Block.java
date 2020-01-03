@@ -6,6 +6,8 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,12 @@ public class Block  extends AbstractEntity{
     @Size(max = 255, min = 5)
     private String address;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Min(value = 0, message = "Amount of floors should not be less than 0")
+    @Max(value = 20, message = "Amount of floors not be greater than 20")
+    private Integer floors;
+
     @OrderBy("workerNumber ASC")
     @ManyToMany(mappedBy = "blocks")
     private List<Manager> managers;
@@ -36,16 +44,24 @@ public class Block  extends AbstractEntity{
     @OneToMany(mappedBy = "block", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    public Block(@Size(max = 3, min = 1, message = "Name of block is in incorrect format.") String name, @Size(max = 255, min = 5) String address) {
+    public Block(@Size(max = 3, min = 1, message = "Name of block is in incorrect format.") String name, @Size(max = 255, min = 5) String address, @Size(max = 20, min = 0, message = "Amount of floors between 0-20.") Integer floors) {
 
         this.name = name;
         this.address = address;
+        this.floors = floors;
     }
 
 
     public Block() {
     }
 
+    public Integer getFloors() {
+        return floors;
+    }
+
+    public void setFloors(Integer floors) {
+        this.floors = floors;
+    }
 
     public List<Room> getRooms() {
         return rooms;
