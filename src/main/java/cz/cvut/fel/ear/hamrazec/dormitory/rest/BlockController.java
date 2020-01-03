@@ -92,6 +92,14 @@ public class BlockController {
         LOG.info("Manager with workNumber {} removed from block {}", workerNumber, blockName);
     }
 
+    @PatchMapping(value = "/{blockName}/floors/{amount}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeAmountOfFloors(@PathVariable String blockName, @PathVariable Integer amount) throws NotFoundException {
+
+        blockService.changeAmountOfFloors(blockName, amount);
+        LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
+    }
+
 
     @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {

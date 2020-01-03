@@ -4,30 +4,31 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Gender;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class BlockService {
 
     private final BlockDao blockDao;
     private final ManagerDao managerDao;
+    private final AccommodationService accommodationService;
 
 
     @Autowired
-    public BlockService(BlockDao blockDao, ManagerDao managerDao) {
+    public BlockService(BlockDao blockDao, ManagerDao managerDao, AccommodationService accommodationService) {
 
         this.blockDao = blockDao;
         this.managerDao = managerDao;
+        this.accommodationService = accommodationService;
     }
 
 
@@ -110,5 +111,15 @@ public class BlockService {
         }
     }
 
-
+    @Transactional
+    public void changeAmountOfFloors(String blockName, Integer amount) throws NotFoundException, BadFloorException {
+        Block block = blockDao.find(blockName);
+        if (block == null) throw new NotFoundException();
+        if (amount > 20 || amount < 0) throw new BadFloorException("Amount of floors should be number between 0-20.");
+        if (block.getFloors() <= amount) {
+            block.setFloors(amount);
+        } else {
+            //TODO - mazanie poschodi
+        }
+    }
 }

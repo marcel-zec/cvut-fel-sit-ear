@@ -183,7 +183,6 @@ public class AccommodationService {
     public void cancelAccommodation(Accommodation accommodation) {
         setStatusAndUnusualEnd(accommodation,Status.ACC_CANCELED);
         roomService.removeEndedActualAccommodation(accommodation.getRoom());
-        //TODO - presun
     }
 
 

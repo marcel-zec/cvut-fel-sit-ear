@@ -42,10 +42,6 @@ public abstract class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Basic(optional = true)
-    @Column(nullable = true)
-    private LocalDate deleted_at;
-
     public User() {
     }
 
@@ -105,15 +101,6 @@ public abstract class User extends AbstractEntity {
 
     public String getEmail() {
         return email;
-    }
-
-    public void softDelete(){
-        deleted_at = LocalDate.now();
-    }
-
-    @JsonIgnore
-    public boolean isNotDeleted(){
-        return deleted_at == null;
     }
 
 //    public UserRole getUserRole() {
