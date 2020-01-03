@@ -111,10 +111,7 @@ public class Student extends User{
         return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACC_ACTIVE));
     }
 
-    public Reservation getReservations() {
-//        if (reservations == null){
-//            reservations = new ArrayList<>();
-//        }
+    public Reservation getReservation() {
         return reservation;
     }
 

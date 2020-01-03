@@ -71,10 +71,9 @@ public class StudentService {
         if (student.hasActiveAccommodation()) {
             throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
-            student.getReservations().stream()
-                    .filter(reservation -> reservation.getStatus().equals(Status.RES_APPROVED) || reservation.getStatus().equals(Status.RES_PENDING))
-                    .findFirst().ifPresent(reservationService::cancelReservation);
-            student.delete();
+            if (student.getReservation() != null){
+                student.getReservation().setStatus(Status.RES_CANCELED);
+            }
         }
     }
 
