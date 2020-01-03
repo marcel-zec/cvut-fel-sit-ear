@@ -116,4 +116,8 @@ public class ReservationService {
         reservation.setDateUnusualEnd(LocalDate.now());
         reservationDao.update(reservation);
     }
+
+    public void deleteReservation(Reservation reservation){
+
+    }
 }

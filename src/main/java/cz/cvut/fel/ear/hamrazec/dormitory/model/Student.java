@@ -125,10 +125,11 @@ public class Student extends User{
 //        reservations.add(reservation);
 //    }
 
-//    public void cancelReservation(Reservation reservation){
-////        if (reservations.contains(reservation)){
-////            reservations.remove(reservation);
-////        }
-//    }
+    public void cancelReservation(Reservation reservation){
+        if (reservation.equals(this.reservation)) this.reservation = null;
+//        if (reservations.contains(reservation)){
+//            reservations.remove(reservation);
+//        }
+    }
 
 }
