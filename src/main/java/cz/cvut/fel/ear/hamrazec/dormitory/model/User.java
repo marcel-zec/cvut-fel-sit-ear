@@ -107,7 +107,7 @@ public abstract class User extends AbstractEntity {
         return email;
     }
 
-    public void delete(){
+    public void softDelete(){
         deleted_at = LocalDate.now();
     }
 

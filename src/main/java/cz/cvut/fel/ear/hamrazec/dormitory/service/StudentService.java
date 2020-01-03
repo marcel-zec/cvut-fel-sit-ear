@@ -75,7 +75,7 @@ public class StudentService {
             if (student.getReservation() != null){
                 student.getReservation().setStatus(Status.RES_CANCELED);
             }
-            student.delete();
+            student.softDelete();
             studentDao.update(student);
         }
     }

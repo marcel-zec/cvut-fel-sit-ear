@@ -82,7 +82,8 @@ public class ManagerService {
         for (Block block : manager.getBlocks()) {
             block.removeManager(manager);
         }
-        managerDao.remove(manager);
+        manager.softDelete();
+        managerDao.update(manager);
     }
 
     @Transactional
