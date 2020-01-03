@@ -125,6 +125,7 @@ public class DatabaseSeeder implements
         Accommodation accommodation = new Accommodation();
         accommodation.setDateStart(LocalDate.now());
         accommodation.setDateEnd(LocalDate.parse("2020-12-21"));
+        accommodation.setStatus(Status.ACC_ACTIVE);
         accommodation.setRoom(roomDao.find("b1",334));
         accommodation.setStudent(studentDao.find((long) 1));
         accommodationDao.persist(accommodation);

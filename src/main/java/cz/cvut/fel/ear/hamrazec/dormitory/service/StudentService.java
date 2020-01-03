@@ -19,7 +19,6 @@ public class StudentService {
 
     @Autowired
     public StudentService(StudentDao studentDao, ReservationService reservationService) {
-
         this.studentDao = studentDao;
         this.reservationService = reservationService;
 
@@ -27,28 +26,26 @@ public class StudentService {
 
 
     public List<Student> findAll() {
-
         return studentDao.findAll();
     }
 
 
     public Student find(Long id) {
-
         return studentDao.find(id);
     }
 
 
     @Transactional
     public void create(Student student) throws NotAllowedException {
-
+        if (student.getRole() == null) student.setRole(Role.STUDENT);
         if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
+        student.setPassword(student.getBirth().toString());
         studentDao.persist(student);
     }
 
 
     @Transactional
     public void update(Long id, Student student) throws NotFoundException, NotAllowedException {
-
         Student studentToUpdate = studentDao.find(id);
         if (studentToUpdate == null) throw new NotFoundException();
         if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
@@ -74,16 +71,9 @@ public class StudentService {
         if (student.hasActiveAccommodation()) {
             throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
-            //todo urobit
-//            student.getReservations().stream()
-//                    .filter(accommodation -> accommodation.getStatus().equals(Status.RES_APPROVED) || accommodation.getStatus().equals(Status.RES_PENDING))
-//                    .findFirst().ifPresent(reservationService::cancelReservation);
-
-//            for (Accommodation accommodation: student.getAccommodations()) {
-//                Status status = accommodation.getStatus();
-//                if (status.equals(Status.APPROVED) || status.equals(Status.PENDING)) accommodationService.cancelReservation(accommodation);
-//            }
-            studentDao.remove(student);
+            if (student.getReservation() != null){
+                student.getReservation().setStatus(Status.RES_CANCELED);
+            }
         }
     }
 

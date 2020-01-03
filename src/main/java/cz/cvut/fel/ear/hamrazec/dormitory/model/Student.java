@@ -102,15 +102,16 @@ public class Student extends User{
         accommodations.add(accommodation);
     }
 
+    /**
+     * Find out if student has active accommodation.
+     * @return true when has, false otherwise
+     */
     public boolean hasActiveAccommodation(){
         if (accommodations == null) return false;
         return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACC_ACTIVE));
     }
 
-    public Reservation getReservations() {
-//        if (reservations == null){
-//            reservations = new ArrayList<>();
-//        }
+    public Reservation getReservation() {
         return reservation;
     }
 

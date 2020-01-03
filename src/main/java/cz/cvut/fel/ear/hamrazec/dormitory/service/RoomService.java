@@ -114,27 +114,15 @@ public class RoomService {
 
     @Transactional
     public void removeEndedActualAccommodation(Room room){
-
-        if (room == null) return;
-        if (room.getActualAccommodations() == null) return;
-        List<Accommodation> accommodationforRemove = new ArrayList<>();
-
-        for (int i = 0; i < room.getActualAccommodations().size(); i++) {
-            if (room.getActualAccommodations().get(i).getStatus() == Status.ACC_ENDED) {
-                room.addPastAccomodation(room.getActualAccommodations().get(i));
-                accommodationforRemove.add(room.getActualAccommodations().get(i));
+        List<Accommodation> actual = room.getActualAccommodations();
+        for (int i = 0; i < actual.size(); i++) {
+            Accommodation a = actual.get(i);
+            if (a.getStatus() == Status.ACC_ENDED || a.getStatus() == Status.ACC_CANCELED) {
+                room.addPastAccomodation(a);
+                room.cancelActualAccomodation(a);
             }
         }
-
-
-        for (Accommodation accommodation: room.getActualAccommodations()) {
-            if (accommodationforRemove!=null ) room.cancelActualAccomodation(accommodationforRemove);
-            if (accommodation.getStatus() == Status.ACC_ENDED) {
-                room.addPastAccomodation(accommodation);
-                accommodationforRemove = accommodation;
-                roomDao.update(room);
-            }
-        }
+        roomDao.update(room);
     }
 
     @Transactional

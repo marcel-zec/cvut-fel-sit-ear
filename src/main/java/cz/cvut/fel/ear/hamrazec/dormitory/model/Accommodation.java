@@ -25,6 +25,8 @@ public class Accommodation extends AbstractEntity {
     @Column(nullable = true)
     private LocalDate dateUnusualEnd;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
