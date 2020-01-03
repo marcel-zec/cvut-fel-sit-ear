@@ -76,6 +76,10 @@ public class AccommodationService {
     @Transactional
     public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException {
 
+        Student student = studentDao.find(student_id);
+        Block block = blockDao.find(blockName);
+        if (block == null || student==null) throw new NotFoundException();
+
         if (!accommodation.getDateStart().equals(LocalDate.now())) {
             throw new NotAllowedException("bad date");
         }
@@ -84,8 +88,6 @@ public class AccommodationService {
             throw new NotAllowedException("student already has actual accommodation");
         }
 
-        Student student = studentDao.find(student_id);
-        Block block = blockDao.find(blockName);
         List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(roomNumber)).collect(Collectors.toList());
 
         if (roomList.size() == 0) throw new NotFoundException();

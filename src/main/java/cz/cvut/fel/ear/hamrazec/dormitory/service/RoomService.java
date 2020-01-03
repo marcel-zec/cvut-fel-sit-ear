@@ -121,7 +121,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void removeEndedActualAccommodation(Room room) {
+    public void removeEndedActualAccommodation(Room room){
         List<Accommodation> actual = room.getActualAccommodations();
         for (int i = 0; i < actual.size(); i++) {
             Accommodation a = actual.get(i);
@@ -145,14 +145,14 @@ public class RoomService {
     }
 
     @Transactional
-    public Room removeActualReservationStart(Reservation reservation) {
+    public Room removeActualReservationStart(Reservation reservation){
 
-        if (reservation.getStatus() == Status.RES_APPROVED && reservation.getDateStart().equals(LocalDate.now())) {
-            reservation.getRoom().cancelActualReservation(reservation);
-            reservation.getStudent().cancelReservation(reservation);
-            roomDao.update(reservation.getRoom());
-            studentDao.update(reservation.getStudent());
-        }
+            if (reservation.getStatus() == Status.RES_APPROVED  && reservation.getDateStart().equals(LocalDate.now())) {
+                reservation.getRoom().cancelActualReservation(reservation);
+                reservation.getStudent().cancelReservation(reservation);
+                roomDao.update(reservation.getRoom());
+                studentDao.update(reservation.getStudent());
+            }
 
         return roomDao.find(reservation.getRoom().getId());
     }
