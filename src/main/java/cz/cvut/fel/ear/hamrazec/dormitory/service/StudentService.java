@@ -74,9 +74,10 @@ public class StudentService {
         if (student.hasActiveAccommodation()) {
             throw new NotAllowedException("You cannot delete student with active accommodation.");
         } else {
-            student.getReservations().stream()
-                    .filter(accommodation -> accommodation.getStatus().equals(Status.RES_APPROVED) || accommodation.getStatus().equals(Status.RES_PENDING))
-                    .findFirst().ifPresent(reservationService::cancelReservation);
+            //todo urobit
+//            student.getReservations().stream()
+//                    .filter(accommodation -> accommodation.getStatus().equals(Status.RES_APPROVED) || accommodation.getStatus().equals(Status.RES_PENDING))
+//                    .findFirst().ifPresent(reservationService::cancelReservation);
 
 //            for (Accommodation accommodation: student.getAccommodations()) {
 //                Status status = accommodation.getStatus();
