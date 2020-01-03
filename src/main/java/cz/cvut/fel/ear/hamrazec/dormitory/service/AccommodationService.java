@@ -44,6 +44,14 @@ public class AccommodationService {
         return accommodationsByBlock;
     }
 
+    public List<Accommodation> findAll(Long student_id) {
+        List<Accommodation> accommodationsByStudent = new ArrayList<>();
+        for (Accommodation a: findAll()) {
+            if (a.getStudent().getId().equals(student_id)) accommodationsByStudent.add(a);
+        }
+        return accommodationsByStudent;
+    }
+
     public List<Accommodation> findAll() {
         return acoDao.findAll();
     }

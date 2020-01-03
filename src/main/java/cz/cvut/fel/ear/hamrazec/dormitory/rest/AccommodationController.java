@@ -33,6 +33,11 @@ public class AccommodationController {
         return acomService.findAll(blockName);
     }
 
+    @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Accommodation> getAccommodations(@PathVariable Long student_id) {
+
+        return acomService.findAll(student_id);
+    }
 
     @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)

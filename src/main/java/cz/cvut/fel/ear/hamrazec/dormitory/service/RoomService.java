@@ -117,7 +117,15 @@ public class RoomService {
 
         if (room == null) return;
         if (room.getActualAccommodations() == null) return;
-        Accommodation accommodationforRemove = null;
+        List<Accommodation> accommodationforRemove = new ArrayList<>();
+
+        for (int i = 0; i < room.getActualAccommodations().size(); i++) {
+            if (room.getActualAccommodations().get(i).getStatus() == Status.ACC_ENDED) {
+                room.addPastAccomodation(room.getActualAccommodations().get(i));
+                accommodationforRemove.add(room.getActualAccommodations().get(i));
+            }
+        }
+
 
         for (Accommodation accommodation: room.getActualAccommodations()) {
             if (accommodationforRemove!=null ) room.cancelActualAccomodation(accommodationforRemove);
