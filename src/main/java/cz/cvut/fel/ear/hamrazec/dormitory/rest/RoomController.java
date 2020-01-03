@@ -47,8 +47,8 @@ public class RoomController {
         return roomService.getActualAccommodations(name,roomNum);
     }
 
-    @GetMapping(value = "/free_rooms/block/{name}/start/{dateStart}/end/{dateEnd}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Room> getFreeRooms(@PathVariable String name, @PathVariable String dateStart, @PathVariable String dateEnd) throws NotFoundException
+    @GetMapping(value = "/free_rooms/block/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getFreeRooms(@PathVariable String name, @RequestParam(name = "start") String dateStart, @RequestParam(name = "end") String dateEnd) throws NotFoundException
     {
         return roomService.findFreeRooms(name,LocalDate.parse(dateStart), LocalDate.parse(dateEnd));
     }

@@ -2,7 +2,6 @@ package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
-import cz.cvut.fel.ear.hamrazec.dormitory.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,11 +24,10 @@ public class DatabaseSeeder implements
     private ManagerDao managerDao;
     private RoomDao roomDao;
     private AccommodationDao accommodationDao;
-    private ManagerService managerService;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao, ManagerService managerService) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
@@ -37,7 +35,6 @@ public class DatabaseSeeder implements
         this.managerDao = managerDao;
         this.roomDao= roomDao;
         this.accommodationDao = accommodationDao;
-        this.managerService = managerService;
 
     }
 
@@ -60,6 +57,36 @@ public class DatabaseSeeder implements
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         student.setRole(Role.STUDENT);
         studentDao.persist(student);
+
+        Student student1 = new Student();
+        student1.setGender(Gender.MAN);
+        student1.setBankAccountNumber("AB12345678912343");
+        student1.setBirth(LocalDate.parse("2007-12-03"));
+        student1.setEndOfStudy(LocalDate.parse("2022-12-03"));
+        student1.setUniversity("CVUT");
+        student1.setEmail("test2@test.com");
+        student1.setFirstName("jozko");
+        student1.setUsername("username1");
+        student1.setLastName("mrkva");
+        student1.setPassword("fefebebssvss");
+        //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        student1.setRole(Role.STUDENT);
+        studentDao.persist(student1);
+
+        Student student2 = new Student();
+        student2.setGender(Gender.WOMAN);
+        student2.setBankAccountNumber("AB12345678912343");
+        student2.setBirth(LocalDate.parse("2007-12-03"));
+        student2.setEndOfStudy(LocalDate.parse("2022-12-03"));
+        student2.setUniversity("CVUT");
+        student2.setEmail("test3@test.com");
+        student2.setFirstName("jozko");
+        student2.setUsername("username2");
+        student2.setLastName("mrkvaaa");
+        student2.setPassword("fefebebssvcss");
+        //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        student2.setRole(Role.STUDENT);
+        studentDao.persist(student2);
     }
 
     void seedBlocks(){
@@ -78,25 +105,34 @@ public class DatabaseSeeder implements
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
+        manager.setPassword("kolvesvsvseve");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(1);
         manager.setUsername("janko");
-        managerService.create(manager);
+        managerDao.persist(manager);
 
         manager = new Manager();
         manager.setFirstName("Peter");
         manager.setLastName("Novak");
         manager.setEmail("novak@email.com");
+        manager.setPassword("fegwgeevasvv");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(2);
         manager.setUsername("petko345");
-        managerService.create(manager);
+        managerDao.persist(manager);
 
         manager = new Manager();
         manager.setFirstName("Karolina");
         manager.setLastName("Vesela");
         manager.setEmail("vesela@email.com");
+        manager.setPassword("faefdafefegvav");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setRole(Role.MANAGER);
+        manager.setWorkerNumber(3);
         manager.setUsername("kaja234");
-        managerService.create(manager);
+        managerDao.persist(manager);
     }
 
     void seedRoom(){
@@ -124,6 +160,24 @@ public class DatabaseSeeder implements
         accommodation.getRoom().addActualAccomodation(accommodation);
         accommodation.setStudent(studentDao.find((long) 1));
         accommodationDao.persist(accommodation);
+
+        Accommodation accommodation2 = new Accommodation();
+        accommodation2.setDateStart(LocalDate.now());
+        accommodation2.setDateEnd(LocalDate.parse("2020-12-21"));
+        accommodation2.setStatus(Status.ACC_ACTIVE);
+        accommodation2.setRoom(roomDao.find("b1",334));
+        accommodation2.getRoom().addActualAccomodation(accommodation2);
+        accommodation2.setStudent(studentDao.find((long) 2));
+        accommodationDao.persist(accommodation2);
+
+        Accommodation accommodation3 = new Accommodation();
+        accommodation3.setDateStart(LocalDate.now());
+        accommodation3.setDateEnd(LocalDate.parse("2020-12-21"));
+        accommodation3.setStatus(Status.ACC_ACTIVE);
+        accommodation3.setRoom(roomDao.find("b1",334));
+        accommodation3.getRoom().addActualAccomodation(accommodation3);
+        accommodation3.setStudent(studentDao.find((long) 3));
+        accommodationDao.persist(accommodation3);
 
             Accommodation accommodation1 = new Accommodation();
             accommodation1.setDateStart(LocalDate.parse("2019-10-10"));
