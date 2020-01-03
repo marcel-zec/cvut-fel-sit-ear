@@ -62,6 +62,7 @@ public class ReservationServiceTest {
 
         block = new Block();
         block.setName("6");
+        block.setFloors(4);
         block.setAddress("OLYMPIJSKA");
 
 

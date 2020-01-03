@@ -50,9 +50,9 @@ public class DatabaseSeeder implements
         student.setEndOfStudy(LocalDate.parse("2022-12-03"));
         student.setUniversity("CVUT");
         student.setEmail("test1@test.com");
-        student.setFirstName("jozko");
+        student.setFirstName("zdeno");
         student.setUsername("username");
-        student.setLastName("mrkva");
+        student.setLastName("zly");
         student.setPassword("fefebebssvsdebes");
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         studentDao.persist(student);
@@ -78,9 +78,9 @@ public class DatabaseSeeder implements
         student2.setEndOfStudy(LocalDate.parse("2022-12-03"));
         student2.setUniversity("CVUT");
         student2.setEmail("test3@test.com");
-        student2.setFirstName("jozko");
+        student2.setFirstName("Peter");
         student2.setUsername("username2");
-        student2.setLastName("mrkvaaa");
+        student2.setLastName("plachy");
         student2.setPassword("fefebebssvcss");
         //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         studentDao.persist(student2);

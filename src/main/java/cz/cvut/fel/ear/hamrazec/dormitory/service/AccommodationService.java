@@ -127,7 +127,7 @@ public class AccommodationService {
 
         Room room;
         Student student = reservation.getStudent();
-        if (student == null) throw new NotFoundException();
+        if (student == null || reservation==null) throw new NotFoundException();
 
         if (reservation.getDateStart().equals(LocalDate.now()) && reservation.getStatus().equals(Status.RES_APPROVED)) {
             room = roomService.removeActualReservationStart(reservation);

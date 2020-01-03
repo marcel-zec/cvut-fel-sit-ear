@@ -59,10 +59,12 @@ public class AccommodationServiceTest {
         reservation = new Reservation();
         reservation.setDateEnd(LocalDate.parse("2022-12-03"));
         reservation.setDateStart(LocalDate.parse("2021-12-03"));
+        reservation.setStatus(Status.RES_PENDING);
 
         reservation1 = new Reservation();
         reservation1.setDateStart(LocalDate.now());
         reservation1.setDateEnd(LocalDate.parse("2022-12-03"));
+        reservation1.setStatus(Status.RES_APPROVED);
 
         student = new Student();
         student.setGender(Gender.MAN);
@@ -92,6 +94,7 @@ public class AccommodationServiceTest {
 
         block = new Block();
         block.setName("6");
+        block.setFloors(5);
         block.setAddress("OLYMPIJSKA");
 
 
@@ -100,6 +103,8 @@ public class AccommodationServiceTest {
         room.setFloor(2);
         room.setMaxCapacity(4);
         room.setBlock(block);
+        room.addReservation(reservation1);
+        room.addReservation(reservation);
 
         block.addRoom(room);
         reservation.setRoom(room);
