@@ -20,15 +20,15 @@ public class BlockService {
 
     private final BlockDao blockDao;
     private final ManagerDao managerDao;
-    private final AccommodationService accommodationService;
+    private final RoomService roomService;
 
 
     @Autowired
-    public BlockService(BlockDao blockDao, ManagerDao managerDao, AccommodationService accommodationService) {
+    public BlockService(BlockDao blockDao, ManagerDao managerDao, RoomService roomService) {
 
         this.blockDao = blockDao;
         this.managerDao = managerDao;
-        this.accommodationService = accommodationService;
+        this.roomService = roomService;
     }
 
 
@@ -119,7 +119,7 @@ public class BlockService {
         if (block.getFloors() <= amount) {
             block.setFloors(amount);
         } else {
-            //TODO - mazanie poschodi
+            block.getRooms().stream().filter(room -> room.getFloor() > amount).forEach(roomService::deleteRoom);
         }
     }
 }

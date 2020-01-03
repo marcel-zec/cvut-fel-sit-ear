@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
@@ -94,10 +95,15 @@ public class BlockController {
 
     @PatchMapping(value = "/{blockName}/floors/{amount}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeAmountOfFloors(@PathVariable String blockName, @PathVariable Integer amount) throws NotFoundException {
+    public void changeAmountOfFloors(@PathVariable String blockName, @PathVariable Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences {
+        if (accept){
+            blockService.changeAmountOfFloors(blockName, amount);
+            LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
+        } else {
+            LOG.info("Amount of floors at block {} not changed. User not accept possible consequences of deleting.", blockName);
+            throw new NotAcceptDeletingConsequences();
+        }
 
-        blockService.changeAmountOfFloors(blockName, amount);
-        LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
     }
 
 
