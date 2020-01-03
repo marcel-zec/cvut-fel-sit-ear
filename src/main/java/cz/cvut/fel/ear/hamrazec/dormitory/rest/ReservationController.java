@@ -32,6 +32,12 @@ public class ReservationController {
         return reservationService.findAll(blockName);
     }
 
+    @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Reservation getReservation(@PathVariable Long student_id) {
+
+        return reservationService.findbyStudent(student_id);
+    }
+
     @PostMapping(value = "student/{student_id}/room/{room_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAccommodation(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable Long room_id) {

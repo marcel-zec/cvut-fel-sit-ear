@@ -44,7 +44,13 @@ public class ReservationService {
         return reservationsInBlock;
     }
 
+    public Reservation findbyStudent(Long student_id) {
 
+        for (Reservation r: findAll()) {
+            if (r.getStudent().getId().equals(student_id)) return r;
+        }
+        return null;
+    }
 
     public Reservation find(Long id) {
         return reservationDao.find(id);
