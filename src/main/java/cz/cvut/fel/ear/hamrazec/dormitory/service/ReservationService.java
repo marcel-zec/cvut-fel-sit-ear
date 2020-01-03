@@ -118,8 +118,8 @@ public class ReservationService {
     }
 
     public void deleteReservation(Reservation reservation){
-        reservation.getStudent().cancelReservation(reservation);
-        reservation.getRoom().cancelActualReservation(reservation);
+        if (reservation.getStudent() != null)  reservation.getStudent().cancelReservation(reservation);
+        if (reservation.getRoom() != null) reservation.getRoom().cancelActualReservation(reservation);
         reservationDao.remove(reservation);
     }
 }
