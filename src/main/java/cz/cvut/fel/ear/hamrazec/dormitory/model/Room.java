@@ -40,7 +40,7 @@ public class Room extends AbstractEntity {
     @OneToMany
     private List<Accommodation> pastAccommodations;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany //(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Accommodation> actualAccommodations;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)

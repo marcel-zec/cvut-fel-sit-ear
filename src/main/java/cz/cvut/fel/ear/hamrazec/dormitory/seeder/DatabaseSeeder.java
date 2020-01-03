@@ -127,6 +127,7 @@ public class DatabaseSeeder implements
         accommodation.setDateEnd(LocalDate.parse("2020-12-21"));
         accommodation.setStatus(Status.ACC_ACTIVE);
         accommodation.setRoom(roomDao.find("b1",334));
+        accommodation.getRoom().addActualAccomodation(accommodation);
         accommodation.setStudent(studentDao.find((long) 1));
         accommodationDao.persist(accommodation);
     }

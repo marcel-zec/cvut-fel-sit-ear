@@ -4,6 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,7 @@ public class StudentService {
         if (student.getRole() != Role.STUDENT) throw new NotAllowedException("You are not allowed to change role.");
         student.setPassword(student.getBirth().toString());
         studentDao.persist(student);
+        //TODO - kontrola existencie emailu
     }
 
 
@@ -74,6 +76,8 @@ public class StudentService {
             if (student.getReservation() != null){
                 student.getReservation().setStatus(Status.RES_CANCELED);
             }
+            student.delete();
+            studentDao.update(student);
         }
     }
 
