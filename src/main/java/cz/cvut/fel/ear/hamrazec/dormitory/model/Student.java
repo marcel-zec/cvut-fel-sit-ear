@@ -36,8 +36,8 @@ public class Student extends User{
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Accommodation> accommodations;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private Reservation reservation;
 
 
     public Student() {
@@ -111,28 +111,29 @@ public class Student extends User{
         return accommodations.stream().anyMatch(accommodation -> accommodation.getStatus().equals(Status.ACC_ACTIVE));
     }
 
-    public List<Reservation> getReservations() {
-        if (reservations == null){
-            reservations = new ArrayList<>();
-        }
-        return reservations;
+    public Reservation getReservations() {
+//        if (reservations == null){
+//            reservations = new ArrayList<>();
+//        }
+        return reservation;
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 
-    public void addReservation(Reservation reservation) {
-        if (reservations == null){
-            reservations = new ArrayList<>();
-        }
-        reservations.add(reservation);
-    }
+//    public void addReservation(Reservation reservation) {
+//        if (reservations == null){
+//            reservations = new ArrayList<>();
+//        }
+//        reservations.add(reservation);
+//    }
 
     public void cancelReservation(Reservation reservation){
-        if (reservations.contains(reservation)){
-            reservations.remove(reservation);
-        }
+        if (reservation.equals(this.reservation)) this.reservation = null;
+//        if (reservations.contains(reservation)){
+//            reservations.remove(reservation);
+//        }
     }
 
 }

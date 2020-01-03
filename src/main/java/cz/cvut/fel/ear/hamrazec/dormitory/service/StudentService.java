@@ -65,6 +65,7 @@ public class StudentService {
 
     @Transactional
     public void delete(Long id) throws NotFoundException, NotAllowedException {
+
         Student student = studentDao.find(id);
         if (student == null) throw new NotFoundException();
         if (student.hasActiveAccommodation()) {
@@ -76,4 +77,6 @@ public class StudentService {
             student.delete();
         }
     }
+
+
 }

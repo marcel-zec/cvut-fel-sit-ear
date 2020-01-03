@@ -44,6 +44,8 @@ public class ReservationService {
         return reservationsInBlock;
     }
 
+
+
     public Reservation find(Long id) {
         return reservationDao.find(id);
     }
@@ -67,7 +69,8 @@ public class ReservationService {
         {
             reservation.setStatus(Status.RES_APPROVED);
             room.addReservation(reservation);
-            student.addReservation(reservation);
+            //student.addReservation(reservation);
+            student.setReservation(reservation);
             reservationDao.persist(reservation);
             studentDao.update(student);
             roomDao.update(room);
@@ -88,7 +91,8 @@ public class ReservationService {
             Room room = freeRooms.get(0);
             reservation.setRoom(room);
             room.addReservation(reservation);
-            student.addReservation(reservation);
+            student.setReservation(reservation);
+            //student.addReservation(reservation);
             reservationDao.persist(reservation);
             studentDao.update(student);
             roomDao.update(room);
@@ -111,5 +115,11 @@ public class ReservationService {
         reservation.setStatus(status);
         reservation.setDateUnusualEnd(LocalDate.now());
         reservationDao.update(reservation);
+    }
+
+    public void deleteReservation(Reservation reservation){
+        if (reservation.getStudent() != null)  reservation.getStudent().cancelReservation(reservation);
+        if (reservation.getRoom() != null) reservation.getRoom().cancelActualReservation(reservation);
+        reservationDao.remove(reservation);
     }
 }
