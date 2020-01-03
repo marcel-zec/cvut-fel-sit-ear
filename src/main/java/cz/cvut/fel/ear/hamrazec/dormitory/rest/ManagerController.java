@@ -78,7 +78,7 @@ public class ManagerController {
     public void createManager(@RequestBody Manager manager) {
 
         managerService.create(manager);
-        LOG.info("Category with id {} and workerNumber {} created", manager.getId(), manager.getWorkerNumber());
+        LOG.info("Manager with id {} and workerNumber {} created", manager.getId(), manager.getWorkerNumber());
     }
 
 

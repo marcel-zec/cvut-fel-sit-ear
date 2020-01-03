@@ -34,10 +34,14 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     public List<T> findAll() {
         try {
             if (typeIsUser()) return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e WHERE e.deleted_at is null", type).getResultList();
-            return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e", type).getResultList();
+            return findAll(true);
         } catch (RuntimeException e) {
             throw new PersistenceException(e);
         }
+    }
+
+    public List<T> findAll(boolean deleted) {
+        return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e", type).getResultList();
     }
 
     @Override

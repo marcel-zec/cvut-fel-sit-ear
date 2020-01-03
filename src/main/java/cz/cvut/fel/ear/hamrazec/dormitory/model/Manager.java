@@ -3,6 +3,9 @@ package cz.cvut.fel.ear.hamrazec.dormitory.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +21,6 @@ public class Manager extends User {
 
     @Basic(optional = false)
     @Column(nullable = false)
-    @GeneratedValue
     private Integer workerNumber;
 
     @ManyToMany

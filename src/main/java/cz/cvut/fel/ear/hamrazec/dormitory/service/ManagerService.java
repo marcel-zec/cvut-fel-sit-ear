@@ -15,19 +15,22 @@ public class ManagerService {
 
     private final ManagerDao managerDao;
     private final BlockService blockService;
+    private final PasswordService passwordService;
 
 
     @Autowired
-    public ManagerService(ManagerDao managerDao, BlockService blockService) {
+    public ManagerService(ManagerDao managerDao, BlockService blockService, PasswordService passwordService) {
 
         this.managerDao = managerDao;
         this.blockService = blockService;
+        this.passwordService = passwordService;
     }
 
 
     @Transactional
     public void create(Manager manager) {
-
+        manager.setPassword(passwordService.generatePassword());
+        manager.setWorkerNumber(getNextWorkerNumber());
         managerDao.persist(manager);
     }
 
@@ -80,5 +83,14 @@ public class ManagerService {
             block.removeManager(manager);
         }
         managerDao.remove(manager);
+    }
+
+    @Transactional
+    public int getNextWorkerNumber(){
+        List<Manager> managers = managerDao.findAll(true);
+        if (managers == null || managers.isEmpty()) return 1;
+        else {
+           return managers.stream().reduce((manager, manager2) -> manager.getWorkerNumber() > manager2.getWorkerNumber() ? manager : manager2).get().getWorkerNumber() + 1;
+        }
     }
 }
