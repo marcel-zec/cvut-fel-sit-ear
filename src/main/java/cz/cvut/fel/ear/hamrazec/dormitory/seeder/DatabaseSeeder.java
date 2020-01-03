@@ -130,6 +130,15 @@ public class DatabaseSeeder implements
         accommodation.getRoom().addActualAccomodation(accommodation);
         accommodation.setStudent(studentDao.find((long) 1));
         accommodationDao.persist(accommodation);
+
+            Accommodation accommodation1 = new Accommodation();
+            accommodation1.setDateStart(LocalDate.parse("2019-10-10"));
+            accommodation1.setDateEnd(LocalDate.parse("2019-12-21"));
+            accommodation1.setStatus(Status.ACC_ENDED);
+            accommodation1.setRoom(roomDao.find("b1",334));
+            accommodation1.getRoom().addPastAccomodation(accommodation1);
+            accommodation1.setStudent(studentDao.find((long) 1));
+            accommodationDao.persist(accommodation1);
     }
     @Override
     @Transactional

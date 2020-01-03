@@ -74,6 +74,11 @@ public class AccommodationService {
         if (!accommodation.getDateStart().equals(LocalDate.now())) {
             throw new NotAllowedException("bad date");
         }
+
+        if (studentDao.find(student_id).getAccommodations().stream().anyMatch(acc -> acc.getStatus().equals(Status.ACC_ACTIVE))){
+            throw new NotAllowedException("student already has actual accommodation");
+        }
+
         Student student = studentDao.find(student_id);
         Room room = roomDao.find(room_id);
         accommodation.setStudent(student);

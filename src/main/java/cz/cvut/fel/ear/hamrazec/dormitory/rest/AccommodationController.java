@@ -34,7 +34,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Accommodation> getAccommodations(@PathVariable Long student_id) {
+    public List<Accommodation> getAccommodationsOfStudent(@PathVariable Long student_id) {
 
         return acomService.findAll(student_id);
     }
