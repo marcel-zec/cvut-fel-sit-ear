@@ -30,16 +30,14 @@ public class RoomService {
     private final BlockDao blockDao;
     private final RoomDao roomDao;
     private StudentDao studentDao;
-    private AccommodationService accommodationService;
 
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao, AccommodationService accommodationService) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
         this.studentDao = studentDao;
-        this.accommodationService = accommodationService;
     }
 
     @Transactional
@@ -192,13 +190,12 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Room room){
-        room.getActualAccommodations().stream().forEach(accommodation -> {
-            try {
-                accommodationService.delete(accommodation.getId());
-            } catch (NotFoundException e) {
-                LOG.error("Bad list of accommodations in room with id: " + room.getId());
-            }
-        });
+//        room.getActualAccommodations().stream().forEach(accommodation -> {
+//            try {
+//            } catch (NotFoundException e) {
+//                LOG.error("Bad list of accommodations in room with id: " + room.getId());
+//            }
+//        });
     }
 
 
