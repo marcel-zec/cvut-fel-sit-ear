@@ -117,10 +117,13 @@ public class RoomService {
 
         if (room == null) return;
         if (room.getActualAccommodations() == null) return;
+        Accommodation accommodationforRemove = null;
+
         for (Accommodation accommodation: room.getActualAccommodations()) {
+            if (accommodationforRemove!=null ) room.cancelActualAccomodation(accommodationforRemove);
             if (accommodation.getStatus() == Status.ACC_ENDED) {
                 room.addPastAccomodation(accommodation);
-                room.cancelActualAccomodation(accommodation);
+                accommodationforRemove = accommodation;
                 roomDao.update(room);
             }
         }
