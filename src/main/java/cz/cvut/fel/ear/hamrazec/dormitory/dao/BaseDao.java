@@ -1,6 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.dao;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.SuperUser;
+import org.apache.catalina.Manager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,7 +33,8 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     @Override
     public List<T> findAll() {
         try {
-            return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e WHERE e.deleted_at is null", type).getResultList();
+            if (typeIsUser()) return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e WHERE e.deleted_at is null", type).getResultList();
+            return em.createQuery("SELECT e FROM " + type.getSimpleName() + " e", type).getResultList();
         } catch (RuntimeException e) {
             throw new PersistenceException(e);
         }
@@ -85,5 +89,9 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     @Override
     public boolean exists(Long id) {
         return id != null && em.find(type, id) != null;
+    }
+
+    private boolean typeIsUser(){
+        return type == Student.class || type == Manager.class || type == SuperUser.class;
     }
 }

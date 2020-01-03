@@ -5,6 +5,8 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import java.util.List;
 import java.util.Objects;
 
 @Repository

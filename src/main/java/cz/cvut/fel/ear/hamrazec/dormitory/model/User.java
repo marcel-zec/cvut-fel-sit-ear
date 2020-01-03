@@ -44,6 +44,7 @@ public abstract class User extends AbstractEntity {
 
     @Basic(optional = true)
     @Column(nullable = true)
+    @JsonIgnore
     private LocalDate deleted_at;
 
     public User() {
