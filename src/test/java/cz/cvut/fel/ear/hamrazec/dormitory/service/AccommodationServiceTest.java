@@ -129,7 +129,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodation_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void createAccommodation_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         accommodationService.create(accommodation, student.getId(), room.getRoomNumber(), block.getName());
         assertEquals("Student has not new accommodation.", 1 , em.find(Student.class,student.getId())
@@ -137,7 +137,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodation_studentHasActiveAccom_throwException() throws NotFoundException, NotAllowedException {
+    public void createAccommodation_studentHasActiveAccom_throwException() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         thrown.expect(NotAllowedException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation,but student already has active accommodation.");
@@ -146,7 +146,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void create_accommodationWithNoExistingStudent_throwException() throws NotFoundException, NotAllowedException {
+    public void create_accommodationWithNoExistingStudent_throwException() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing student.");
@@ -154,7 +154,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void create_accommodationWithNoExistingRoom_throwException() throws NotFoundException, NotAllowedException {
+    public void create_accommodationWithNoExistingRoom_throwException() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation to not existing room.");
@@ -186,7 +186,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void findAll_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void findAll_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         accommodationService.create(accommodation, student.getId(), room.getRoomNumber(), block.getName());
         accommodationService.create(accommodation1, student1.getId(), room.getRoomNumber(), block.getName());
@@ -195,7 +195,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void findActualAccommodationOfStudent_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void findActualAccommodationOfStudent_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         accommodationService.create(accommodation, student.getId(), room.getRoomNumber(), block.getName());
         accommodationService.create(accommodation1, student1.getId(), room.getRoomNumber(), block.getName());

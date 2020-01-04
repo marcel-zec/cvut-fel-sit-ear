@@ -34,7 +34,7 @@ public class Room extends AbstractEntity {
     private Integer maxCapacity;
 
     @ManyToOne
-    @JoinColumn(name="block_id", nullable=false)
+    @JoinColumn(name="block_id", nullable=true)
     private Block block;
 
     @OrderBy("dateStart DESC")

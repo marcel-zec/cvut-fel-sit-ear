@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -74,31 +75,28 @@ public class AccommodationService {
 
 
     @Transactional
-    public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException {
+    public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(blockName);
         if (block == null || student==null) throw new NotFoundException();
 
-        if (!accommodation.getDateStart().equals(LocalDate.now())) {
-            throw new NotAllowedException("bad date");
-        }
+        if (!accommodation.getDateStart().equals(LocalDate.now())) throw new NotAllowedException("bad date");
 
-        if (studentDao.find(student_id).getAccommodations().stream().anyMatch(acc -> acc.getStatus().equals(Status.ACC_ACTIVE))){
-            throw new NotAllowedException("student already has actual accommodation");
-        }
+        if (studentDao.find(student_id).getAccommodations().stream()
+                .anyMatch(acc -> acc.getStatus().equals(Status.ACC_ACTIVE))) throw new AlreadyExistsException();
 
         List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(roomNumber)).collect(Collectors.toList());
 
         if (roomList.size() == 0) throw new NotFoundException();
-        Room room = roomList.get(0);
 
+        Room room = roomList.get(0);
         accommodation.setStudent(student);
         accommodation.setRoom(room);
         accommodation.setStatus(Status.ACC_ACTIVE);
         Reservation reservation = roomService.getReservation(room,student);
 
-        if (student == null || room == null) throw new NotFoundException();
+        if (room == null) throw new NotFoundException();
 
         if (reservation != null && reservation.getDateStart().equals(LocalDate.now())) {
             createFromReservation(reservation);
@@ -112,9 +110,8 @@ public class AccommodationService {
                 room.addActualAccomodation(accommodation);
                 student.addAccommodation(accommodation);
 
-                if (student.getReservation() !=null) {
-                    reservationService.deleteReservation(student.getReservation());
-                }
+                if (student.getReservation() !=null) reservationService.deleteReservation(student.getReservation());
+
                 acoDao.persist(accommodation);
                 roomDao.update(room);
                 studentDao.update(student);
@@ -125,23 +122,22 @@ public class AccommodationService {
     @Transactional
     public void createFromReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
 
-        Room room;
+        if (reservation == null) throw new NotFoundException();
         Student student = reservation.getStudent();
-        if (student == null || reservation==null) throw new NotFoundException();
 
         if (reservation.getDateStart().equals(LocalDate.now()) && reservation.getStatus().equals(Status.RES_APPROVED)) {
-            room = roomService.removeActualReservationStart(reservation);
-            Accommodation accommodation = newAccomodationFromReservation(reservation);
+            Room room = roomService.removeActualReservationStart(reservation);
+            Accommodation accommodation = newAccommodationFromReservation(reservation);
             room.addActualAccomodation(accommodation);
             student.addAccommodation(accommodation);
 
             roomDao.update(room);
             studentDao.update(student);
             reservationDao.remove(reservation);
-        }else throw new NotAllowedException("Bad date or not not approved reservation");
+        } else throw new NotAllowedException("Bad date or not approved reservation");
     }
 
-    private Accommodation newAccomodationFromReservation(Reservation reservation){
+    private Accommodation newAccommodationFromReservation(Reservation reservation){
         Accommodation accommodation = new Accommodation();
         accommodation.setStudent(reservation.getStudent());
         accommodation.setRoom(reservation.getRoom());

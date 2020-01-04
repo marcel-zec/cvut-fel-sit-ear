@@ -69,10 +69,16 @@ public class BlockController {
     }
 
 
-    @GetMapping(value = "/{blockName}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Manager> getManagersFromBlock(@PathVariable String blockName) throws NotFoundException {
+    @GetMapping(value = "/{blockName}/floor/{number}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getRoomsAtFloor(@PathVariable String blockName, @PathVariable Integer number) throws NotFoundException {
 
-        return managerService.findAllByBlock(blockName);
+        return blockService.getRoomsAtFloor(blockName,number);
+    }
+
+    @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
+
+        return roomService.findAll(blockName);
     }
 
 
@@ -93,9 +99,9 @@ public class BlockController {
         LOG.info("Manager with workNumber {} removed from block {}", workerNumber, blockName);
     }
 
-    @PatchMapping(value = "/{blockName}/floors/{amount}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{blockName}/floor", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeAmountOfFloors(@PathVariable String blockName, @PathVariable Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences {
+    public void changeAmountOfFloors(@PathVariable String blockName, @RequestParam Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences {
         if (accept){
             blockService.changeAmountOfFloors(blockName, amount);
             LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
@@ -106,47 +112,25 @@ public class BlockController {
     }
 
 
-    @GetMapping(value = "/{blockName}/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Room> getRoomsFromBlock(@PathVariable String blockName) throws NotFoundException {
-
-        return roomService.findAll(blockName);
-    }
-
-
-    @PostMapping(value = "/{blockName}/rooms", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addRoomToBlock(@PathVariable String blockName, @RequestBody Room room) throws NotFoundException, AlreadyExistsException, BadFloorException {
-            roomService.addRoom(blockName, room);
-            LOG.info("Room with id {} added to block {}.", room.getId(), blockName);
-    }
-
-
-    @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBlock(@PathVariable String blockName) {
-
-        try {
-            blockService.delete(blockName);
-            LOG.info("Block with name {} removed.", blockName);
-        } catch (NotFoundException e) {
-
-        } catch (Exception e) {
-            //TODO - exceptions
-        }
-    }
-
 
     @PatchMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateBlock(@PathVariable String blockName, @RequestBody Map<String, String> request) {
+    public void updateBlock(@PathVariable String blockName, @RequestBody Map<String, String> request) throws NotFoundException {
 
-        try {
             blockService.update(blockName, request.get("name"), request.get("address"));
             LOG.info("Block with name {} updated.", blockName);
-        } catch (NotFoundException e) {
-            //TODO - exceptions
-        }
     }
 
+    @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeBlock(@PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotAcceptDeletingConsequences, NotFoundException {
+        if (accept){
+            blockService.delete(blockName);
+            LOG.info("Block with name {} removed.", blockName);
+        } else {
+            LOG.info("Block {} not deleted. User not accept possible consequences of deleting.", blockName);
+            throw new NotAcceptDeletingConsequences();
+        }
+    }
 
 }
