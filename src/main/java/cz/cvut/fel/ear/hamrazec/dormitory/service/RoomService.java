@@ -6,6 +6,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.RoomController;
+import cz.cvut.fel.ear.hamrazec.dormitory.rest.StudentController;
 import javassist.bytecode.analysis.ControlFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,6 @@ public class RoomService {
     private final RoomDao roomDao;
     private StudentDao studentDao;
     private AccommodationDao accommodationDao;
-
 
     @Autowired
     public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao, AccommodationDao accommodationDao) {
@@ -209,7 +209,12 @@ public class RoomService {
     @Transactional
     public void deleteRoom(Room room) {
         removeAllActualAccommodation(room);
+        Block block = room.getBlock();
+        block.removeRoom(room);
+        blockDao.update(block);
+        room.setBlock(null);
         room.softDelete();
+        LOG.info("Room " + room.getRoomNumber() + " at block " + block.getName() + " was deleted.");
         roomDao.update(room);
     }
 
