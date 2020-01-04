@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -15,14 +16,12 @@ import java.util.List;
 public class StudentService {
 
     private final StudentDao studentDao;
-    private final ReservationService reservationService;
     private final PasswordService passwordService;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao, ReservationService reservationService, PasswordService passwordService) {
+    public StudentService(StudentDao studentDao, PasswordService passwordService) {
         this.studentDao = studentDao;
-        this.reservationService = reservationService;
         this.passwordService = passwordService;
     }
 
@@ -36,9 +35,8 @@ public class StudentService {
         return studentDao.find(id);
     }
 
-
     @Transactional
-    public void create(Student student) throws NotAllowedException {
+    public void create(Student student) {
         student.setPassword(passwordService.generatePassword());
         studentDao.persist(student);
         //TODO - kontrola existencie emailu
