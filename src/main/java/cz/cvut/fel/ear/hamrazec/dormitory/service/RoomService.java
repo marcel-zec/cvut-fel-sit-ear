@@ -210,6 +210,7 @@ public class RoomService {
     public void deleteRoom(Room room) {
         removeAllActualAccommodation(room);
         room.softDelete();
+        roomDao.update(room);
     }
 
 

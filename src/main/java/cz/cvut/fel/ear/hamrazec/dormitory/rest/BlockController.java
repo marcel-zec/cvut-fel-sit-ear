@@ -121,20 +121,6 @@ public class BlockController {
     }
 
 
-    @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBlock(@PathVariable String blockName) {
-
-        try {
-            blockService.delete(blockName);
-            LOG.info("Block with name {} removed.", blockName);
-        } catch (NotFoundException e) {
-
-        } catch (Exception e) {
-            //TODO - exceptions
-        }
-    }
-
 
     @PatchMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -148,5 +134,16 @@ public class BlockController {
         }
     }
 
+    @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeBlock(@PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotAcceptDeletingConsequences, NotFoundException {
+        if (accept){
+            blockService.delete(blockName);
+            LOG.info("Block with name {} removed.", blockName);
+        } else {
+            LOG.info("Block {} not deleted. User not accept possible consequences of deleting.", blockName);
+            throw new NotAcceptDeletingConsequences();
+        }
+    }
 
 }

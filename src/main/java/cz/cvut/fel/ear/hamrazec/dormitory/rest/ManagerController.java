@@ -48,14 +48,6 @@ public class ManagerController {
     }
 
 
-    @DeleteMapping(value = "/{workerNumber}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteManager(@PathVariable Integer workerNumber) throws NotFoundException {
-
-        managerService.delete(workerNumber);
-        LOG.info("Manager with workerNumber {} deleted.", workerNumber);
-    }
-
 
     @PostMapping(value = "/{workerNumber}/blocks/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -89,6 +81,14 @@ public class ManagerController {
 
         managerService.update(workerNumber, manager);
         LOG.info("Manager with workerNumber {} updated.", workerNumber);
+    }
+
+    @DeleteMapping(value = "/{workerNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteManager(@PathVariable Integer workerNumber) throws NotFoundException {
+
+        managerService.delete(workerNumber);
+        LOG.info("Manager with workerNumber {} deleted.", workerNumber);
     }
 
 }

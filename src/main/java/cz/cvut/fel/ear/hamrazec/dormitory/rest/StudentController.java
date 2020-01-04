@@ -60,14 +60,6 @@ public class StudentController {
     }
 
 
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeStudent(@PathVariable Long id) throws NotFoundException, NotAllowedException {
-
-        studentService.delete(id);
-        LOG.info("Student with id {} removed.", id);
-    }
-
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -75,6 +67,14 @@ public class StudentController {
 
         studentService.update(id, student);
         LOG.info("Student with id {} updated.", id);
+    }
+
+    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeStudent(@PathVariable Long id) throws NotFoundException, NotAllowedException {
+
+        studentService.delete(id);
+        LOG.info("Student with id {} removed.", id);
     }
 
 

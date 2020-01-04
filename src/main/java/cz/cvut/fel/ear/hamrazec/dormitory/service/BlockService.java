@@ -33,26 +33,22 @@ public class BlockService {
 
 
     public List<Block> findAll() {
-
         return blockDao.findAll();
     }
 
 
     public Block find(Long id) {
-
         return blockDao.find(id);
     }
 
 
     public Block find(String name) {
-
         return blockDao.find(name);
     }
 
 
     @Transactional
     public void create(Block block) {
-
         blockDao.persist(block);
     }
 
@@ -99,19 +95,6 @@ public class BlockService {
 
 
     @Transactional
-    public void delete(String blockName) throws NotFoundException, Exception {
-
-        Block block = blockDao.find(blockName);
-        if (block == null) throw new NotFoundException();
-        if (false) {
-            //TODO - nemezat ak ma izby
-            throw new Exception();
-        } else {
-            blockDao.remove(block);
-        }
-    }
-
-    @Transactional
     public void changeAmountOfFloors(String blockName, Integer amount) throws NotFoundException, BadFloorException {
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
@@ -121,5 +104,15 @@ public class BlockService {
         } else {
             block.getRooms().stream().filter(room -> room.getFloor() > amount).forEach(roomService::deleteRoom);
         }
+    }
+
+    @Transactional
+    public void delete(String blockName) throws NotFoundException{
+
+        Block block = blockDao.find(blockName);
+        if (block == null) throw new NotFoundException();
+        block.getRooms().stream().forEach(roomService::deleteRoom);
+        block.softDelete();
+        blockDao.update(block);
     }
 }
