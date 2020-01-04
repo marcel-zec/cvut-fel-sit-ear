@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -66,7 +67,6 @@ public class ReservationServiceTest {
         block.setFloors(4);
         block.setAddress("OLYMPIJSKA");
         block.setFloors(10);
-
 
         room = new Room();
         room.setRoomNumber(234);
@@ -117,5 +117,22 @@ public class ReservationServiceTest {
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         assertEquals("Student has not new reservation.", reservation , em.find(Student.class,student.getId())
                 .getReservation());
+    }
+
+    @Test
+    public void findbyStudent_normalEntry_worksCorrect() throws NotFoundException {
+
+        reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
+        Reservation reservation = reservationService.findbyStudent(student.getId());
+        assertEquals("Student has bad reservation.", em.find(Reservation.class,reservation.getId()), reservation);
+    }
+
+    @Test
+    public void findAll_blockEntry_worksCorrect() throws NotFoundException {
+
+        reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
+        reservationService.createNewReservationRandom(reservation1,student1.getId(),block.getName());
+        List<Reservation> reservations = reservationService.findAll(block.getName());
+        assertEquals("Block has bad reservations.", 2, reservations.size());
     }
 }
