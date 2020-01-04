@@ -12,18 +12,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final StudentDao studentDao;
-    private final ManagerDao managerDao;
+    private final UserDao userDao;
 
     @Autowired
-    public UserDetailsService(StudentDao studentDao, ManagerDao managerDao) {
-        this.studentDao = studentDao;
-        this.managerDao = managerDao;
+    public UserDetailsService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
-    public UserDetails loadStudentByUsername(String username) throws UsernameNotFoundException {
-        final User user = studentDao.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        final User user = userDao.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User with username " + username + " not found.");
         }

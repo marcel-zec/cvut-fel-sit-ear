@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.security;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.model.AuthenticationToken;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails;
 import org.slf4j.Logger;
@@ -40,6 +41,19 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
         }
         ud.eraseCredentials();
         return SecurityUtils.setCurrentUser(ud);
+    }
+
+    public Authentication authenticate(Authentication authentication, boolean manager) throws AuthenticationException {
+        if (manager){
+            UserDetails ud = (UserDetails) userDetailsService.loadUserByUsername(authentication.getPrincipal().toString());
+            if (ud.getUser().getRole().equals(Role.STUDENT) || !passwordEncoder.matches(authentication.getCredentials().toString(), ud.getPassword())) {
+                throw new BadCredentialsException("Not validated");
+            }
+            ud.eraseCredentials();
+            return SecurityUtils.setCurrentUser(ud);
+        } else {
+            return authenticate(authentication);
+        }
     }
 
 
