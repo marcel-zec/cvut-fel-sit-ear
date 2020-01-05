@@ -28,4 +28,12 @@ public class AccessService {
             if (!manager.getBlocks().contains(block)) { throw new NotAllowedException("Access denied."); }
         }
     }
+
+    public void studentAccess(Long student_id) throws NotAllowedException {
+
+        final User currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser.getRole().equals(Role.STUDENT)) {
+            if (!currentUser.getId().equals(student_id)) throw new NotAllowedException("Access denied.");
+        }
+    }
 }

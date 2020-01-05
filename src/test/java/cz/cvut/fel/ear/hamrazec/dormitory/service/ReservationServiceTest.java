@@ -120,7 +120,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void findbyStudent_normalEntry_worksCorrect() throws NotFoundException {
+    public void findbyStudent_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
 
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         Reservation reservation = reservationService.findbyStudent(student.getId());

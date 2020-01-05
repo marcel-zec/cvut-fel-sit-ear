@@ -7,7 +7,6 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
-import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -52,8 +51,9 @@ public class ReservationService {
         return reservationsInBlock;
     }
 
-    public Reservation findbyStudent(Long student_id) {
+    public Reservation findbyStudent(Long student_id) throws NotAllowedException {
 
+        accessService.studentAccess(student_id);
         for (Reservation r: findAll()) {
             if (r.getStudent().getId().equals(student_id)) return r;
         }
@@ -74,6 +74,8 @@ public class ReservationService {
 
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(block_name);
+        accessService.managerAccess(block);
+        accessService.studentAccess(student_id);
         if (block_name == null) throw new NotFoundException();
 
         List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(room_number)).collect(Collectors.toList());
@@ -100,8 +102,10 @@ public class ReservationService {
     }
 
     @Transactional
-    public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException {
+    public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException, NotAllowedException {
 
+        accessService.studentAccess(student_id);
+        accessService.managerAccess(blockDao.find(blockName));
         Student student = studentDao.find(student_id);
         reservation.setStudent(student);
         if (student == null) throw new NotFoundException();

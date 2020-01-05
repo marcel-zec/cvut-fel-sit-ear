@@ -37,12 +37,12 @@ public class ReservationController {
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Reservation getReservation(@PathVariable Long student_id) {
+    public Reservation getReservation(@PathVariable Long student_id) throws NotAllowedException {
 
         return reservationService.findbyStudent(student_id);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservation(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String block_name, @PathVariable Integer room_number) throws NotFoundException, NotAllowedException {
@@ -51,7 +51,7 @@ public class ReservationController {
         LOG.info("Reservation with id {} created", reservation.getId());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException {
