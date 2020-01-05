@@ -1,6 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyLoginException;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.DefaultAuthenticationProvider;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.LoginService;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

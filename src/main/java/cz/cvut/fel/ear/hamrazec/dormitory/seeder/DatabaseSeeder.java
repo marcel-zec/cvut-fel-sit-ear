@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.seeder;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -97,7 +98,7 @@ public class DatabaseSeeder implements
         blockDao.persist(new Block("b8","Olympijska 3, Praha 6",6));
     }
 
-    void seedManagers(){
+    void seedManagers() throws AlreadyExistsException {
         Manager manager = new Manager();
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
@@ -105,6 +106,7 @@ public class DatabaseSeeder implements
         manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setWorkerNumber(1);
         manager.setUsername("janko");
+        //manager.addBlock(blockDao.find("b1"));
         managerDao.persist(manager);
 
         manager = new Manager();
@@ -137,7 +139,7 @@ public class DatabaseSeeder implements
         roomDao.persist(room);
 
         Room room2 = new Room();
-        room2.setBlock(blockDao.find((long) 1));
+        room2.setBlock(blockDao.find((long) 2));
         room2.setMaxCapacity(3);
         room2.setFloor(4);
         room2.setRoomNumber(452);
@@ -186,7 +188,11 @@ public class DatabaseSeeder implements
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         seedUsersTable();
         seedBlocks();
-        seedManagers();
+        try {
+            seedManagers();
+        } catch (AlreadyExistsException e) {
+            e.printStackTrace();
+        }
         seedRoom();
         seedAccom();
     }

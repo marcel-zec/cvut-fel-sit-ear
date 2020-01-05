@@ -1,7 +1,5 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service.security;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
-import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,4 +25,5 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
         return new cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails(user);
     }
+
 }

@@ -65,7 +65,6 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(authentication.getCredentials().toString(), ud.getPassword()))throw new BadCredentialsException("Not validated");
         System.out.println("Login success.");
         ud.eraseCredentials();
-        System.out.println("Erase success.");
         return SecurityUtils.setCurrentUser(ud);
     }
 

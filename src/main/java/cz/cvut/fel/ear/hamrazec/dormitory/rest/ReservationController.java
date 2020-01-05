@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -27,18 +28,21 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @GetMapping(value = "block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Reservation> getReservations(@PathVariable String blockName) {
 
         return reservationService.findAll(blockName);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Reservation getReservation(@PathVariable Long student_id) {
 
         return reservationService.findbyStudent(student_id);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservation(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String block_name, @PathVariable Integer room_number) {
@@ -51,6 +55,7 @@ public class ReservationController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) {
