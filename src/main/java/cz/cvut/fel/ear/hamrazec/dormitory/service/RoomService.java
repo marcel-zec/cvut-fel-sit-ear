@@ -9,6 +9,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.RoomController;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.StudentController;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import javassist.bytecode.analysis.ControlFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +33,16 @@ public class RoomService {
     private final RoomDao roomDao;
     private StudentDao studentDao;
     private AccommodationDao accommodationDao;
+    private AccessService accessService;
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao, AccommodationDao accommodationDao) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao, AccommodationDao accommodationDao, AccessService accessService ) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
         this.studentDao = studentDao;
         this.accommodationDao = accommodationDao;
+        this.accessService = accessService;
     }
 
     @Transactional
@@ -114,11 +117,8 @@ public class RoomService {
 
         Block block = blockDao.find(blockName);
         if (block == null || room == null) throw new NotFoundException();
-        Manager manager = (Manager) SecurityUtils.getCurrentUser();
-        if (!manager.getBlocks().contains(block)) throw new NotAllowedException();
+
         List<Room> rooms = findAll(block.getName());
-
-
         if (room.getFloor() > block.getFloors() || room.getFloor() < 0) {
             throw new BadFloorException("Block is " + block.getFloors() + " floors high. Set floor between zero and " + block.getFloors());
         }
@@ -222,17 +222,19 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoom(Room room) throws NotAllowedException {
-        Manager manager = (Manager) SecurityUtils.getCurrentUser();
-        if (!manager.getBlocks().contains(room.getBlock())) throw new NotAllowedException();
+    public void deleteRoom(Room room) throws NotAllowedException, NotFoundException {
 
         removeAllActualAccommodation(room);
+
         Block block = room.getBlock();
         block.removeRoom(room);
         blockDao.update(block);
+
         room.setBlock(null);
         room.softDelete();
+
         LOG.info("Room " + room.getRoomNumber() + " at block " + block.getName() + " was deleted.");
+
         roomDao.update(room);
     }
 

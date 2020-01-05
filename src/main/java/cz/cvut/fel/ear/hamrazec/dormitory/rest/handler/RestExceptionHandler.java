@@ -54,8 +54,8 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(PSQLException.class)
-    public ResponseEntity<ErrorInfo> violationException(HttpServletRequest request, PSQLException e) {
+    @ExceptionHandler(EndOfStudyExpirationException.class)
+    public ResponseEntity<ErrorInfo> endOfStudy(HttpServletRequest request, EndOfStudyExpirationException e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
