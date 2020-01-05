@@ -25,19 +25,6 @@ public class Generator {
         return RAND.nextBoolean();
     }
 
-    public static Manager generateManager() {
-
-        final Manager user = new Manager();
-        user.setFirstName("FirstName" + randomInt());
-        user.setLastName("LastName" + randomInt());
-        user.setUsername("username" + randomInt());
-        user.setPassword(Integer.toString(randomInt()));
-
-        user.setEmail("username" + randomInt() + "@test.cz");
-        return user;
-    }
-
-
     public static Student generateStudent() {
 
         final Student user = new Student();

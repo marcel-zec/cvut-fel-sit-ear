@@ -121,9 +121,12 @@ public class BlockService {
 
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
-        List<Room> toDeleteList = new ArrayList<>(block.getRooms());
+        List<Room> toDeleteList;
+        if (block.getRooms()!= null)  {
+            toDeleteList = new ArrayList<>(block.getRooms());
         for (Room toDelete: toDeleteList) {
             roomService.deleteRoom(toDelete);
+            }
         }
         block.softDelete();
         blockDao.update(block);

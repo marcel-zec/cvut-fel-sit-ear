@@ -73,11 +73,12 @@ public class ReservationService {
     @Transactional
     public void createNewReservation(Reservation reservation, Long student_id, String block_name, int room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
+        if (block_name == null || reservation == null || student_id==null) throw new NotFoundException();
+
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(block_name);
         accessService.managerAccess(block);
         accessService.studentAccess(student_id);
-        if (block_name == null) throw new NotFoundException();
 
         if (reservation.getDateEnd().isAfter(student.getEndOfStudy())) throw new EndOfStudyExpirationException(student.getEndOfStudy(),reservation.getDateEnd());
 
@@ -86,7 +87,7 @@ public class ReservationService {
         if (roomList.size() == 0) throw new NotFoundException();
         Room room = roomList.get(0);
 
-        if (student == null || room == null) throw new NotFoundException();
+        if (room == null) throw new NotFoundException();
         if (student.getReservation() != null) throw new NotAllowedException("student already has reservation");
         reservation.setStudent(student);
         reservation.setRoom(room);

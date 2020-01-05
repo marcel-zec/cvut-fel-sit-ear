@@ -64,7 +64,7 @@ public class AccessService {
                 SimpleMailMessage msg = new SimpleMailMessage();
                 msg.setTo(currentUser.getEmail());
                 msg.setSubject("Password change");
-                msg.setText("Hello your password was changed.\n" + "If you did not change it, contact us as soon as possible." +
+                msg.setText("Hello your password has been changed.\n" + "If you did not change it, contact us as soon as possible." +
                         "\n \n With love IT team.");
                 javaMailSender.send(msg);
                 userDao.update(currentUser);
