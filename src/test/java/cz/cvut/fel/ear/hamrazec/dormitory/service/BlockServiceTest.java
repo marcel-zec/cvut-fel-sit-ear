@@ -6,6 +6,9 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.SuperUser;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -14,6 +17,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,18 +60,20 @@ public class BlockServiceTest {
 
     @Before
     public void before() {
-
-        manager = new Manager();
-        manager.setFirstName("Test");
-        manager.setLastName("Test");
-        manager.setUsername("Test");
-        manager.setEmail("test@test.com");
-        manager.setPassword("testpassword");
-        manager.setWorkerNumber(50);
-        em.persist(manager);
+        SuperUser superuser = new SuperUser();
+        superuser.setUsername("superuser123");
+        superuser.setEmail("milan@jano.cz");
+        superuser.setFirstName("milan");
+        superuser.setLastName("dyano");
+        superuser.setPassword("dwfiv492925ov");
+        superuser.setWorkerNumber(50);
 
         block = new Block("Tst", "Test adress",6);
         em.persist(block);
+        em.persist(superuser);
+        Authentication auth = new UsernamePasswordAuthenticationToken(superuser.getUsername(), superuser.getPassword());
+        UserDetails ud = new UserDetails(superuser);
+        SecurityUtils.setCurrentUser(ud);
     }
 
 
