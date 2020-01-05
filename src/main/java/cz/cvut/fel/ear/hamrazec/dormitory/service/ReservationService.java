@@ -102,6 +102,15 @@ public class ReservationService {
     }
 
     @Transactional
+    public void approveReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
+        accessService.managerAccess(reservation.getRoom().getBlock());
+        if (reservation.getStatus().equals(Status.RES_PENDING)){
+            reservation.setStatus(Status.RES_APPROVED);
+            reservationDao.update(reservation);
+        }
+    }
+
+    @Transactional
     public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException, NotAllowedException {
 
         accessService.studentAccess(student_id);
@@ -141,7 +150,8 @@ public class ReservationService {
         reservationDao.update(reservation);
     }
 
-    public void deleteReservation(Reservation reservation){
+    public void deleteReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
+        accessService.managerAccess(reservation.getRoom().getBlock());
         if (reservation.getStudent() != null)  reservation.getStudent().cancelReservation(reservation);
         if (reservation.getRoom() != null) reservation.getRoom().cancelActualReservation(reservation);
         studentDao.update(reservation.getStudent());

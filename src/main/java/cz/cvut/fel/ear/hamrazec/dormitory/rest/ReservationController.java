@@ -42,6 +42,21 @@ public class ReservationController {
         return reservationService.findbyStudent(student_id);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+    @PatchMapping(value = "/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void approveReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
+
+        reservationService.approveReservation(reservation);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+    @PatchMapping(value = "/denied", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deniedReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
+
+        reservationService.deleteReservation(reservation);
+    }
+
+
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
