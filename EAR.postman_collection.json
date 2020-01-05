@@ -1,0 +1,1095 @@
+{
+	"info": {
+		"_postman_id": "7ff584fb-4f87-4232-92f1-d8012aa4dffd",
+		"name": "EAR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"student\",\n\t\"password\": \"student\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login manager",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"manager\",\n\t\"password\": \"manager\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login_manager",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login_manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login superuser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"superuser\",\n\t\"password\": \"superuser\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login_manager",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login_manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "All students [MANGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/students",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One student [MANGER + SUPERUSER]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/students/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update student [MANGER + SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"jozef\",\r\n    \"lastName\": \"mrkva\",\r\n    \"username\": \"username\",\r\n    \"email\": \"test1@test.com\",\r\n    \"university\": \"CVUT\",\r\n    \"birth\": \"2007-12-03\",\r\n    \"bankAccountNumber\": \"AB12345678912345\",\r\n    \"endOfStudy\": \"2022-12-03\",\r\n    \"gender\": \"MAN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/students/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create student [MANGER + SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"milan\",\r\n    \"lastName\": \"procko\",\r\n    \"username\": \"userMilan\",\r\n    \"email\": \"userMilanEmail@gmail.com\",\r\n    \"role\": \"MANAGER\",\r\n    \"university\": \"CVUT\",\r\n    \"birth\": \"2007-12-03\",\r\n    \"bankAccountNumber\": \"AB12345678912345\",\r\n    \"endOfStudy\": \"2022-12-03\",\r\n    \"gender\": \"MAN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/students/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete student [SUPERUSER]",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/students/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student himself [STUDENT]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/students/me",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"students",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Manager",
+			"item": [
+				{
+					"name": "All managers [SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/managers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One manager [SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/managers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One manager [MANAGER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/managers/me",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add manager to block  [SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/managers/1/blocks/b5",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"1",
+								"blocks",
+								"b5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove block from manager [SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/managers/1/blocks/b5",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"1",
+								"blocks",
+								"b5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update manager [SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Novotny\",\r\n    \"username\": \"janko123\",\r\n    \"email\": \"novotny@email.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/managers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create manager [SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Igor\",\r\n    \"lastName\": \"Podmanicky\",\r\n    \"username\": \"igorPodma\",\r\n    \"email\": \"podmanifky@email.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/managers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete manager  [SUPERUSER]",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/managers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"managers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Room",
+			"item": [
+				{
+					"name": "All rooms at block  [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/rooms/block/b1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"block",
+								"b1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actual accommodation in room [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/rooms/334/block/b1/accommodations",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"334",
+								"block",
+								"b1",
+								"accommodations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Free rooms at block in date [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/rooms/free/block/b1?start=2019-07-20&end=2020-07-20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"free",
+								"block",
+								"b1"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2019-07-20"
+								},
+								{
+									"key": "end",
+									"value": "2020-07-20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Free rooms at block in date  [STUDENT]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/rooms/freeAt/block/b2?start=2019-07-20&end=2020-07-20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"freeAt",
+								"block",
+								"b2"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2019-07-20"
+								},
+								{
+									"key": "end",
+									"value": "2020-07-20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create room at block [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roomNumber\": 401,\r\n    \"floor\": 6,\r\n    \"maxCapacity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/rooms/block/b1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"block",
+								"b1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One room at block [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/rooms/401/block/b1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"401",
+								"block",
+								"b1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete room at block [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/rooms/401/block/b1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"401",
+								"block",
+								"b1"
+							],
+							"query": [
+								{
+									"key": "accept",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Block",
+			"item": [
+				{
+					"name": "All blocks [MANAGER + SUPERUSER]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create block [SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"b12\",\r\n    \"address\": \"Vanickova 12, Praha 6\",\r\n    \"floors\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One block [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/blocks/b12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rooms at floor  [MANAGER + SUPERUSER]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/blocks/b1/floor/3/rooms",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b1",
+								"floor",
+								"3",
+								"rooms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add manager to block [SUPERUSER]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks/b1/managers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b1",
+								"managers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove manager from block [SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks/b1/managers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b1",
+								"managers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update block  [SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"b12\",\r\n    \"address\": \"Vanickova 10, Praha 6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks/b12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[COPY] Create room at block",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roomNumber\": 600,\r\n    \"floor\": 6,\r\n    \"maxCapacity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/rooms/block/b12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rooms",
+								"block",
+								"b12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Changing amount of floors at block  [SUPERUSER]",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"b12\",\r\n    \"address\": \"Vanickova 10, Praha 6\",\r\n    \"floors\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blocks/b12/floor/?accept=true&amount=5",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blocks",
+								"b12",
+								"floor",
+								""
+							],
+							"query": [
+								{
+									"key": "accept",
+									"value": "true"
+								},
+								{
+									"key": "amount",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

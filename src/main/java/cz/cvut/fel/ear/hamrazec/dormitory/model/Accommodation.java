@@ -3,6 +3,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 
@@ -32,6 +33,7 @@ public class Accommodation extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable=false)
+    @Lazy
     private Room room;
 
     @ManyToOne

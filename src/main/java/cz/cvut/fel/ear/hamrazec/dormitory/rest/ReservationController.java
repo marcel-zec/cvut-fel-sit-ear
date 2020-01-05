@@ -30,14 +30,14 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @GetMapping(value = "block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Reservation> getReservations(@PathVariable String blockName) throws NotFoundException, NotAllowedException {
 
         return reservationService.findAll(blockName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
-    @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Reservation getReservation(@PathVariable Long student_id) throws NotAllowedException {
 
         return reservationService.findbyStudent(student_id);
@@ -48,6 +48,7 @@ public class ReservationController {
     public void approveReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
 
         reservationService.approveReservation(reservation);
+        LOG.info("Reservation with id {} approved", reservation.getId());
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
@@ -55,11 +56,12 @@ public class ReservationController {
     public void deniedReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
 
         reservationService.deleteReservation(reservation);
+        LOG.info("Reservation with id {} denied", reservation.getId());
     }
 
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
-    @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservation(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String block_name, @PathVariable Integer room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
@@ -68,7 +70,7 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
-    @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
