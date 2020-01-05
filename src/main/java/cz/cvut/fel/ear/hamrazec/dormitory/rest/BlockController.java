@@ -29,15 +29,13 @@ public class BlockController {
 
     private BlockService blockService;
     private RoomService roomService;
-    private ManagerService managerService;
 
 
     @Autowired
-    public BlockController(BlockService blockService, RoomService roomService, ManagerService managerService) {
+    public BlockController(BlockService blockService, RoomService roomService) {
 
         this.blockService = blockService;
         this.roomService = roomService;
-        this.managerService = managerService;
     }
 
 

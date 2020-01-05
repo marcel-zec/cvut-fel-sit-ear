@@ -81,8 +81,17 @@ public class RoomService {
         return roomList;
     }
 
+    @Transactional
+    public List<Integer> findFreeRoomsStudent(String blockName, LocalDate dateStart, LocalDate dateEnd) throws NotFoundException {
+        List<Room> rooms = findFreeRooms(blockName,dateStart,dateEnd);
+        List<Integer> roomNumbers = new ArrayList<>();
+        for (Room r: rooms) {
+            roomNumbers.add(r.getRoomNumber());
+        }
+        return roomNumbers;
+    }
 
-    public Room find(String blockName, Integer roomNumber) throws NotFoundException {
+        public Room find(String blockName, Integer roomNumber) throws NotFoundException {
         Block block = blockDao.find(blockName);
         Room room = roomDao.find(blockName, roomNumber);
         if (block == null || room == null) throw new NotFoundException();
