@@ -43,11 +43,11 @@ public class Generator {
 
     public static Block generateBlockWithRooms() {
 
-        final Block block = new Block();
+        Block block = new Block();
         block.setName("BT1");
         block.setFloors(6);
         block.setAddress("Test address to block");
-        ArrayList<Room> rooms = new ArrayList();
+        ArrayList rooms = new ArrayList();
 
         Room room = new Room();
         room.setBlock(block);

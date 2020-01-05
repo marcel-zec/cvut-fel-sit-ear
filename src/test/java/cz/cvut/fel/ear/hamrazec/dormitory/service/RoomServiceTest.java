@@ -54,12 +54,6 @@ public class RoomServiceTest {
         student = Generator.generateStudent();
         student.setGender(Gender.MAN);
 
-        room = new Room();
-        room.setRoomNumber(234);
-        room.setFloor(2);
-        room.setMaxCapacity(4);
-        room.setBlock(block);
-
         SuperUser superuser = new SuperUser();
         superuser.setUsername("superuser123");
         superuser.setEmail("milan@jano.cz");
@@ -68,15 +62,11 @@ public class RoomServiceTest {
         superuser.setPassword("dwfiv492925ov");
         superuser.setWorkerNumber(50);
 
-        block = new Block("Tst", "Test adress",6);
-        em.persist(block);
         em.persist(superuser);
         Authentication auth = new UsernamePasswordAuthenticationToken(superuser.getUsername(), superuser.getPassword());
         UserDetails ud = new UserDetails(superuser);
         SecurityUtils.setCurrentUser(ud);
 
-        em.persist(room);
-        block.addRoom(room);
         em.persist(block);
         em.persist(student);
     }
@@ -95,7 +85,7 @@ public class RoomServiceTest {
         em.persist(res3);
         em.merge(block);
 
-        List<Room> freeRooms = roomService.findFreeRooms(block.getName(),LocalDate.parse("2020-07-10"),LocalDate.parse("2020-08-20"));
+        List<Room> freeRooms = roomService.findFreeRooms(block.getName(),LocalDate.parse("2020-07-10"),LocalDate.parse("2021-08-20"));
         assertEquals("findFreeRooms not working correctly",3,freeRooms.size());
     }
 
@@ -111,17 +101,18 @@ public class RoomServiceTest {
         em.persist(res2);
         em.merge(block);
 
-        List<Room> freeRooms = roomService.findFreeRooms(block.getName(),LocalDate.parse("2020-07-10"),LocalDate.parse("2020-08-20"));
+        List<Room> freeRooms = roomService.findFreeRooms(block.getName(),LocalDate.parse("2020-07-10"),LocalDate.parse("2021-08-20"));
         assertEquals("findFreeRooms not working correctly",4,freeRooms.size());
     }
 
     @Test
     public void findFreeConcreteRoom_concreteFreeRoom_WorksCorrect() throws NotFoundException {
-        Accommodation acco1 = Generator.generateActiveAccommodation(block.getRooms().get(3), student, LocalDate.parse("2019-11-29"), LocalDate.parse("2020-07-09"));
+        Accommodation acco1 = Generator.generateActiveAccommodation(block.getRooms().get(3),
+                student, LocalDate.now(), LocalDate.parse("2021-07-09"));
         em.persist(acco1);
         em.merge(block);
 
-        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2019-11-29"), LocalDate.parse("2020-07-09"), block.getRooms().get(3).getRoomNumber() );
+        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2020-11-29"), LocalDate.parse("2021-07-09"), block.getRooms().get(3).getRoomNumber() );
 
         assertEquals("findFreeConcreteRooms not working correctly",true,free);
     }
@@ -129,48 +120,19 @@ public class RoomServiceTest {
     @Test
     public void findFreeConcreteRoom_notExistingRoom_WorksCorrect() throws NotFoundException {
 
-        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2019-11-29"), LocalDate.parse("2020-07-09"), 566 );
+        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2020-08-29"), LocalDate.parse("2020-12-09"), 566 );
         assertEquals("findFreeConcreteRooms not working correctly",false,free);
     }
 
     @Test
     public void findFreeConcreteRoom_concreteNotFreeRoom_WorksCorrect() throws NotFoundException {
-        Accommodation acco1 = new Accommodation();
-
-        acco1.setRoom(block.getRooms().get(0));
-        acco1.setStudent(student);
-        acco1.setStatus(Status.ACC_ACTIVE);
-        acco1.setDateStart(LocalDate.now());
-        acco1.setDateEnd(LocalDate.parse("2020-07-09"));
-        em.persist(acco1);
+        Accommodation acco = Generator.generateActiveAccommodation(block.getRooms().get(0), student, LocalDate.parse("2020-11-29") , LocalDate.parse("2021-07-09"));
+        em.persist(acco);
         em.merge(block);
 
-        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2019-11-29"), LocalDate.parse("2020-07-09"), block.getRooms().get(0).getRoomNumber() );
-
+        boolean free = roomService.findFreeConcreteRoom(block.getName(), LocalDate.parse("2020-11-29"), LocalDate.parse("2021-07-09"), block.getRooms().get(0).getRoomNumber() );
         assertEquals("findFreeConcreteRooms not working correctly",false,free);
     }
 
-
-
-
-
-//    @Test
-//    public void addRoomToBlock() throws NotFoundException {
-//
-//        roomService.addRoom(block.getName(),block.getRooms().get(0));
-//        assertEquals("Add room to block not working", 1 , em.find(Block.class,block.getId()).getRooms().size());
-//    }
-//
-//
-//    @Test
-//    public void addRoomToNoneBlock() throws NotFoundException {
-//        thrown.expect(NotFoundException.class);
-//        thrown.reportMissingExceptionWithMessage("Trying add room to not existing block");
-//        room.setFloor(4);
-//        room.setNumberOfPeople(2);
-//        room.setRoomNumber(456);
-//
-//        roomService.addRoom("Tes",room);
-//    }
 
 }

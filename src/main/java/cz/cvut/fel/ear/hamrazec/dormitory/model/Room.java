@@ -33,7 +33,7 @@ public class Room extends AbstractEntity {
     @PositiveOrZero(message = "Capacity of room can not be negative")
     private Integer maxCapacity;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="block_id", nullable=true)
     private Block block;
 

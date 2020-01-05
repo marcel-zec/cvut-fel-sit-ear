@@ -32,17 +32,13 @@ public class RoomService {
     private final BlockDao blockDao;
     private final RoomDao roomDao;
     private StudentDao studentDao;
-    private AccommodationDao accommodationDao;
-    private AccessService accessService;
 
     @Autowired
-    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao, AccommodationDao accommodationDao, AccessService accessService ) {
+    public RoomService(BlockDao blockDao, RoomDao roomDao, StudentDao studentDao) {
 
         this.blockDao = blockDao;
         this.roomDao = roomDao;
         this.studentDao = studentDao;
-        this.accommodationDao = accommodationDao;
-        this.accessService = accessService;
     }
 
     @Transactional
@@ -68,18 +64,19 @@ public class RoomService {
         if (block == null) throw new NotFoundException();
         if (block.getRooms() == null) throw new NotFoundException();
 
-        for (Room room : block.getRooms()) {
-            removeEndedActualAccommodation(room);
+            for (int i = 0; i < block.getRooms().size(); i++) {
 
-            int freeAcco = freePlacesAtDateAccomodation(room, dateStart);
-            int reservationsAtDate = reservationPlacesAtDateReserve(room, dateStart, dateEnd);
+            removeEndedActualAccommodation(block.getRooms().get(i));
 
-            if (room.getActualAccommodations().size() < room.getMaxCapacity()) {
-                freeAcco = freeAcco + (room.getMaxCapacity() - room.getActualAccommodations().size());
+            int freeAcco = freePlacesAtDateAccomodation(block.getRooms().get(i), dateStart);
+            int reservationsAtDate = reservationPlacesAtDateReserve(block.getRooms().get(i), dateStart, dateEnd);
+
+            if (block.getRooms().get(i).getActualAccommodations().size() < block.getRooms().get(i).getMaxCapacity()) {
+                freeAcco = freeAcco + (block.getRooms().get(i).getMaxCapacity() - block.getRooms().get(i).getActualAccommodations().size());
             }
 
             if (reservationsAtDate < freeAcco) {
-                roomList.add(room);
+                roomList.add(block.getRooms().get(i));
             }
         }
         return roomList;
