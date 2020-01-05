@@ -102,8 +102,7 @@ public class DatabaseSeeder implements
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
-        manager.setPassword("kolvesvsvseve");
-        //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         manager.setWorkerNumber(1);
         manager.setUsername("janko");
         managerDao.persist(manager);

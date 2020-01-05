@@ -24,7 +24,12 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login",produces = MediaType.APPLICATION_JSON_VALUE)
-    public void login(@RequestParam String username, @RequestParam String password) throws AlreadyExistsException {
+    public void loginStudent(@RequestParam String username, @RequestParam String password) throws AlreadyExistsException {
         service.loginStudent(username,password);
+    }
+
+    @PostMapping(value = "/login_manager",produces = MediaType.APPLICATION_JSON_VALUE)
+    public void loginManager(@RequestParam String username, @RequestParam String password) throws AlreadyExistsException {
+        service.loginManager(username,password);
     }
 }
