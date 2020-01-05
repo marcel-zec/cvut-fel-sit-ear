@@ -42,6 +42,14 @@ public class ManagerController {
         return managerService.findAll();
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Manager getStudentMe() throws NotFoundException {
+
+        Manager manager = managerService.findMe();
+        if (manager == null) throw new NotFoundException();
+        return manager;
+    }
 
     @GetMapping(value = "/{workerNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Manager getManager(@PathVariable Integer workerNumber) {

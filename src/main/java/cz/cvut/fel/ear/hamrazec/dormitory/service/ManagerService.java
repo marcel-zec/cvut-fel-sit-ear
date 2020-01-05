@@ -6,6 +6,8 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +60,12 @@ public class ManagerService {
     public Manager find(Integer workerNumber) {
 
         return managerDao.findByWorkerNumber(workerNumber);
+    }
+
+    @Transactional(readOnly = true)
+    public Manager findMe() {
+        final User currentUser = SecurityUtils.getCurrentUser();
+        return managerDao.find(currentUser.getId());
     }
 
 

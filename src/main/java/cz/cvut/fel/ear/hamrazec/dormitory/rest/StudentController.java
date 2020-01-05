@@ -52,6 +52,15 @@ public class StudentController {
         return student;
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Student getStudentMe() throws NotFoundException {
+
+        Student student = studentService.findMe();
+        if (student == null) throw new NotFoundException();
+        return student;
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

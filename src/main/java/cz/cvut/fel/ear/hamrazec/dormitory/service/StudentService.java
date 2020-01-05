@@ -5,6 +5,8 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,14 @@ public class StudentService {
 
     private final StudentDao studentDao;
     private final PasswordService passwordService;
+    private final AccessService accessService;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao, PasswordService passwordService) {
+    public StudentService(StudentDao studentDao, PasswordService passwordService, AccessService accessService) {
         this.studentDao = studentDao;
         this.passwordService = passwordService;
+        this.accessService = accessService;
     }
 
 
@@ -33,6 +37,11 @@ public class StudentService {
 
     public Student find(Long id) {
         return studentDao.find(id);
+    }
+
+    public Student findMe() {
+        final User currentUser = SecurityUtils.getCurrentUser();
+        return studentDao.find(currentUser.getId());
     }
 
     @Transactional
