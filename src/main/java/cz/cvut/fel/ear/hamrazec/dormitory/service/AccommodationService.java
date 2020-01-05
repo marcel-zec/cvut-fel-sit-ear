@@ -6,6 +6,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,12 @@ public class AccommodationService {
     private ReservationDao reservationDao;
     private BlockDao blockDao;
     private ReservationService reservationService;
-    private ManagerDao managerDao;
+    private AccessService accessService;
 
 
     @Autowired
     public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao,
-                                ReservationDao reservationDao, BlockDao blockDao, ReservationService reservationService, ManagerDao managerDao) {
+                                ReservationDao reservationDao, BlockDao blockDao, ReservationService reservationService, AccessService accessService) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
@@ -40,7 +41,7 @@ public class AccommodationService {
         this.reservationDao = reservationDao;
         this.blockDao = blockDao;
         this.reservationService = reservationService;
-        this.managerDao = managerDao;
+        this.accessService = accessService;
 
     }
 
@@ -48,10 +49,7 @@ public class AccommodationService {
         List<Accommodation> accommodationsByBlock = new ArrayList<>();
         final User currentUser = SecurityUtils.getCurrentUser();
 
-        if (currentUser.getRole().equals(Role.MANAGER)) {
-            Manager manager = managerDao.find(currentUser.getId());
-            if ( manager.getBlocks().stream().anyMatch(block -> !block.getName().equals(blockName))) throw new NotAllowedException("Access denied.");
-        }
+        accessService.managerAccess(currentUser,blockName);
             for (Accommodation a: findAll()) {
             if (a.getRoom().getBlock().getName().equals(blockName)) accommodationsByBlock.add(a);
         }
@@ -97,6 +95,8 @@ public class AccommodationService {
     @Transactional
     public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
+        final User currentUser = SecurityUtils.getCurrentUser();
+        accessService.managerAccess(currentUser, blockName);
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(blockName);
         if (block == null || student==null) throw new NotFoundException();
@@ -142,7 +142,9 @@ public class AccommodationService {
     @Transactional
     public void createFromReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
 
+        final User currentUser = SecurityUtils.getCurrentUser();
         if (reservation == null) throw new NotFoundException();
+        accessService.managerAccess(currentUser, reservation.getRoom().getBlock().getName());
         Student student = reservation.getStudent();
 
         if (reservation.getDateStart().equals(LocalDate.now()) && reservation.getStatus().equals(Status.RES_APPROVED)) {
@@ -184,6 +186,8 @@ public class AccommodationService {
     @Transactional
     public void createNewAccommodationRandom(Accommodation accommodation, Long student_id, String blockName) throws NotFoundException, NotAllowedException {
 
+        final User currentUser = SecurityUtils.getCurrentUser();
+        accessService.managerAccess(currentUser, blockName);
         Student student = studentDao.find(student_id);
         accommodation.setStudent(student);
         if (student == null) throw new NotFoundException();
@@ -228,4 +232,6 @@ public class AccommodationService {
         accommodation.setDateUnusualEnd(LocalDate.now());
         acoDao.update(accommodation);
     }
+
+
 }

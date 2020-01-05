@@ -4,6 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.Reservation;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.AccommodationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,15 @@ public class AccommodationController {
             accommodationService.createNewAccommodationRandom(accommodation,student_id,blockName);
             LOG.info("Accommodation on room {} created", accommodation.getRoom().getRoomNumber());
     }
+
+//    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+//    @PostMapping(value = "/reservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void createAccommodationFromReservation(@RequestBody Reservation reservation) throws NotFoundException, NotAllowedException {
+//
+//        accommodationService.createFromReservation(reservation);
+//        LOG.info("Accommodation on room {} created", reservation.getRoom().getRoomNumber());
+//    }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
