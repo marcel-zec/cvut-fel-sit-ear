@@ -118,8 +118,6 @@ public class RoomService {
         Block block = blockDao.find(blockName);
         if (block == null || room == null) throw new NotFoundException();
 
-        accessService.managerAccess(block);
-
         List<Room> rooms = findAll(block.getName());
         if (room.getFloor() > block.getFloors() || room.getFloor() < 0) {
             throw new BadFloorException("Block is " + block.getFloors() + " floors high. Set floor between zero and " + block.getFloors());
@@ -225,15 +223,18 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Room room) throws NotAllowedException, NotFoundException {
-        accessService.managerAccess(room.getBlock());
 
         removeAllActualAccommodation(room);
+
         Block block = room.getBlock();
         block.removeRoom(room);
         blockDao.update(block);
+
         room.setBlock(null);
         room.softDelete();
+
         LOG.info("Room " + room.getRoomNumber() + " at block " + block.getName() + " was deleted.");
+
         roomDao.update(room);
     }
 

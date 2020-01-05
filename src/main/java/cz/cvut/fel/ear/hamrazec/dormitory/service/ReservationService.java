@@ -4,6 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ReservationDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.RoomDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.EndOfStudyExpirationException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -70,13 +71,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public void createNewReservation(Reservation reservation, Long student_id, String block_name, int room_number) throws NotFoundException, NotAllowedException {
+    public void createNewReservation(Reservation reservation, Long student_id, String block_name, int room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(block_name);
         accessService.managerAccess(block);
         accessService.studentAccess(student_id);
         if (block_name == null) throw new NotFoundException();
+
+        if (reservation.getDateEnd().isAfter(student.getEndOfStudy())) throw new EndOfStudyExpirationException(student.getEndOfStudy(),reservation.getDateEnd());
 
         List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(room_number)).collect(Collectors.toList());
 
@@ -111,11 +114,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException, NotAllowedException {
+    public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         accessService.studentAccess(student_id);
         accessService.managerAccess(blockDao.find(blockName));
+
         Student student = studentDao.find(student_id);
+        if (reservation.getDateEnd().isAfter(student.getEndOfStudy())) throw new EndOfStudyExpirationException(student.getEndOfStudy(),reservation.getDateEnd());
+
+
         reservation.setStudent(student);
         if (student == null) throw new NotFoundException();
 
