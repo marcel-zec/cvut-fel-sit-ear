@@ -5,6 +5,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,11 +26,12 @@ public class AccommodationService {
     private ReservationDao reservationDao;
     private BlockDao blockDao;
     private ReservationService reservationService;
+    private ManagerDao managerDao;
 
 
     @Autowired
     public AccommodationService(AccommodationDao acoDao, StudentDao studentDao, RoomService roomService, RoomDao roomDao,
-                                ReservationDao reservationDao, BlockDao blockDao, ReservationService reservationService) {
+                                ReservationDao reservationDao, BlockDao blockDao, ReservationService reservationService, ManagerDao managerDao) {
 
         this.acoDao = acoDao;
         this.studentDao = studentDao;
@@ -38,25 +40,37 @@ public class AccommodationService {
         this.reservationDao = reservationDao;
         this.blockDao = blockDao;
         this.reservationService = reservationService;
+        this.managerDao = managerDao;
 
     }
 
-    public List<Accommodation> findAll(String blockName) {
-
+    public List<Accommodation> findAll(String blockName) throws NotAllowedException {
         List<Accommodation> accommodationsByBlock = new ArrayList<>();
-        for (Accommodation a: findAll()) {
+        final User currentUser = SecurityUtils.getCurrentUser();
+
+        if (currentUser.getRole().equals(Role.MANAGER)) {
+            Manager manager = managerDao.find(currentUser.getId());
+            if ( manager.getBlocks().stream().anyMatch(block -> !block.getName().equals(blockName))) throw new NotAllowedException("Access denied.");
+        }
+            for (Accommodation a: findAll()) {
             if (a.getRoom().getBlock().getName().equals(blockName)) accommodationsByBlock.add(a);
         }
         return accommodationsByBlock;
     }
 
-    public List<Accommodation> findAll(Long student_id) {
+
+    public List<Accommodation> findAll(Long student_id) throws NotAllowedException {
         List<Accommodation> accommodationsByStudent = new ArrayList<>();
-        for (Accommodation a: findAll()) {
+        final User currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser.getRole().equals(Role.STUDENT)) {
+            if (!currentUser.getId().equals(student_id)) throw new NotAllowedException("Access denied.");
+        }
+        for (Accommodation a : findAll()) {
             if (a.getStudent().getId().equals(student_id)) accommodationsByStudent.add(a);
         }
         return accommodationsByStudent;
     }
+
 
     public List<Accommodation> findAll() {
         return acoDao.findAll();
@@ -66,9 +80,15 @@ public class AccommodationService {
         return acoDao.find(id);
     }
 
-    public Accommodation findActualAccommodationOfStudent(Long student_id) {
-        for (Accommodation accommodation:findAll(student_id) ) {
-            if (accommodation.getStatus() == Status.ACC_ACTIVE) return accommodation;
+    public Accommodation findActualAccommodationOfStudent(Long student_id) throws NotAllowedException {
+        final User currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser.getRole().equals(Role.STUDENT)) {
+            if (!currentUser.getId().equals(student_id)) throw new NotAllowedException("Access denied.");
+            else {
+                for (Accommodation accommodation:findAll(student_id) ) {
+                    if (accommodation.getStatus() == Status.ACC_ACTIVE) return accommodation;
+                }
+            }
         }
         return null;
     }

@@ -1,7 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
 public enum Role {
-    STUDENT("student"), MANAGER("manager"),SUPERUSER("superuser");
+    STUDENT("ROLE_STUDENT"), MANAGER("ROLE_MANAGER"),SUPERUSER("ROLE_SUPERUSER");
 
     private final String role;
 
