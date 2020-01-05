@@ -27,10 +27,11 @@ public class DatabaseSeeder implements
     private ManagerDao managerDao;
     private RoomDao roomDao;
     private AccommodationDao accommodationDao;
+    private SuperUserDao superUserDao;
 
 
     @Autowired
-    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao) {
+    public DatabaseSeeder(UserDao userDao, StudentDao studentDao, BlockDao blockDao, ManagerDao managerDao, RoomDao roomDao, AccommodationDao accommodationDao, SuperUserDao superUserDao) {
 
         this.userDao = userDao;
         this.studentDao = studentDao;
@@ -38,7 +39,7 @@ public class DatabaseSeeder implements
         this.managerDao = managerDao;
         this.roomDao= roomDao;
         this.accommodationDao = accommodationDao;
-
+        this.superUserDao = superUserDao;
     }
 
 
@@ -99,12 +100,22 @@ public class DatabaseSeeder implements
     }
 
     void seedManagers() throws AlreadyExistsException {
+        SuperUser superuser = new SuperUser();
+        superuser.setFirstName("superuser");
+        superuser.setLastName("superuser");
+        superuser.setEmail("superuser@superuser.com");
+        superuser.setPassword(new BCryptPasswordEncoder().encode("superuser"));
+        superuser.setWorkerNumber(1);
+        superuser.setUsername("superuser");
+        superUserDao.update(superuser);
+
+
         Manager manager = new Manager();
         manager.setFirstName("Jan");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
         manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setWorkerNumber(1);
+        manager.setWorkerNumber(2);
         manager.setUsername("janko");
         //manager.addBlock(blockDao.find("b1"));
         managerDao.persist(manager);
@@ -115,7 +126,7 @@ public class DatabaseSeeder implements
         manager.setEmail("novak@email.com");
         manager.setPassword("fegwgeevasvv");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setWorkerNumber(2);
+        manager.setWorkerNumber(3);
         manager.setUsername("petko345");
         managerDao.persist(manager);
 
@@ -125,7 +136,7 @@ public class DatabaseSeeder implements
         manager.setEmail("vesela@email.com");
         manager.setPassword("faefdafefegvav");
         //manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
-        manager.setWorkerNumber(3);
+        manager.setWorkerNumber(4);
         manager.setUsername("kaja234");
         managerDao.persist(manager);
     }

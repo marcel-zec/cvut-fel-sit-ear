@@ -128,7 +128,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void findAll_blockEntry_worksCorrect() throws NotFoundException {
+    public void findAll_blockEntry_worksCorrect() throws NotFoundException, NotAllowedException {
 
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         reservationService.createNewReservationRandom(reservation1,student1.getId(),block.getName());

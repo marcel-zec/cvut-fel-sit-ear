@@ -33,7 +33,7 @@ public class AccommodationController {
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @GetMapping(value = "block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Accommodation> getAccommodations(@PathVariable String blockName) throws NotAllowedException {
+    public List<Accommodation> getAccommodations(@PathVariable String blockName) throws NotAllowedException, NotFoundException {
 
         return accommodationService.findAll(blockName);
     }
