@@ -5,7 +5,6 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
-import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,7 +48,7 @@ public class AccommodationService {
         List<Accommodation> accommodationsByBlock = new ArrayList<>();
 
         accessService.managerAccess(blockDao.find(blockName));
-            for (Accommodation a: findAll()) {
+        for (Accommodation a: findAll()) {
             if (a.getRoom().getBlock().getName().equals(blockName)) accommodationsByBlock.add(a);
         }
         return accommodationsByBlock;
@@ -58,10 +57,7 @@ public class AccommodationService {
 
     public List<Accommodation> findAll(Long student_id) throws NotAllowedException {
         List<Accommodation> accommodationsByStudent = new ArrayList<>();
-        final User currentUser = SecurityUtils.getCurrentUser();
-        if (currentUser.getRole().equals(Role.STUDENT)) {
-            if (!currentUser.getId().equals(student_id)) throw new NotAllowedException("Access denied.");
-        }
+        accessService.studentAccess(student_id);
         for (Accommodation a : findAll()) {
             if (a.getStudent().getId().equals(student_id)) accommodationsByStudent.add(a);
         }
@@ -78,14 +74,10 @@ public class AccommodationService {
     }
 
     public Accommodation findActualAccommodationOfStudent(Long student_id) throws NotAllowedException {
-        final User currentUser = SecurityUtils.getCurrentUser();
-        if (currentUser.getRole().equals(Role.STUDENT)) {
-            if (!currentUser.getId().equals(student_id)) throw new NotAllowedException("Access denied.");
-            else {
-                for (Accommodation accommodation:findAll(student_id) ) {
-                    if (accommodation.getStatus() == Status.ACC_ACTIVE) return accommodation;
-                }
-            }
+
+        accessService.studentAccess(student_id);
+        for (Accommodation accommodation:findAll(student_id) ) {
+            if (accommodation.getStatus() == Status.ACC_ACTIVE) return accommodation;
         }
         return null;
     }
