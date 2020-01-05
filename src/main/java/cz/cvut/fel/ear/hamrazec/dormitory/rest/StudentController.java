@@ -20,10 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/students")
 @Validated
-@PreAuthorize("hasRole('ROLE_STUDENT')")
+@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_SUPERUSER')")
 public class StudentController {
 
-    //TODO - pristup len pre managera a superuser
 
     private static final Logger LOG = LoggerFactory.getLogger(StudentController.class);
 
@@ -73,6 +72,7 @@ public class StudentController {
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
     public void removeStudent(@PathVariable Long id) throws NotFoundException, NotAllowedException {
 
         studentService.delete(id);
