@@ -1,9 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
@@ -101,7 +98,7 @@ public class BlockController {
 
     @PatchMapping(value = "/{blockName}/floor", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeAmountOfFloors(@PathVariable String blockName, @RequestParam Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences {
+    public void changeAmountOfFloors(@PathVariable String blockName, @RequestParam Integer amount, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, BadFloorException, NotAcceptDeletingConsequences, NotAllowedException {
         if (accept){
             blockService.changeAmountOfFloors(blockName, amount);
             LOG.info("Amount of floors at block {} was changed to {}.", blockName, amount);
@@ -123,7 +120,7 @@ public class BlockController {
 
     @DeleteMapping(value = "/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBlock(@PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotAcceptDeletingConsequences, NotFoundException {
+    public void removeBlock(@PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotAcceptDeletingConsequences, NotFoundException, NotAllowedException {
         if (accept){
             blockService.delete(blockName);
             LOG.info("Block with name {} removed.", blockName);
