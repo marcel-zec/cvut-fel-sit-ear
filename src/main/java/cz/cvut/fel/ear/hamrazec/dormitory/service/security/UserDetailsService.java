@@ -2,7 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service.security;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
-import cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         if (user == null) {
             throw new UsernameNotFoundException("User with username " + username + " not found.");
         }
-        return new UserDetails(user);
+        return new cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails(user);
     }
 
 }

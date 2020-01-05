@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "DORMITORY_USER")
 @NamedQueries({
-        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM USER u WHERE u.username = :username AND u.deleted_at is null")
+        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username AND u.deleted_at is null")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User extends AbstractEntity {
