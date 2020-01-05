@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -53,8 +55,7 @@ public class DatabaseSeeder implements
         student.setFirstName("zdeno");
         student.setUsername("username");
         student.setLastName("zly");
-        student.setPassword("fefebebssvsdebes");
-        //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         studentDao.persist(student);
 
         Student student1 = new Student();
@@ -68,7 +69,6 @@ public class DatabaseSeeder implements
         student1.setUsername("username1");
         student1.setLastName("mrkva");
         student1.setPassword("fefebebssvss");
-        //student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
         studentDao.persist(student1);
 
         Student student2 = new Student();

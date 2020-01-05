@@ -1,7 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.DefaultAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,11 +23,25 @@ public class LoginService {
 
 
     @Transactional
-    public void login(String username, String password) {
+    public void loginStudent(String username, String password) throws AlreadyExistsException {
 
-        final Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
-         SecurityContextHolder.getContext();
-         provider.authenticate(auth);
+        Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            provider.authenticate(auth,false);
+        } catch (BadCredentialsException e){
+            //TODO - co vyhodime von?
+            throw new AlreadyExistsException();
+        }
+    }
+
+    @Transactional
+    public void loginManager(String username, String password) {
+        Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+           provider.authenticate(auth,true);
+        } catch (BadCredentialsException e){
+           //TODO - co vyhodime von?
+        }
     }
 
 

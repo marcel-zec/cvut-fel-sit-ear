@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.security.model;
 
+
 import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
