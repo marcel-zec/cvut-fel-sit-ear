@@ -2,6 +2,7 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.environment.Generator;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.EndOfStudyExpirationException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
@@ -80,14 +81,14 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void createReservation_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void createReservation_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
         reservationService.createNewReservation(reservation,student.getId(),block.getName(), room.getRoomNumber());
         assertEquals("Student has not new reservation.", reservation , em.find(Student.class,student.getId())
                 .getReservation());
     }
 
     @Test
-    public void createReservation_studentHasAlreadyReservation_throwException() throws NotFoundException, NotAllowedException {
+    public void createReservation_studentHasAlreadyReservation_throwException() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         thrown.expect(NotAllowedException.class);
         thrown.reportMissingExceptionWithMessage("Trying create reservation, but student already has existing reservation.");
@@ -96,7 +97,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void createReservation_studentNotExist_throwException() throws NotFoundException, NotAllowedException {
+    public void createReservation_studentNotExist_throwException() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create reservation to not existing student.");
@@ -104,7 +105,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void createReservation_roomNotExist_throwException() throws NotFoundException, NotAllowedException {
+    public void createReservation_roomNotExist_throwException() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         thrown.expect(NotFoundException.class);
         thrown.reportMissingExceptionWithMessage("Trying create reservation to not existing room.");
@@ -112,7 +113,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void createNewReservationRandom_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void createNewReservationRandom_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         assertEquals("Student has not new reservation.", reservation , em.find(Student.class,student.getId())
@@ -120,7 +121,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void findbyStudent_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void findbyStudent_normalEntry_worksCorrect() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         Reservation reservation = reservationService.findbyStudent(student.getId());
@@ -128,7 +129,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void findAll_blockEntry_worksCorrect() throws NotFoundException, NotAllowedException {
+    public void findAll_blockEntry_worksCorrect() throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         reservationService.createNewReservationRandom(reservation,student.getId(),block.getName());
         reservationService.createNewReservationRandom(reservation1,student1.getId(),block.getName());

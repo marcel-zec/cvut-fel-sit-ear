@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service.security;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.UserDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadPassword;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
@@ -22,12 +23,14 @@ public class AccessService {
     private final ManagerDao managerDao;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
+    private UserDao userDao;
 
     @Autowired
-    public AccessService(ManagerDao managerDao,PasswordEncoder passwordEncoder,  JavaMailSender javaMailSender) {
+    public AccessService(ManagerDao managerDao,PasswordEncoder passwordEncoder,  JavaMailSender javaMailSender, UserDao userDao) {
         this.managerDao = managerDao;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
+        this.userDao = userDao;
     }
 
     @Transactional
@@ -53,7 +56,7 @@ public class AccessService {
     public void changePassword(String oldPassword, String newPassword, String newPasswordAgain) throws BadPassword {
 
         final User currentUser = SecurityUtils.getCurrentUser();
-        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, userDao.find(currentUser.getId()).getPassword())) {
             throw new BadPassword();
         }else {
             if (newPassword.equals(newPasswordAgain)) {
@@ -61,9 +64,10 @@ public class AccessService {
                 SimpleMailMessage msg = new SimpleMailMessage();
                 msg.setTo(currentUser.getEmail());
                 msg.setSubject("Password change");
-                msg.setText("Hello your password change.\n" + "If you're not change it, contact us as soon as possible." +
+                msg.setText("Hello your password was changed.\n" + "If you did not change it, contact us as soon as possible." +
                         "\n \n With love IT team.");
                 javaMailSender.send(msg);
+                userDao.update(currentUser);
             }
         }
     }
