@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -19,15 +21,18 @@ public abstract class User extends AbstractEntity {
     @Basic(optional = false)
     @Column(nullable = false, length = 30)
     @Size(max = 30, min = 1, message = "First name is in incorrect format.")
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
     @Basic(optional = false)
     @Column(nullable = false, unique = true)
     @Size(max = 255, min = 3, message = "Username is in incorrect format.")
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
     @Basic(optional = false)
@@ -39,6 +44,7 @@ public abstract class User extends AbstractEntity {
     @Email(message = "Email should be valid")
     @Basic(optional = false)
     @Column(unique = true, nullable = false)
+    @NotBlank(message = "Email cannot be blank")
     private String email;
 
     @Column(nullable = false)

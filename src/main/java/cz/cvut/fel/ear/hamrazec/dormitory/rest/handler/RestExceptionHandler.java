@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest.handler;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.*;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,11 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AlreadyLoginException.class)
     public ResponseEntity<ErrorInfo> alreadyLogin(HttpServletRequest request, AlreadyLoginException e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<ErrorInfo> violationException(HttpServletRequest request, PSQLException e) {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 

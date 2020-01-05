@@ -1,9 +1,9 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.model;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.persistence.*;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +13,29 @@ public class Student extends User{
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @NotBlank(message = "University cannot be blank")
     private String university;
 
     @Basic(optional = false)
     @Column(nullable = false)
     @Past
+    @NotNull(message = "Birthday cannot be null")
     private LocalDate birth;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @Basic(optional = true)
+    @Column(nullable = true)
     @Size(max = 26, min = 16, message = "Bank account is in incorrect format. Please use IBAN format.")
     private String bankAccountNumber;
 
     @Basic(optional = false)
     @Column(nullable = false)
     @FutureOrPresent
+    @NotNull(message = "End of study date cannot be empty")
     private LocalDate endOfStudy;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @NotNull(message = "Gender cannot be empty")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
