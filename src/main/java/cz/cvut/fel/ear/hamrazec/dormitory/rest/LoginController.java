@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @RestController
-//@RequestMapping("/")
 public class LoginController {
 
     private LoginService service;

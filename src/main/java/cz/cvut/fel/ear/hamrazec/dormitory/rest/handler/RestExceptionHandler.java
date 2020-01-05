@@ -59,4 +59,9 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BadPassword.class)
+    public ResponseEntity<ErrorInfo> badPassword(HttpServletRequest request, BadPassword e) {
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+    }
+
 }

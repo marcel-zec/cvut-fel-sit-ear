@@ -1,6 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadPassword;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Block;
@@ -8,11 +9,17 @@ import cz.cvut.fel.ear.hamrazec.dormitory.model.Manager;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Role;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.User;
 import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.OrderBy;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -21,22 +28,33 @@ public class ManagerService {
     private final ManagerDao managerDao;
     private final BlockService blockService;
     private final PasswordService passwordService;
+    private final JavaMailSender javaMailSender;
 
 
     @Autowired
-    public ManagerService(ManagerDao managerDao, BlockService blockService, PasswordService passwordService) {
+    public ManagerService(ManagerDao managerDao, BlockService blockService, PasswordService passwordService,
+                          JavaMailSender javaMailSender, AccessService accessService) {
 
         this.managerDao = managerDao;
         this.blockService = blockService;
         this.passwordService = passwordService;
+        this.javaMailSender = javaMailSender;
     }
 
 
     @Transactional
     public void create(Manager manager) {
-        manager.setPassword(passwordService.generatePassword());
+        String password = passwordService.generatePassword();
+        manager.setPassword(new BCryptPasswordEncoder().encode(password));
         manager.setWorkerNumber(getNextWorkerNumber());
         managerDao.persist(manager);
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(manager.getEmail());
+        msg.setSubject("Dormitory system");
+        msg.setText("Hello at dormitory system as new Manager\n Your password is: " + password + "\n Please change it as soon as possible." +
+                "\n \n With love IT team.");
+        javaMailSender.send(msg);
     }
 
 
@@ -54,7 +72,6 @@ public class ManagerService {
 
         managerDao.update(toUpdate);
     }
-
 
     @Transactional(readOnly = true)
     public Manager find(Integer workerNumber) {
