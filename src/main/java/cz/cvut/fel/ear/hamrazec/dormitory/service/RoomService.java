@@ -3,10 +3,12 @@ package cz.cvut.fel.ear.hamrazec.dormitory.service;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.RoomController;
 import cz.cvut.fel.ear.hamrazec.dormitory.rest.StudentController;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import javassist.bytecode.analysis.ControlFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,11 +100,14 @@ public class RoomService {
     }
 
     @Transactional
-    public void addRoom(String blockName, Room room) throws NotFoundException, AlreadyExistsException, BadFloorException {
+    public void addRoom(String blockName, Room room) throws NotFoundException, AlreadyExistsException, BadFloorException, NotAllowedException {
 
         Block block = blockDao.find(blockName);
-        List<Room> rooms = findAll(blockName);
         if (block == null || room == null) throw new NotFoundException();
+        Manager manager = (Manager) SecurityUtils.getCurrentUser();
+        if (!manager.getBlocks().contains(block)) throw new NotAllowedException();
+        List<Room> rooms = findAll(block.getName());
+
 
         if (room.getFloor() > block.getFloors() || room.getFloor() < 0) {
             throw new BadFloorException("Block is " + block.getFloors() + " floors high. Set floor between zero and " + block.getFloors());
@@ -199,7 +204,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoom(Integer roomNumber, String blockName) throws NotFoundException {
+    public void deleteRoom(Integer roomNumber, String blockName) throws NotFoundException, NotAllowedException {
         Block block = blockDao.find(blockName);
         Room room = roomDao.find(blockName, roomNumber);
         if (block == null || room == null) throw new NotFoundException();
@@ -207,7 +212,10 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoom(Room room) {
+    public void deleteRoom(Room room) throws NotAllowedException {
+        Manager manager = (Manager) SecurityUtils.getCurrentUser();
+        if (!manager.getBlocks().contains(room.getBlock())) throw new NotAllowedException();
+
         removeAllActualAccommodation(room);
         Block block = room.getBlock();
         block.removeRoom(room);

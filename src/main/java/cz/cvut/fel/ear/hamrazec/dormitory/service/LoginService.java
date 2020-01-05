@@ -26,24 +26,19 @@ public class LoginService {
 
     @Transactional(readOnly = true)
     public void loginStudent(String username, String password) throws AlreadyLoginException {
+
         if (SecurityUtils.getCurrentUserDetails() != null) throw new AlreadyLoginException();
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
-        try {
-            provider.authenticate(auth,false);
-        } catch (BadCredentialsException e){
-            //TODO - co vyhodime von?
-        }
+        provider.authenticate(auth, false);
+
     }
 
     @Transactional(readOnly = true)
     public void loginManager(String username, String password) throws AlreadyLoginException {
+
         if (SecurityUtils.getCurrentUserDetails() != null) throw new AlreadyLoginException();
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
-        try {
-           provider.authenticate(auth,true);
-        } catch (BadCredentialsException e){
-           //TODO - co vyhodime von?
-        }
+        provider.authenticate(auth, true);
     }
 
 
