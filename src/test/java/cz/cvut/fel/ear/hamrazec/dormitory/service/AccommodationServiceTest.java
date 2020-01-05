@@ -1,16 +1,23 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.environment.Generator;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.DefaultAuthenticationProvider;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.model.UserDetails;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.UserDetailsService;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +44,7 @@ public class AccommodationServiceTest {
 
     @Autowired
     private AccommodationService accommodationService;
+    private UserDetailsService userDetailsService;
 
     private Accommodation accommodation;
     private Accommodation accommodation1;
@@ -45,7 +53,6 @@ public class AccommodationServiceTest {
     private Reservation reservation;
     private Reservation reservation1;
     private  Block block;
-
 
     @Before
     public void before() throws AlreadyExistsException {
@@ -121,6 +128,19 @@ public class AccommodationServiceTest {
         accommodation2.setStudent(student);
         accommodation2.setRoom(room);
 
+        SuperUser superuser = new SuperUser();
+        superuser.setUsername("superuser123");
+        superuser.setEmail("milan@jano.cz");
+        superuser.setFirstName("milan");
+        superuser.setLastName("dyano");
+        superuser.setPassword("dwfiv492925ov");
+        superuser.setWorkerNumber(50);
+
+        em.persist(superuser);
+        Authentication auth = new UsernamePasswordAuthenticationToken(superuser.getUsername(), superuser.getPassword());
+        UserDetails ud = new UserDetails(superuser);
+        SecurityUtils.setCurrentUser(ud);
+
         em.persist(block);
         em.persist(room);
         em.persist(reservation);
@@ -137,9 +157,9 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    public void createAccommodation_studentHasActiveAccom_throwException() throws NotFoundException, NotAllowedException, AlreadyExistsException {
+    public void createAccommodation_studentHasActiveAccom_throwException() throws NotFoundException, AlreadyExistsException, NotAllowedException {
 
-        thrown.expect(NotAllowedException.class);
+        thrown.expect(AlreadyExistsException.class);
         thrown.reportMissingExceptionWithMessage("Trying create accommodation,but student already has active accommodation.");
         accommodationService.create(accommodation, student.getId(), room.getRoomNumber(), block.getName());
         accommodationService.create(accommodation,student.getId(), room.getRoomNumber(), block.getName());
