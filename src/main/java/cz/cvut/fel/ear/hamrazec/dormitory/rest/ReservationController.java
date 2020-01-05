@@ -54,7 +54,7 @@ public class ReservationController {
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
     @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException {
+    public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException, NotAllowedException {
 
         reservationService.createNewReservationRandom(reservation, student_id, blockName);
         LOG.info("Reservation on room {} created", reservation.getRoom().getRoomNumber());

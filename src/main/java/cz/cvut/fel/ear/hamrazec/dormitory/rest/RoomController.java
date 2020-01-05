@@ -56,7 +56,7 @@ public class RoomController {
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    @GetMapping(value = "/free/block/{name}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/freeAt/block/{name}",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getFreeRoomsStudent(@PathVariable String name, @RequestParam(name = "start") String dateStart, @RequestParam(name = "end") String dateEnd) throws NotFoundException{
 
         return roomService.findFreeRoomsStudent(name,LocalDate.parse(dateStart), LocalDate.parse(dateEnd));
