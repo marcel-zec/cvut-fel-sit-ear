@@ -55,9 +55,9 @@ public class DatabaseSeeder implements
         student.setUniversity("CVUT");
         student.setEmail("test1@test.com");
         student.setFirstName("zdeno");
-        student.setUsername("username");
+        student.setUsername("student");
         student.setLastName("zly");
-        student.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        student.setPassword(new BCryptPasswordEncoder().encode("student"));
         studentDao.persist(student);
 
         Student student1 = new Student();
@@ -111,12 +111,12 @@ public class DatabaseSeeder implements
 
 
         Manager manager = new Manager();
-        manager.setFirstName("Jan");
+        manager.setFirstName("Manager");
         manager.setLastName("Novotny");
         manager.setEmail("novotny@email.com");
-        manager.setPassword(new BCryptPasswordEncoder().encode("heslo"));
+        manager.setPassword(new BCryptPasswordEncoder().encode("manager"));
         manager.setWorkerNumber(2);
-        manager.setUsername("janko");
+        manager.setUsername("manager");
         //manager.addBlock(blockDao.find("b1"));
         managerDao.persist(manager);
 
