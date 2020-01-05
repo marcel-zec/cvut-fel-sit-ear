@@ -32,27 +32,27 @@ public class AccommodationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @GetMapping(value = "block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/block/{blockName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Accommodation> getAccommodations(@PathVariable String blockName) throws NotAllowedException, NotFoundException {
 
         return accommodationService.findAll(blockName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
-    @GetMapping(value = "student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Accommodation> getAccommodationsOfStudent(@PathVariable Long student_id) throws NotAllowedException {
 
         return accommodationService.findAll(student_id);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
-    @GetMapping(value = "actual/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/actual/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Accommodation getActualAccommodationOfStudent(@PathVariable Long student_id) throws NotAllowedException {
         return accommodationService.findActualAccommodationOfStudent(student_id);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @PostMapping(value = "student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable String block_name,
                                     @PathVariable int room_number) throws AlreadyExistsException, NotFoundException, NotAllowedException {
@@ -62,7 +62,7 @@ public class AccommodationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @PostMapping(value = "student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createAccommodationRandom(@RequestBody Accommodation accommodation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException, NotAllowedException {
         
@@ -70,14 +70,14 @@ public class AccommodationController {
             LOG.info("Accommodation on room {} created", accommodation.getRoom().getRoomNumber());
     }
 
-//    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-//    @PostMapping(value = "/reservation", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void createAccommodationFromReservation(@RequestBody Reservation reservation) throws NotFoundException, NotAllowedException {
-//
-//        accommodationService.createFromReservation(reservation);
-//        LOG.info("Accommodation on room {} created", reservation.getRoom().getRoomNumber());
-//    }
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
+    @PostMapping(value = "/reservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createAccommodationFromReservation(@RequestBody Reservation reservation) throws NotFoundException, NotAllowedException {
+
+        accommodationService.createFromReservation(reservation);
+        LOG.info("Accommodation on room {} created", reservation.getRoom().getRoomNumber());
+    }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
