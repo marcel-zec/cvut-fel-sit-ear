@@ -9,6 +9,9 @@ import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +23,15 @@ public class StudentService {
     private final StudentDao studentDao;
     private final PasswordService passwordService;
     private final AccessService accessService;
+    private final JavaMailSender javaMailSender;
 
 
     @Autowired
-    public StudentService(StudentDao studentDao, PasswordService passwordService, AccessService accessService) {
+    public StudentService(StudentDao studentDao, PasswordService passwordService, AccessService accessService, JavaMailSender javaMailSender) {
         this.studentDao = studentDao;
         this.passwordService = passwordService;
         this.accessService = accessService;
+        this.javaMailSender = javaMailSender;
     }
 
 
@@ -46,9 +51,16 @@ public class StudentService {
 
     @Transactional
     public void create(Student student) {
-        student.setPassword(passwordService.generatePassword());
+        String password = passwordService.generatePassword();
+        student.setPassword(new BCryptPasswordEncoder().encode(password));
         studentDao.persist(student);
-        //TODO - kontrola existencie emailu
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(student.getEmail());
+        msg.setSubject("Dormitory system");
+        msg.setText("Hello at dormitory system \n Your password is: " + password + "\n Please change it as soon as possible." +
+                "\n \n With love IT team.");
+        javaMailSender.send(msg);
     }
 
 

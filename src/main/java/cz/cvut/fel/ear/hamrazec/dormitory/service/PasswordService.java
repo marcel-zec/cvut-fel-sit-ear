@@ -15,7 +15,7 @@ public class PasswordService {
 
     public String generatePassword(){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(random.nextInt(99));
+        stringBuilder.append((int)random.nextInt(99));
         stringBuilder.append(generateLetter());
         stringBuilder.append(random.nextInt(99));
         stringBuilder.append(generateLetter());
