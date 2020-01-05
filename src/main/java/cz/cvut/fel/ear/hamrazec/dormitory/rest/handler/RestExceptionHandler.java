@@ -35,7 +35,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(NotAllowedException.class)
     public ResponseEntity<ErrorInfo> notAllowed(HttpServletRequest request, NotAllowedException e) {
-        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(BadFloorException.class)

@@ -1,9 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
-import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.*;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Room;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.RoomService;
@@ -12,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rooms")
 @Validated
+@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_SUPERUSER')")
 public class RoomController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RoomController.class);
@@ -59,7 +58,7 @@ public class RoomController {
 
     @PostMapping(value = "/block/{name}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException, AlreadyExistsException, BadFloorException {
+    public void createRoom(@RequestBody Room room, @PathVariable String name) throws NotFoundException, AlreadyExistsException, BadFloorException, NotAllowedException {
 
         roomService.addRoom(name,room);
         LOG.info("Room number {} created at block {}.", room.getRoomNumber(),room.getBlock().getName());
@@ -67,7 +66,7 @@ public class RoomController {
 
     @DeleteMapping(value = "/{number}/block/{blockName}",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRoom(@PathVariable Integer number, @PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, AlreadyExistsException, BadFloorException, NotAcceptDeletingConsequences {
+    public void deleteRoom(@PathVariable Integer number, @PathVariable String blockName, @RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, AlreadyExistsException, BadFloorException, NotAcceptDeletingConsequences, NotAllowedException {
         if (accept){
             roomService.deleteRoom(number,blockName);
             LOG.info("Room number {} at block {} was deleted.", number, blockName);

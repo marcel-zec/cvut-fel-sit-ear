@@ -4,6 +4,7 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.AlreadyExistsException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadFloorException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,24 +102,29 @@ public class BlockService {
 
 
     @Transactional
-    public void changeAmountOfFloors(String blockName, Integer amount) throws NotFoundException, BadFloorException {
+    public void changeAmountOfFloors(String blockName, Integer amount) throws NotFoundException, BadFloorException, NotAllowedException {
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
         if (amount > 20 || amount < 0) throw new BadFloorException("Amount of floors should be number between 0-20.");
         if (block.getFloors() > amount) {
-            List<Room> roomsForDelete = new ArrayList<>(block.getRooms());
-            roomsForDelete.stream().filter(room -> room.getFloor() > amount).forEach(roomService::deleteRoom);
+            List<Room> roomsForDelete = new ArrayList<>(block.getRooms().stream().filter(room -> room.getFloor() > amount).collect(Collectors.toList()));
+            for (Room toDelete: roomsForDelete) {
+                roomService.deleteRoom(toDelete);
+            }
         }
         block.setFloors(amount);
         blockDao.update(block);
     }
 
     @Transactional
-    public void delete(String blockName) throws NotFoundException{
+    public void delete(String blockName) throws NotFoundException, NotAllowedException {
 
         Block block = blockDao.find(blockName);
         if (block == null) throw new NotFoundException();
-        block.getRooms().stream().forEach(roomService::deleteRoom);
+        List<Room> toDeleteList = new ArrayList<>(block.getRooms());
+        for (Room toDelete: toDeleteList) {
+            roomService.deleteRoom(toDelete);
+        }
         block.softDelete();
         blockDao.update(block);
     }
