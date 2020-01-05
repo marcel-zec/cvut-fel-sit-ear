@@ -47,6 +47,7 @@ public class StudentServiceTest {
     @Before
     public void before() {
         student = Generator.generateStudent();
+        student.setGender(Gender.MAN);
         SuperUser superuser = new SuperUser();
         superuser.setUsername("superuser123");
         superuser.setEmail("milan@jano.cz");
