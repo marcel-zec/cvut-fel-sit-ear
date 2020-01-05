@@ -7,6 +7,8 @@ import cz.cvut.fel.ear.hamrazec.dormitory.dao.StudentDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,20 +27,23 @@ public class ReservationService {
     private RoomDao roomDao;
     private RoomService roomService;
     private BlockDao blockDao;
+    private AccessService accessService;
 
     @Autowired
-    public ReservationService(ReservationDao reservationDao, StudentDao studentDao, RoomDao roomDao, RoomService roomService, BlockDao blockDao) {
+    public ReservationService(ReservationDao reservationDao, StudentDao studentDao, RoomDao roomDao, RoomService roomService, BlockDao blockDao, AccessService accessService) {
 
         this.reservationDao = reservationDao;
         this.studentDao = studentDao;
         this.roomDao = roomDao;
         this.roomService = roomService;
         this.blockDao = blockDao;
+        this.accessService = accessService;
     }
 
     public List<Reservation> findAll() { return reservationDao.findAll();  }
 
-    public List<Reservation> findAll(String blockName) {
+    public List<Reservation> findAll(String blockName) throws NotAllowedException, NotFoundException {
+        accessService.managerAccess(blockDao.find(blockName));
 
         List<Reservation> reservationsInBlock = new ArrayList<>();
         for (Reservation reservation: findAll()) {

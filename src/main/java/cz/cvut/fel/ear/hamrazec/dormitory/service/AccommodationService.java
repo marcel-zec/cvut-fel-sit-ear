@@ -45,11 +45,10 @@ public class AccommodationService {
 
     }
 
-    public List<Accommodation> findAll(String blockName) throws NotAllowedException {
+    public List<Accommodation> findAll(String blockName) throws NotAllowedException, NotFoundException {
         List<Accommodation> accommodationsByBlock = new ArrayList<>();
-        final User currentUser = SecurityUtils.getCurrentUser();
 
-        accessService.managerAccess(currentUser,blockName);
+        accessService.managerAccess(blockDao.find(blockName));
             for (Accommodation a: findAll()) {
             if (a.getRoom().getBlock().getName().equals(blockName)) accommodationsByBlock.add(a);
         }
@@ -95,11 +94,10 @@ public class AccommodationService {
     @Transactional
     public void create(Accommodation accommodation, Long student_id, int roomNumber, String blockName) throws NotFoundException, NotAllowedException, AlreadyExistsException {
 
-        final User currentUser = SecurityUtils.getCurrentUser();
-        accessService.managerAccess(currentUser, blockName);
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(blockName);
         if (block == null || student==null) throw new NotFoundException();
+        accessService.managerAccess(block);
 
         if (!accommodation.getDateStart().equals(LocalDate.now())) throw new NotAllowedException("bad date");
 
@@ -142,9 +140,8 @@ public class AccommodationService {
     @Transactional
     public void createFromReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
 
-        final User currentUser = SecurityUtils.getCurrentUser();
         if (reservation == null) throw new NotFoundException();
-        accessService.managerAccess(currentUser, reservation.getRoom().getBlock().getName());
+        accessService.managerAccess(reservation.getRoom().getBlock());
         Student student = reservation.getStudent();
 
         if (reservation.getDateStart().equals(LocalDate.now()) && reservation.getStatus().equals(Status.RES_APPROVED)) {
@@ -185,9 +182,8 @@ public class AccommodationService {
 
     @Transactional
     public void createNewAccommodationRandom(Accommodation accommodation, Long student_id, String blockName) throws NotFoundException, NotAllowedException {
+        accessService.managerAccess(blockDao.find(blockName) );
 
-        final User currentUser = SecurityUtils.getCurrentUser();
-        accessService.managerAccess(currentUser, blockName);
         Student student = studentDao.find(student_id);
         accommodation.setStudent(student);
         if (student == null) throw new NotFoundException();
