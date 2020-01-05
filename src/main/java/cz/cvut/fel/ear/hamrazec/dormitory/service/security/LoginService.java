@@ -21,7 +21,7 @@ public class LoginService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void loginStudent(String username, String password) throws AlreadyExistsException {
 
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
@@ -33,7 +33,7 @@ public class LoginService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void loginManager(String username, String password) {
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
         try {
