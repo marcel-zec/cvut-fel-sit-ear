@@ -33,7 +33,7 @@ public class Room extends AbstractEntity {
     @PositiveOrZero(message = "Capacity of room can not be negative")
     private Integer maxCapacity;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="block_id", nullable=true)
     private Block block;
 
@@ -42,20 +42,12 @@ public class Room extends AbstractEntity {
     private List<Accommodation> pastAccommodations;
 
     @OrderBy("dateStart DESC")
-    @OneToMany //(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany
     private List<Accommodation> actualAccommodations;
 
     @OrderBy("dateStart DESC")
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Reservation> reservations; //TODO jedna rezervacia
-
-//    @OneToOne
-//    private Accommodation actualAccommodation;
-
-//BLBOST, lebo tam byva viac ludi
-//    public Accommodation getActualAccommodation() { return actualAccommodation; }
-//
-//    public void setActualAccommodation(Accommodation actualAccommodation) { this.actualAccommodation = actualAccommodation; }
+    private List<Reservation> reservations;
 
     public Block getBlock() { return block; }
 
@@ -71,15 +63,6 @@ public class Room extends AbstractEntity {
         return pastAccommodations;
     }
 
-
-//    public void setActualAccommodations(List<Accommodation> actualAccommodations) {
-//
-//        for (Accommodation acommodation: actualAccommodations) {
-//            acommodation.
-//        }
-//        this.pastAccommodations = pastAccommodations.add(actualAccommodations.get());
-//        this.actualAccommodations = actualAccommodations;
-//   }
 
     public void addActualAccomodation(Accommodation accommodation){
         if (actualAccommodations == null) actualAccommodations = new ArrayList<>();
