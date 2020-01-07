@@ -30,7 +30,7 @@ public class Reservation extends AbstractEntity {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @OneToOne
+    @OneToOne()
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 

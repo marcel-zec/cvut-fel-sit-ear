@@ -71,12 +71,12 @@ public class AccommodationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @PostMapping(value = "/reservation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/reservation/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createAccommodationFromReservation(@RequestBody Reservation reservation) throws NotFoundException, NotAllowedException {
+    public void createAccommodationFromReservation(@PathVariable Long id) throws NotFoundException, NotAllowedException {
 
-        accommodationService.createFromReservation(reservation);
-        LOG.info("Accommodation on room {} created", reservation.getRoom().getRoomNumber());
+        accommodationService.createFromReservation(id);
+        LOG.info("Accommodation from reservation {} created", id);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")

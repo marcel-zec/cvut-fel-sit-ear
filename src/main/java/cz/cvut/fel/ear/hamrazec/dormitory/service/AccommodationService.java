@@ -148,6 +148,14 @@ public class AccommodationService {
         } else throw new NotAllowedException("Bad date or not approved reservation");
     }
 
+    @Transactional
+    public void createFromReservation(Long id) throws NotFoundException, NotAllowedException {
+
+        Reservation reservation = reservationDao.find(id);
+        if (reservation != null) createFromReservation(reservation);
+        else throw new NotFoundException();
+    }
+
     private Accommodation newAccommodationFromReservation(Reservation reservation){
         Accommodation accommodation = new Accommodation();
         accommodation.setStudent(reservation.getStudent());

@@ -95,6 +95,7 @@ public class ReservationService {
 
         Student student = studentDao.find(student_id);
         Block block = blockDao.find(block_name);
+        if (student == null || block == null) throw new NotFoundException();
         accessService.managerAccess(block);
         accessService.studentAccess(student_id);
 
