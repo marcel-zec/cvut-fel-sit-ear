@@ -8,7 +8,9 @@ import cz.cvut.fel.ear.hamrazec.dormitory.exception.EndOfStudyExpirationExceptio
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.security.AccessService;
+import cz.cvut.fel.ear.hamrazec.dormitory.service.security.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,9 +31,10 @@ public class ReservationService {
     private RoomService roomService;
     private BlockDao blockDao;
     private AccessService accessService;
+    private RoleService roleService;
 
     @Autowired
-    public ReservationService(ReservationDao reservationDao, StudentDao studentDao, RoomDao roomDao, RoomService roomService, BlockDao blockDao, AccessService accessService) {
+    public ReservationService(ReservationDao reservationDao, StudentDao studentDao, RoomDao roomDao, RoomService roomService, BlockDao blockDao, AccessService accessService, RoleService roleService) {
 
         this.reservationDao = reservationDao;
         this.studentDao = studentDao;
@@ -38,6 +42,7 @@ public class ReservationService {
         this.roomService = roomService;
         this.blockDao = blockDao;
         this.accessService = accessService;
+        this.roleService = roleService;
     }
 
     public List<Reservation> findAll() { return reservationDao.findAll();  }
@@ -71,6 +76,19 @@ public class ReservationService {
     }
 
     @Transactional
+    public void cancelReservation(Long id) throws NotFoundException {
+        Reservation reservation = reservationDao.find(id);
+        if (reservation == null) throw new NotFoundException();
+        cancelReservation(reservation);
+    }
+
+    @Transactional
+    public void createNewReservation(Reservation reservation, String block_name, int room_number) throws EndOfStudyExpirationException, NotFoundException, NotAllowedException {
+        long id = SecurityUtils.getCurrentUser().getId();
+        createNewReservation(reservation,id,block_name,room_number);
+    }
+
+    @Transactional
     public void createNewReservation(Reservation reservation, Long student_id, String block_name, int room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         if (block_name == null || reservation == null || student_id==null) throw new NotFoundException();
@@ -81,6 +99,14 @@ public class ReservationService {
         accessService.studentAccess(student_id);
 
         if (reservation.getDateEnd().isAfter(student.getEndOfStudy())) throw new EndOfStudyExpirationException(student.getEndOfStudy(),reservation.getDateEnd());
+        if (student.hasActiveAccommodation()){
+            AtomicBoolean dateIsOkay = new AtomicBoolean(true);
+            student.getAccommodations().stream()
+                    .filter(accommodation -> accommodation.getStatus().equals(Status.ACC_ACTIVE))
+                    .findAny()
+                    .ifPresent(accommodation -> dateIsOkay.set(accommodation.getDateEnd().isBefore(reservation.getDateStart())));
+            if (!dateIsOkay.get()) throw new NotAllowedException();
+        }
 
         List<Room> roomList = block.getRooms().stream().filter(room1 -> room1.getRoomNumber().equals(room_number)).collect(Collectors.toList());
 
@@ -88,14 +114,26 @@ public class ReservationService {
         Room room = roomList.get(0);
 
         if (room == null) throw new NotFoundException();
-        if (student.getReservation() != null) throw new NotAllowedException("student already has reservation");
+        if (student.getReservation() != null){
+            if (student.getReservation().getStatus().equals(Status.RES_CANCELED)){
+                Room roomForUpdate = student.getReservation().getRoom();
+                roomForUpdate.getReservations().remove(student.getReservation());
+                roomDao.update(room);
+                reservationDao.remove(student.getReservation());
+                student.setReservation(null);
+                studentDao.update(student);
+            } else {
+                throw new NotAllowedException("Reservation already exist.");
+            }
+        }
         reservation.setStudent(student);
         reservation.setRoom(room);
 
         if (roomService.findFreeConcreteRoom(room.getBlock().getName(),reservation.getDateStart(),
                 reservation.getDateEnd(),reservation.getRoom().getRoomNumber()))
         {
-            reservation.setStatus(Status.RES_APPROVED);
+            if (roleService.isManager(SecurityUtils.getCurrentUser())) reservation.setStatus(Status.RES_APPROVED);
+            else reservation.setStatus(Status.RES_PENDING);
             room.addReservation(reservation);
             student.setReservation(reservation);
             reservationDao.persist(reservation);
@@ -106,7 +144,9 @@ public class ReservationService {
     }
 
     @Transactional
-    public void approveReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
+    public void approveReservation(Long reservationId) throws NotFoundException, NotAllowedException {
+        Reservation reservation = reservationDao.find(reservationId);
+        if (reservation == null) throw new NotFoundException();
         accessService.managerAccess(reservation.getRoom().getBlock());
         if (reservation.getStatus().equals(Status.RES_PENDING)){
             reservation.setStatus(Status.RES_APPROVED);
@@ -115,28 +155,21 @@ public class ReservationService {
     }
 
     @Transactional
+    public void createNewReservationRandom(Reservation reservation, String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
+        long id = SecurityUtils.getCurrentUser().getId();
+        createNewReservationRandom(reservation,id,blockName);
+    }
+
+    @Transactional
     public void createNewReservationRandom(Reservation reservation, long student_id, String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         accessService.studentAccess(student_id);
         accessService.managerAccess(blockDao.find(blockName));
 
-        Student student = studentDao.find(student_id);
-        if (reservation.getDateEnd().isAfter(student.getEndOfStudy())) throw new EndOfStudyExpirationException(student.getEndOfStudy(),reservation.getDateEnd());
-
-
-        reservation.setStudent(student);
-        if (student == null) throw new NotFoundException();
-
         List<Room> freeRooms = roomService.findFreeRooms(blockName, reservation.getDateStart(), reservation.getDateEnd());
-        if (freeRooms !=null){
-            reservation.setStatus(Status.RES_APPROVED);
+        if (freeRooms != null){
             Room room = freeRooms.get(0);
-            reservation.setRoom(room);
-            room.addReservation(reservation);
-            student.setReservation(reservation);
-            reservationDao.persist(reservation);
-            studentDao.update(student);
-            roomDao.update(room);
+            createNewReservation(reservation,student_id,room.getBlock().getName(),room.getRoomNumber());
         }
     }
 
@@ -158,6 +191,7 @@ public class ReservationService {
         reservationDao.update(reservation);
     }
 
+    @Transactional
     public void deleteReservation(Reservation reservation) throws NotFoundException, NotAllowedException {
         accessService.managerAccess(reservation.getRoom().getBlock());
         if (reservation.getStudent() != null)  reservation.getStudent().cancelReservation(reservation);
@@ -165,5 +199,23 @@ public class ReservationService {
         studentDao.update(reservation.getStudent());
         roomDao.update(reservation.getRoom());
         reservationDao.remove(reservation);
+    }
+
+    @Transactional
+    public void deleteReservation(Long reservation_id) throws NotFoundException, NotAllowedException {
+        Reservation reservation = reservationDao.find(reservation_id);
+        if (reservation == null) throw new NotAllowedException();
+        deleteReservation(reservation);
+    }
+
+    @Transactional
+    public void deleteReservation() throws NotFoundException, NotAllowedException {
+        User user = SecurityUtils.getCurrentUser();
+        if (roleService.isStudent(user)){
+            Student student = studentDao.find(user.getId());
+            Reservation reservation = student.getReservation();
+            if (reservation != null) deleteReservation(reservation);
+            else throw new NotFoundException();
+        }
     }
 }

@@ -1,9 +1,11 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.rest;
 
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.EndOfStudyExpirationException;
+import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAcceptDeletingConsequences;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotFoundException;
 import cz.cvut.fel.ear.hamrazec.dormitory.model.Reservation;
+import cz.cvut.fel.ear.hamrazec.dormitory.security.SecurityUtils;
 import cz.cvut.fel.ear.hamrazec.dormitory.service.ReservationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,38 +46,69 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @PatchMapping(value = "/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void approveReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
+    @PatchMapping(value = "{id}/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void approveReservation(@PathVariable Long id) throws NotAllowedException, NotFoundException {
 
-        reservationService.approveReservation(reservation);
-        LOG.info("Reservation with id {} approved", reservation.getId());
+        reservationService.approveReservation(id);
+        LOG.info("Reservation with id {} approved", id);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
-    @PatchMapping(value = "/denied", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deniedReservation(@RequestBody Reservation reservation) throws NotAllowedException, NotFoundException {
+    @PatchMapping(value = "{id}/denied", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deniedReservation(@PathVariable Long id) throws NotFoundException {
 
-        reservationService.deleteReservation(reservation);
-        LOG.info("Reservation with id {} denied", reservation.getId());
+        reservationService.cancelReservation(id);
+        LOG.info("Reservation with id {} denied", id);
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @PostMapping(value = "/student/{student_id}/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservation(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String block_name, @PathVariable Integer room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
-        reservationService.createNewReservation(reservation, student_id,block_name, room_number);
+        reservationService.createNewReservation(reservation, student_id ,block_name, room_number);
         LOG.info("Reservation with id {} created", reservation.getId());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PostMapping(value = "/block/{block_name}/room/{room_number}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createStudentReservation(@RequestBody Reservation reservation, @PathVariable String block_name, @PathVariable Integer room_number) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
+
+        reservationService.createNewReservation(reservation,block_name, room_number);
+        LOG.info("Reservation with id {} created", reservation.getId());
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PostMapping(value = "/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createReservationStudentRandom(@RequestBody Reservation reservation,  @PathVariable String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
+
+        reservationService.createNewReservationRandom(reservation, blockName);
+        LOG.info("Reservation on room {} created", reservation.getRoom().getRoomNumber());
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_MANAGER')")
     @PostMapping(value = "/student/{student_id}/block/{blockName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createReservationRandom(@RequestBody Reservation reservation, @PathVariable Long student_id, @PathVariable String blockName) throws NotFoundException, NotAllowedException, EndOfStudyExpirationException {
 
         reservationService.createNewReservationRandom(reservation, student_id, blockName);
         LOG.info("Reservation on room {} created", reservation.getRoom().getRoomNumber());
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReservation(@RequestParam(defaultValue = "false") boolean accept) throws NotFoundException, NotAllowedException, NotAcceptDeletingConsequences {
+        if (accept){
+            reservationService.deleteReservation();
+            LOG.info("Reservation of student with username " + SecurityUtils.getCurrentUser().getUsername() + " deleted");
+        } else {
+            LOG.info("Reservation was not deleted. User not accept possible consequences of deleting.");
+            throw new NotAcceptDeletingConsequences();
+        }
     }
 
 }
