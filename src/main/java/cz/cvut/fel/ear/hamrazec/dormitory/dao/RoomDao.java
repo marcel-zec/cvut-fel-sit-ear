@@ -20,12 +20,4 @@ public class RoomDao extends BaseDao<Room> {
             return null;
         }
     }
-
-    @Override
-    public Room find(Long id) {
-        Objects.requireNonNull(id);
-        Room object = em.find(type, id);
-        if (object != null && object.isNotDeleted()) return object;
-        return null;
-    }
 }

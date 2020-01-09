@@ -1,5 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.service;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.dao.BlockDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.dao.ManagerDao;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.BadPassword;
 import cz.cvut.fel.ear.hamrazec.dormitory.exception.NotAllowedException;
@@ -28,17 +29,19 @@ public class ManagerService {
     private final ManagerDao managerDao;
     private final BlockService blockService;
     private final PasswordService passwordService;
+    private final BlockDao blockDao;
     private final JavaMailSender javaMailSender;
 
 
     @Autowired
     public ManagerService(ManagerDao managerDao, BlockService blockService, PasswordService passwordService,
-                          JavaMailSender javaMailSender, AccessService accessService) {
+                          JavaMailSender javaMailSender, AccessService accessService, BlockDao blockDao) {
 
         this.managerDao = managerDao;
         this.blockService = blockService;
         this.passwordService = passwordService;
         this.javaMailSender = javaMailSender;
+        this.blockDao = blockDao;
     }
 
 
@@ -108,6 +111,7 @@ public class ManagerService {
         if (manager == null) throw new NotFoundException();
         for (Block block : manager.getBlocks()) {
             block.removeManager(manager);
+            blockDao.update(block);
         }
         manager.softDelete();
         managerDao.update(manager);

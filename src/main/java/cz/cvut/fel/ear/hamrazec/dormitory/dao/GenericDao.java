@@ -1,5 +1,7 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.dao;
 
+import cz.cvut.fel.ear.hamrazec.dormitory.model.AbstractEntity;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  *
  * @param <T>
  */
-public interface GenericDao<T> {
+public interface GenericDao<T extends AbstractEntity> {
 
     /**
      * Finds entity instance with the specified identifier.

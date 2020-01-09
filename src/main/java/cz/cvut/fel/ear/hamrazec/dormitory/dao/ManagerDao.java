@@ -23,13 +23,5 @@ public class ManagerDao extends BaseDao<Manager> {
             return null;
         }
     }
-
-    @Override
-    public Manager find(Long id) {
-        Objects.requireNonNull(id);
-        Manager manager = em.find(type, id);
-        if (manager != null && manager.isNotDeleted()) return manager;
-        else return null;
-    }
 }
 

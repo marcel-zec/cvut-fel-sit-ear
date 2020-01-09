@@ -13,14 +13,6 @@ public class BlockDao extends BaseDao<Block> {
         super(Block.class);
     }
 
-    @Override
-    public Block find(Long id) {
-        Objects.requireNonNull(id);
-        Block object = em.find(type, id);
-        if (object != null && object.isNotDeleted()) return object;
-        return null;
-    }
-
     public Block find(String name) {
         {
             try {

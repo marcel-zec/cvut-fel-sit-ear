@@ -1,10 +1,6 @@
 package cz.cvut.fel.ear.hamrazec.dormitory.dao;
 
-import cz.cvut.fel.ear.hamrazec.dormitory.model.AbstractEntity;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Accommodation;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.Student;
-import cz.cvut.fel.ear.hamrazec.dormitory.model.SuperUser;
-import org.apache.catalina.Manager;
+import cz.cvut.fel.ear.hamrazec.dormitory.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class BaseDao<T> implements GenericDao<T> {
+public abstract class BaseDao<T extends AbstractEntity> implements GenericDao<T> {
 
     @PersistenceContext
     protected EntityManager em;
@@ -28,8 +24,16 @@ public abstract class BaseDao<T> implements GenericDao<T> {
     @Override
     public T find(Long id) {
         Objects.requireNonNull(id);
-        return em.find(type, id);
+        T object = em.find(type, id);
+        if (object != null && object.isNotDeleted()) return object;
+        return null;
     }
+
+//    @Override
+//    public T find(Long id) {
+//        Objects.requireNonNull(id);
+//        return em.find(type, id);
+//    }
 
     @Override
     public List<T> findAll() {

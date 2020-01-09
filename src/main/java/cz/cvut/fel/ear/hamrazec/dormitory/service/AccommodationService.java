@@ -91,6 +91,7 @@ public class AccommodationService {
         if (block == null || student==null) throw new NotFoundException();
         accessService.managerAccess(block);
 
+        //nastavit automaticky
         if (!accommodation.getDateStart().equals(LocalDate.now())) throw new NotAllowedException("bad date");
 
         if (studentDao.find(student_id).getAccommodations().stream()

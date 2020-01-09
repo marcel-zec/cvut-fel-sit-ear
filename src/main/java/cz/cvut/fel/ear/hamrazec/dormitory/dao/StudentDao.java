@@ -12,12 +12,4 @@ import java.util.Objects;
 public class StudentDao extends BaseDao<Student> {
     public StudentDao(){super(Student.class);}
 
-    @Override
-    public Student find(Long id) {
-        Objects.requireNonNull(id);
-        Student student = em.find(type, id);
-        if (student != null && student.isNotDeleted()) return student;
-        else return null;
-    }
-
 }

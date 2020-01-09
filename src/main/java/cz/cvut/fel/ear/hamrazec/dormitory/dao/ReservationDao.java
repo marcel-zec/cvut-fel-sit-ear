@@ -10,11 +10,4 @@ import java.util.Objects;
 public class ReservationDao extends BaseDao<Reservation> {
     public ReservationDao(){super(Reservation.class);}
 
-    @Override
-    public Reservation find(Long id) {
-        Objects.requireNonNull(id);
-        Reservation object = em.find(type, id);
-        if (object != null && object.isNotDeleted()) return object;
-        return null;
-    }
 }
