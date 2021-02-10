@@ -1,10 +1,8 @@
 # Dormitory system - Ubytovaci system
-[Checkpoint0](https://gitlab.fel.cvut.cz/B191_B6B36EAR/zecmarce/blob/master/checkpoint0.md)
+[Checkpoint0](https://github.com/marcel-zec/cvut-fel-sit-ear/blob/main/checkpoint0.md)
 
-[Checkpoint1](https://gitlab.fel.cvut.cz/B191_B6B36EAR/zecmarce/blob/master/checkpoint1.pdf)
+[Checkpoint1](https://github.com/marcel-zec/cvut-fel-sit-ear/blob/main/checkpoint1.pdf)
 
-[Checkpoint2](https://gitlab.fel.cvut.cz/B191_B6B36EAR/zecmarce/blob/master/checkpoint2.pdf)
-
-[Checkpoint1 - last commit](https://gitlab.fel.cvut.cz/B191_B6B36EAR/zecmarce/tree/a0dfbb06133249e278f91e4b15dc8e86f44fab49)
+[Checkpoint2](https://github.com/marcel-zec/cvut-fel-sit-ear/blob/main/checkpoint2.pdf)
 
 Sandra Hamrakova, Marcel Zec
